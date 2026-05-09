@@ -47,7 +47,7 @@ export default function Home() {
               Explore the network
             </Link>
             <a
-              href="/simulator.html"
+              href="/simulator"
               className="rounded-full border border-edge bg-paper px-6 py-3 text-sm font-medium text-graphite transition-colors hover:border-ink hover:text-ink"
             >
               Interactive simulator

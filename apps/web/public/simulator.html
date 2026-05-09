@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conexple Individual Journey Simulator</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
     <style>
         * {
@@ -13,32 +17,63 @@
         }
 
         body {
-            background: #f8fafc;
-            color: #334155;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #FBF7F1;
+            color: #3B3A36;
+            font-family: 'Geist', 'IBM Plex Sans Thai', system-ui, -apple-system, sans-serif;
+            font-feature-settings: "ss01", "cv11";
             line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         .container {
             max-width: 1600px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 32px 24px;
         }
 
         header {
-            margin-bottom: 30px;
+            margin-bottom: 32px;
+            border-bottom: 1px solid #E5DDCD;
+            padding-bottom: 24px;
+        }
+
+        h1, h2, h3, .panel-title, .chart-title, .comparison-title, .character-name {
+            font-family: 'Fraunces', 'IBM Plex Sans Thai', Georgia, serif;
+            font-optical-sizing: auto;
+            letter-spacing: -0.02em;
+            font-weight: 500;
         }
 
         h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            color: #1e1b4b;
+            font-size: 2.75em;
+            margin-bottom: 8px;
+            color: #0E1116;
+            letter-spacing: -0.04em;
+            font-weight: 400;
         }
 
         .subtitle {
-            color: #64748b;
-            font-size: 1.1em;
+            color: #8B847B;
+            font-size: 1.05em;
+            font-family: 'Geist', 'IBM Plex Sans Thai', sans-serif;
         }
+
+        /* Top link back to main app */
+        .nav-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.78em;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: #8B847B;
+            text-decoration: none;
+            margin-bottom: 16px;
+            transition: color 0.15s ease;
+        }
+        .nav-back:hover { color: #0E1116; }
+        .nav-back::before { content: "←"; font-size: 1.2em; }
 
         /* CHARACTER SELECTION */
         .character-selection {
@@ -49,8 +84,8 @@
         }
 
         .character-card {
-            background: #ffffff;
-            border: 2px solid #e2e8f0;
+            background: #F4EFE6;
+            border: 2px solid #E5DDCD;
             border-radius: 12px;
             padding: 20px;
             cursor: pointer;
@@ -60,14 +95,14 @@
 
         .character-card:hover {
             transform: translateY(-5px);
-            border-color: #6366f1;
+            border-color: #0E1116;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .character-card.active {
-            border-color: #6366f1;
-            background: #ffffff;
-            box-shadow: 0 0 30px rgba(99, 102, 241, 0.2);
+            border-color: #0E1116;
+            background: #F4EFE6;
+            box-shadow: 0 0 30px rgba(14, 17, 22, 0.18);
         }
 
         .character-emoji {
@@ -78,35 +113,35 @@
         .character-name {
             font-size: 1.3em;
             font-weight: bold;
-            color: #1e1b4b;
+            color: #0E1116;
             margin-bottom: 8px;
         }
 
         .character-spend {
-            color: #10b981;
+            color: #5C6B3A;
             font-weight: bold;
             margin-bottom: 8px;
         }
 
         .character-status {
             font-size: 0.95em;
-            color: #64748b;
+            color: #8B847B;
             margin-bottom: 8px;
         }
 
         .character-desc {
             font-size: 0.9em;
-            color: #64748b;
+            color: #8B847B;
             font-style: italic;
         }
 
         /* TIMELINE NAVIGATION */
         .timeline-section {
-            background: #ffffff;
+            background: #F4EFE6;
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 30px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #E5DDCD;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
@@ -125,41 +160,43 @@
         }
 
         button {
-            background: #6366f1;
+            background: #0E1116;
             border: none;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 6px;
+            color: #FBF7F1;
+            padding: 10px 22px;
+            border-radius: 999px;
             cursor: pointer;
-            font-size: 1em;
-            font-weight: bold;
-            transition: all 0.3s ease;
+            font-size: 0.9em;
+            font-weight: 500;
+            font-family: inherit;
+            letter-spacing: 0.01em;
+            transition: transform 0.2s ease, background 0.2s ease;
         }
 
         button:hover {
-            background: #4f46e5;
-            transform: scale(1.05);
+            background: #3B3A36;
+            transform: translateY(-1px);
         }
 
         button:active {
-            transform: scale(0.95);
+            transform: translateY(0);
         }
 
         .speed-control {
             display: flex;
             gap: 8px;
             align-items: center;
-            color: #334155;
+            color: #3B3A36;
         }
 
         .speed-btn {
             padding: 8px 12px;
             font-size: 0.9em;
-            background: #f1f5f9;
+            background: #F4EFE6;
         }
 
         .speed-btn.active {
-            background: #10b981;
+            background: #5C6B3A;
         }
 
         .timeline-bar {
@@ -167,9 +204,9 @@
             gap: 4px;
             overflow-x: auto;
             padding: 10px 0;
-            border-top: 2px solid #e2e8f0;
-            border-bottom: 2px solid #e2e8f0;
-            background: #f1f5f9;
+            border-top: 2px solid #E5DDCD;
+            border-bottom: 2px solid #E5DDCD;
+            background: #F4EFE6;
         }
 
         .timeline-month {
@@ -178,28 +215,28 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #f1f5f9;
+            background: #F4EFE6;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.3s ease;
             font-weight: bold;
             font-size: 0.9em;
-            color: #64748b;
+            color: #8B847B;
         }
 
         .timeline-month:hover {
-            background: #e2e8f0;
+            background: #E5DDCD;
         }
 
         .timeline-month.active {
-            background: #6366f1;
+            background: #0E1116;
             color: white;
             transform: scale(1.15);
-            box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 0 15px rgba(14, 17, 22, 0.22);
         }
 
         .timeline-month.visited {
-            background: #8b5cf6;
+            background: #9945FF;
             color: white;
         }
 
@@ -212,8 +249,8 @@
         }
 
         .panel {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
+            background: #F4EFE6;
+            border: 1px solid #E5DDCD;
             border-radius: 12px;
             padding: 20px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -221,7 +258,7 @@
 
         .panel-title {
             font-size: 1.3em;
-            color: #1e1b4b;
+            color: #0E1116;
             margin-bottom: 15px;
             font-weight: bold;
         }
@@ -254,30 +291,30 @@
         }
 
         .tree-node.active {
-            background: #dcfce7;
-            border: 2px solid #10b981;
-            color: #15803d;
+            background: #EAEEDB;
+            border: 2px solid #5C6B3A;
+            color: #5C6B3A;
         }
 
         .tree-node.inactive {
-            background: #f1f5f9;
-            border: 2px solid #cbd5e1;
-            color: #64748b;
+            background: #F4EFE6;
+            border: 2px solid #E5DDCD;
+            color: #8B847B;
             opacity: 0.7;
         }
 
         .tree-node.high-spender {
-            background: #fef3c7;
-            border: 3px solid #fbbf24;
-            color: #78350f;
+            background: #F5E6BF;
+            border: 3px solid #E8B14E;
+            color: #4A2A09;
             font-weight: bold;
         }
 
         .tree-node.new {
-            background: #fce7f3;
-            border: 2px solid #ec4899;
+            background: #F5DCEA;
+            border: 2px solid #9945FF;
             position: relative;
-            color: #831843;
+            color: #4A1227;
         }
 
         .tree-node.new::after {
@@ -289,9 +326,9 @@
         }
 
         .tree-node.near-cap {
-            background: #fee2e2;
-            border: 3px solid #ef4444;
-            color: #7f1d1d;
+            background: #F8E0DD;
+            border: 3px solid #D9534A;
+            color: #7A2A24;
             font-weight: bold;
         }
 
@@ -308,7 +345,7 @@
         .tree-level {
             margin-left: 30px;
             margin-top: 10px;
-            border-left: 2px dashed #6366f1;
+            border-left: 2px dashed #0E1116;
             padding-left: 15px;
         }
 
@@ -321,18 +358,18 @@
             display: flex;
             justify-content: space-between;
             padding: 10px;
-            background: #f8fafc;
+            background: #FBF7F1;
             margin: 5px 0;
             border-radius: 6px;
-            border-left: 4px solid #6366f1;
+            border-left: 4px solid #0E1116;
         }
 
         .earnings-level-label {
-            color: #334155;
+            color: #3B3A36;
         }
 
         .earnings-amount {
-            color: #10b981;
+            color: #5C6B3A;
             font-weight: bold;
         }
 
@@ -342,11 +379,11 @@
         }
 
         .event {
-            background: #f8fafc;
+            background: #FBF7F1;
             padding: 12px;
             margin: 8px 0;
             border-radius: 6px;
-            border-left: 4px solid #6366f1;
+            border-left: 4px solid #0E1116;
             animation: slideIn 0.3s ease;
         }
 
@@ -355,7 +392,7 @@
         }
 
         .event-text {
-            color: #334155;
+            color: #3B3A36;
             font-size: 0.95em;
         }
 
@@ -364,44 +401,44 @@
         }
 
         .dashboard-item {
-            background: #f8fafc;
+            background: #FBF7F1;
             padding: 15px;
             margin: 10px 0;
             border-radius: 6px;
-            border-left: 4px solid #6366f1;
+            border-left: 4px solid #0E1116;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .dashboard-label {
-            color: #334155;
+            color: #3B3A36;
             font-size: 0.95em;
         }
 
         .dashboard-value {
-            color: #10b981;
+            color: #5C6B3A;
             font-weight: bold;
             font-size: 1.1em;
         }
 
         .dashboard-value.danger {
-            color: #ef4444;
+            color: #D9534A;
         }
 
         .progress-bar {
             width: 100%;
             height: 12px;
-            background: #e2e8f0;
+            background: #E5DDCD;
             border-radius: 6px;
             overflow: hidden;
             margin: 8px 0;
-            border: 1px solid #cbd5e1;
+            border: 1px solid #E5DDCD;
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+            background: linear-gradient(90deg, #0E1116, #9945FF);
             transition: width 0.5s ease;
             display: flex;
             align-items: center;
@@ -421,8 +458,8 @@
         }
 
         .chart-container {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
+            background: #F4EFE6;
+            border: 1px solid #E5DDCD;
             border-radius: 12px;
             padding: 20px;
             position: relative;
@@ -432,7 +469,7 @@
 
         .chart-title {
             font-size: 1.2em;
-            color: #1e1b4b;
+            color: #0E1116;
             margin-bottom: 15px;
             font-weight: bold;
         }
@@ -443,8 +480,8 @@
 
         /* COMPARISON TABLE */
         .comparison-section {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
+            background: #F4EFE6;
+            border: 1px solid #E5DDCD;
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 30px;
@@ -453,7 +490,7 @@
 
         .comparison-title {
             font-size: 1.3em;
-            color: #1e1b4b;
+            color: #0E1116;
             margin-bottom: 15px;
             font-weight: bold;
         }
@@ -466,25 +503,25 @@
         th, td {
             padding: 12px;
             text-align: left;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid #E5DDCD;
         }
 
         th {
-            background: #f1f5f9;
-            color: #1e1b4b;
+            background: #F4EFE6;
+            color: #0E1116;
             font-weight: bold;
         }
 
         tr:hover {
-            background: #f8fafc;
+            background: #FBF7F1;
         }
 
         td {
-            color: #334155;
+            color: #3B3A36;
         }
 
         .highlight-conexple {
-            color: #10b981;
+            color: #5C6B3A;
             font-weight: bold;
         }
 
@@ -525,26 +562,26 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: #f8fafc;
+            background: #FBF7F1;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #6366f1;
+            background: #0E1116;
             border-radius: 4px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #4f46e5;
+            background: #3B3A36;
         }
 
         /* NO CHARACTER SELECTED */
         .welcome-message {
-            background: #ffffff;
-            border: 2px dashed #6366f1;
+            background: #F4EFE6;
+            border: 2px dashed #0E1116;
             border-radius: 12px;
             padding: 40px;
             text-align: center;
-            color: #64748b;
+            color: #8B847B;
             font-size: 1.2em;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
@@ -568,12 +605,12 @@
         .loading {
             text-align: center;
             padding: 20px;
-            color: #334155;
+            color: #3B3A36;
         }
 
         .spinner {
-            border: 3px solid #e2e8f0;
-            border-top: 3px solid #6366f1;
+            border: 3px solid #E5DDCD;
+            border-top: 3px solid #0E1116;
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -590,8 +627,9 @@
 <body>
     <div class="container">
         <header>
-            <h1>🌟 Conexple Individual Journey Simulator</h1>
-            <p class="subtitle">ศึกษาเส้นทางการเติบโตของแต่ละสมาชิกอย่างละเอียด — เดือนต่อเดือน</p>
+            <a href="/" class="nav-back">Back to Conexple</a>
+            <h1>Individual Journey Simulator</h1>
+            <p class="subtitle">ศึกษาเส้นทางการเติบโตของแต่ละสมาชิกอย่างละเอียด — เดือนต่อเดือน · 24-month forward projection across 6 personas.</p>
         </header>
 
         <!-- CHARACTER SELECTION -->
@@ -639,13 +677,13 @@
                         <div class="panel-title">💰 รายได้และเหตุการณ์</div>
 
                         <div class="earnings-details">
-                            <div style="font-weight: bold; color: #fbbf24; font-size: 1.3em; margin-bottom: 15px;">
+                            <div style="font-weight: bold; color: #E8B14E; font-size: 1.3em; margin-bottom: 15px;">
                                 รายได้เดือนนี้: <span id="monthEarnings">฿0</span>
                             </div>
                             <div id="earningsByLevel"></div>
                         </div>
 
-                        <hr style="border: 1px solid #334155; margin: 20px 0;">
+                        <hr style="border: 1px solid #3B3A36; margin: 20px 0;">
 
                         <div class="panel-title" style="margin-top: 20px;">📰 เหตุการณ์เดือนนี้</div>
                         <div class="events-list" id="eventsList"></div>
@@ -1190,7 +1228,7 @@
 
                 if (this.simulation.monthlyCapReached && this.selectedMonth >= this.simulation.monthlyCapReached) {
                     document.getElementById('dashCapMonth').textContent = `เดือน ${this.simulation.monthlyCapReached}`;
-                    document.getElementById('dashCapMonth').parentElement.style.color = '#10b981';
+                    document.getElementById('dashCapMonth').parentElement.style.color = '#5C6B3A';
                 } else {
                     document.getElementById('dashCapMonth').textContent = '—';
                     document.getElementById('dashCapMonth').parentElement.style.color = '';
@@ -1218,16 +1256,16 @@
                             {
                                 label: 'Monthly Earnings',
                                 data: monthlyData,
-                                borderColor: '#6366f1',
-                                backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                                borderColor: '#0E1116',
+                                backgroundColor: 'rgba(14, 17, 22, 0.10)',
                                 tension: 0.4,
                                 fill: true
                             },
                             {
                                 label: 'Cumulative Earnings',
                                 data: cumulativeData,
-                                borderColor: '#10b981',
-                                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                                borderColor: '#5C6B3A',
+                                backgroundColor: 'rgba(92, 107, 58, 0.14)',
                                 tension: 0.4,
                                 fill: true,
                                 borderDash: [5, 5]
@@ -1238,11 +1276,11 @@
                         responsive: true,
                         maintainAspectRatio: false,
                         plugins: {
-                            legend: { labels: { color: '#64748b' } }
+                            legend: { labels: { color: '#8B847B' } }
                         },
                         scales: {
-                            y: { ticks: { color: '#64748b' }, grid: { color: '#e2e8f0' } },
-                            x: { ticks: { color: '#64748b' }, grid: { color: '#e2e8f0' } }
+                            y: { ticks: { color: '#8B847B' }, grid: { color: '#E5DDCD' } },
+                            x: { ticks: { color: '#8B847B' }, grid: { color: '#E5DDCD' } }
                         }
                     }
                 });
@@ -1255,12 +1293,12 @@
                             {
                                 label: 'Active Members',
                                 data: activeData,
-                                backgroundColor: '#10b981'
+                                backgroundColor: '#5C6B3A'
                             },
                             {
                                 label: 'Inactive Members',
                                 data: inactiveData,
-                                backgroundColor: '#cbd5e1'
+                                backgroundColor: '#E5DDCD'
                             }
                         ]
                     },
@@ -1268,11 +1306,11 @@
                         responsive: true,
                         maintainAspectRatio: false,
                         scales: {
-                            x: { stacked: true, ticks: { color: '#64748b' }, grid: { color: '#e2e8f0' } },
-                            y: { stacked: true, ticks: { color: '#64748b' }, grid: { color: '#e2e8f0' } }
+                            x: { stacked: true, ticks: { color: '#8B847B' }, grid: { color: '#E5DDCD' } },
+                            y: { stacked: true, ticks: { color: '#8B847B' }, grid: { color: '#E5DDCD' } }
                         },
                         plugins: {
-                            legend: { labels: { color: '#64748b' } }
+                            legend: { labels: { color: '#8B847B' } }
                         }
                     }
                 });
