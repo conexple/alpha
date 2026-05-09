@@ -19,7 +19,7 @@ const RPC = process.env.SOLANA_RPC_URL ?? "https://api.devnet.solana.com";
 const NETWORK_ID = BigInt(process.env.NETWORK_ID ?? "1");
 const CYCLE_SECONDS = BigInt(24 * 60 * 60); // daily
 
-const root = path.resolve(import.meta.dirname, "..");
+const root = path.resolve(process.cwd());
 
 function loadKeypair(p: string): Keypair {
   const data = JSON.parse(fs.readFileSync(p, "utf8")) as number[];

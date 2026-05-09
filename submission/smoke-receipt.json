@@ -1,0 +1,12 @@
+{
+  "cluster": "devnet",
+  "networkId": "1",
+  "buyer": "kaEWeMzH7yK95RTi8w7xd8ZugJa2ngzfo9L81XchYTU",
+  "amount": "1000",
+  "round": "0",
+  "positionPda": "6T5pbbC96DttPxVhX139zbHAxk6UkWTF7zf6UMF8ngup",
+  "purchasePda": "CqaUKSGkgdbaa7RVFx7PVzWMXqMAwbvsBQSupUAxYAEJ",
+  "transaction": "3voysBjypcH3qNCusJ1g66BywVMSmojNQbWuqkpDcTtbXunGWbD3euQezntd5KY2A1N4VHku2omPyM2vjgMA5Q6t",
+  "solscan": "https://solscan.io/tx/3voysBjypcH3qNCusJ1g66BywVMSmojNQbWuqkpDcTtbXunGWbD3euQezntd5KY2A1N4VHku2omPyM2vjgMA5Q6t?cluster=devnet",
+  "recordedAt": "2026-05-09T10:16:25.052Z"
+}

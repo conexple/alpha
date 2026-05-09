@@ -17,6 +17,9 @@ import {
   Keypair,
   PublicKey,
   SystemProgram,
+  Transaction,
+  sendAndConfirmTransaction,
+  LAMPORTS_PER_SOL,
 } from "@solana/web3.js";
 import * as anchor from "@coral-xyz/anchor";
 import { AnchorProvider, Program, type Idl } from "@coral-xyz/anchor";
@@ -25,7 +28,7 @@ import * as path from "node:path";
 
 const RPC = process.env.SOLANA_RPC_URL ?? "https://api.devnet.solana.com";
 const NETWORK_ID = BigInt(process.env.NETWORK_ID ?? "1");
-const root = path.resolve(import.meta.dirname, "..");
+const root = path.resolve(process.cwd());
 
 const DEMO_LABELS = ["A", "B", "C", "D", "E"] as const;
 type Label = (typeof DEMO_LABELS)[number];
@@ -57,6 +60,13 @@ async function main() {
   const network = new Program(loadIdl("conexple_network"), provider);
   const networkProgramId = network.programId;
 
+  // Oracle keypair — signs place_member (matches network.oracle)
+  const oraclePath = path.join(root, "keys", "oracle-devnet.json");
+  const oracle: Keypair = fs.existsSync(oraclePath)
+    ? loadKeypair(oraclePath)
+    : deployer;
+  console.log(`oracle: ${oracle.publicKey.toBase58()}`);
+
   const u64Le = (n: bigint): Buffer => {
     const buf = Buffer.alloc(8);
     buf.writeBigUInt64LE(n);
@@ -80,17 +90,28 @@ async function main() {
     }
   }
 
-  // Airdrop SOL to each
+  // Fund each demo wallet with 0.05 SOL from deployer (devnet airdrop is
+  // rate-limited; transferring from deployer is reliable).
   for (const [label, kp] of Object.entries(wallets)) {
     const bal = await conn.getBalance(kp.publicKey);
-    if (bal < 0.5 * 1e9) {
+    if (bal < 0.02 * LAMPORTS_PER_SOL) {
       try {
-        const sig = await conn.requestAirdrop(kp.publicKey, 1e9);
-        await conn.confirmTransaction(sig, "confirmed");
-        console.log(`airdropped 1 SOL to ${label}: ${kp.publicKey.toBase58()}`);
+        const tx = new Transaction().add(
+          SystemProgram.transfer({
+            fromPubkey: deployer.publicKey,
+            toPubkey: kp.publicKey,
+            lamports: 0.05 * LAMPORTS_PER_SOL,
+          }),
+        );
+        const sig = await sendAndConfirmTransaction(conn, tx, [deployer], {
+          commitment: "confirmed",
+        });
+        console.log(`funded ${label} 0.05 SOL: ${kp.publicKey.toBase58().slice(0, 8)}… (${sig.slice(0, 8)}…)`);
       } catch (e) {
-        console.warn(`airdrop ${label} failed (rate limit?), continuing:`, String(e).slice(0, 80));
+        console.warn(`fund ${label} failed:`, String(e).slice(0, 200));
       }
+    } else {
+      console.log(`${label} has ${bal / LAMPORTS_PER_SOL} SOL (skip)`);
     }
   }
 
@@ -145,14 +166,26 @@ async function main() {
       networkProgramId,
     );
     try {
+      // Fund oracle if needed (it pays tx fees)
+      const oracleBal = await conn.getBalance(oracle.publicKey);
+      if (oracleBal < 0.01 * 1e9) {
+        const fundTx = new Transaction().add(
+          SystemProgram.transfer({
+            fromPubkey: deployer.publicKey,
+            toPubkey: oracle.publicKey,
+            lamports: 0.05 * 1e9,
+          }),
+        );
+        await sendAndConfirmTransaction(conn, fundTx, [deployer], { commitment: "confirmed" });
+      }
       const sig = await (network.methods as any).placeMember()
         .accounts({
           network: networkPda,
           position: childPos,
           parentPosition: parentPos,
-          oracleAuthority: deployer.publicKey,
+          oracleAuthority: oracle.publicKey,
         })
-        .signers([deployer])
+        .signers([oracle])
         .rpc();
       console.log(`▷ place ${child} under ${parent}: ${sig}`);
     } catch (e) {

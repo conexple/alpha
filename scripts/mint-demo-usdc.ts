@@ -27,7 +27,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 
 const RPC = process.env.SOLANA_RPC_URL ?? "https://api.devnet.solana.com";
-const root = path.resolve(import.meta.dirname, "..");
+const root = path.resolve(process.cwd());
 
 function loadKeypair(p: string): Keypair {
   return Keypair.fromSecretKey(

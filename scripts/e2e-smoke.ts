@@ -23,7 +23,7 @@ const RPC = process.env.SOLANA_RPC_URL ?? "https://api.devnet.solana.com";
 const NETWORK_ID = BigInt(process.env.NETWORK_ID ?? "1");
 const PURCHASER_LABEL = process.env.PURCHASER ?? "E";
 const AMOUNT = BigInt(process.env.AMOUNT ?? "1000"); // base units
-const root = path.resolve(import.meta.dirname, "..");
+const root = path.resolve(process.cwd());
 
 function loadKeypair(p: string): Keypair {
   return Keypair.fromSecretKey(
@@ -45,6 +45,11 @@ async function main() {
 
   const network = new Program(loadIdl("conexple_network"), provider);
   const networkProgramId = network.programId;
+
+  const oraclePath = path.join(root, "keys", "oracle-devnet.json");
+  const oracle: Keypair = fs.existsSync(oraclePath)
+    ? loadKeypair(oraclePath)
+    : deployer;
 
   const u64Le = (n: bigint): Buffer => {
     const buf = Buffer.alloc(8);
@@ -92,10 +97,10 @@ async function main() {
       network: networkPda,
       position: positionPda,
       purchase: purchasePda,
-      oracleAuthority: deployer.publicKey,
+      oracleAuthority: oracle.publicKey,
       systemProgram: SystemProgram.programId,
     })
-    .signers([deployer])
+    .signers([oracle])
     .rpc();
 
   console.log("\n✅ record_purchase tx:", sig);

@@ -9,10 +9,16 @@ Do not use with real funds.
 
 - **Live demo:** [conexple-pages-web.pages.dev](https://conexple-pages-web.pages.dev) (Cloudflare Pages)
 - **Operator backend:** [conexple-worker-operator.sornwin.workers.dev](https://conexple-worker-operator.sornwin.workers.dev) (Cloudflare Workers — `/health`, `/settle/run`, `/webhook/purchase`, etc.)
+- **Solscan-verifiable example tx:** [3voysBj...A5Q6t](https://solscan.io/tx/3voysBjypcH3qNCusJ1g66BywVMSmojNQbWuqkpDcTtbXunGWbD3euQezntd5KY2A1N4VHku2omPyM2vjgMA5Q6t?cluster=devnet) (record_purchase by wallet E, amount=1000)
+- **Program IDs (Solana devnet):**
+  - `conexple_protocol` — [`D1HVppRLhT6wmUxmaM4QABytmcBDEmKuuuMoa7HkKSbn`](https://solscan.io/account/D1HVppRLhT6wmUxmaM4QABytmcBDEmKuuuMoa7HkKSbn?cluster=devnet)
+  - `conexple_network` — [`9nrHZqJcT3zLcK6eTu7ZLBBAU3Rr2eecnFYF413YePt9`](https://solscan.io/account/9nrHZqJcT3zLcK6eTu7ZLBBAU3Rr2eecnFYF413YePt9?cluster=devnet)
+  - `conexple_escrow` — [`9eTvjKrfbYy6JhFMJnuFo5ATCN6uS115J196bvPbmMXU`](https://solscan.io/account/9eTvjKrfbYy6JhFMJnuFo5ATCN6uS115J196bvPbmMXU?cluster=devnet)
+  - `conexple_oracle` — [`9CQFV9oPYKWE4Yg4w8mwJxsdibPeZJrKoTqcp2iTi1qz`](https://solscan.io/account/9CQFV9oPYKWE4Yg4w8mwJxsdibPeZJrKoTqcp2iTi1qz?cluster=devnet)
+- **Demo USDC mint (devnet, mock):** [`DMVSU4BNqqLSmQeo5wop3SnUsA3xkoEvJAqNHe2e1rNG`](https://solscan.io/account/DMVSU4BNqqLSmQeo5wop3SnUsA3xkoEvJAqNHe2e1rNG?cluster=devnet)
 - **Pitch video (≤ 3 min):** https://youtu.be/... *(set after upload — script in `submission/pitch-script.md`)*
 - **Technical demo (2–3 min):** https://youtu.be/... *(set after upload — script in `submission/tech-demo-script.md`)*
 - **Pitch deck (PDF):** `submission/pitch-deck.pdf` *(build from `pitch-deck-outline.md`)*
-- **Solscan-verifiable example tx:** `submission/smoke-receipt.json` *(populated after `pnpm smoke`)*
 - **License:** [Apache 2.0](./LICENSE) · permissive, patent grant, fork-friendly
 
 ## What is Conexple
