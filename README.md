@@ -7,10 +7,11 @@
 Deployed to **Solana devnet only.** Smart contracts are unaudited.
 Do not use with real funds.
 
-- **Live demo:** https://conexple.pages.dev *(populated after `wrangler pages deploy`)*
-- **Pitch video (≤ 3 min):** https://youtu.be/... *(set after upload — see `submission/pitch-script.md`)*
-- **Technical demo (2–3 min):** https://youtu.be/... *(set after upload — see `submission/tech-demo-script.md`)*
-- **Pitch deck (PDF):** `submission/pitch-deck.pdf` *(built from `pitch-deck-outline.md`)*
+- **Live demo:** [conexple-pages-web.pages.dev](https://conexple-pages-web.pages.dev) (Cloudflare Pages)
+- **Operator backend:** [conexple-worker-operator.sornwin.workers.dev](https://conexple-worker-operator.sornwin.workers.dev) (Cloudflare Workers — `/health`, `/settle/run`, `/webhook/purchase`, etc.)
+- **Pitch video (≤ 3 min):** https://youtu.be/... *(set after upload — script in `submission/pitch-script.md`)*
+- **Technical demo (2–3 min):** https://youtu.be/... *(set after upload — script in `submission/tech-demo-script.md`)*
+- **Pitch deck (PDF):** `submission/pitch-deck.pdf` *(build from `pitch-deck-outline.md`)*
 - **Solscan-verifiable example tx:** `submission/smoke-receipt.json` *(populated after `pnpm smoke`)*
 - **License:** [Apache 2.0](./LICENSE) · permissive, patent grant, fork-friendly
 
