@@ -11,17 +11,33 @@ import { Connection, PublicKey } from "@solana/web3.js";
 const RPC_URL =
   process.env.NEXT_PUBLIC_RPC_URL ?? "https://api.devnet.solana.com";
 
-export const PROGRAM_PROTOCOL = new PublicKey(
-  process.env.NEXT_PUBLIC_PROGRAM_PROTOCOL ?? "Coneprotect11111111111111111111111111111111",
+// Placeholder = System Program (32 zero bytes). Replaced via env after
+// `anchor deploy` + `anchor keys list` populates `apps/web/.env.production`.
+const SYSTEM_PROGRAM_ID = "11111111111111111111111111111111";
+
+function safePubkey(s: string | undefined, fallback: string): PublicKey {
+  try {
+    return new PublicKey(s && s.length > 0 ? s : fallback);
+  } catch {
+    return new PublicKey(fallback);
+  }
+}
+
+export const PROGRAM_PROTOCOL = safePubkey(
+  process.env.NEXT_PUBLIC_PROGRAM_PROTOCOL,
+  SYSTEM_PROGRAM_ID,
 );
-export const PROGRAM_NETWORK = new PublicKey(
-  process.env.NEXT_PUBLIC_PROGRAM_NETWORK ?? "Conenetwork111111111111111111111111111111111",
+export const PROGRAM_NETWORK = safePubkey(
+  process.env.NEXT_PUBLIC_PROGRAM_NETWORK,
+  SYSTEM_PROGRAM_ID,
 );
-export const PROGRAM_ESCROW = new PublicKey(
-  process.env.NEXT_PUBLIC_PROGRAM_ESCROW ?? "Coneescrow1111111111111111111111111111111111",
+export const PROGRAM_ESCROW = safePubkey(
+  process.env.NEXT_PUBLIC_PROGRAM_ESCROW,
+  SYSTEM_PROGRAM_ID,
 );
-export const PROGRAM_ORACLE = new PublicKey(
-  process.env.NEXT_PUBLIC_PROGRAM_ORACLE ?? "Coneoracle1111111111111111111111111111111111",
+export const PROGRAM_ORACLE = safePubkey(
+  process.env.NEXT_PUBLIC_PROGRAM_ORACLE,
+  SYSTEM_PROGRAM_ID,
 );
 
 export const NETWORK_ID = BigInt(process.env.NEXT_PUBLIC_NETWORK_ID ?? "1");
