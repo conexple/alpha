@@ -43,9 +43,13 @@ async function main() {
   const provider = new AnchorProvider(conn, wallet, { commitment: "confirmed" });
   anchor.setProvider(provider);
 
-  // Oracle = same as deployer for V1 demo (one keypair signs everything).
-  // Production would split these into separate identities.
-  const oracle = deployer;
+  // Oracle keypair is separate from deployer — its base58 secret lives in
+  // the operator's ORACLE_SECRET Cloudflare secret.
+  const oraclePath = path.join(root, "keys", "oracle-devnet.json");
+  const oracle: Keypair = fs.existsSync(oraclePath)
+    ? loadKeypair(oraclePath)
+    : deployer;
+  console.log("Oracle:", oracle.publicKey.toBase58());
 
   const protocolKp = programKeypair("conexple_protocol");
   const networkKp = programKeypair("conexple_network");
