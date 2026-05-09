@@ -40,41 +40,41 @@ const RPC = process.env.SOLANA_RPC_URL ?? "https://api.devnet.solana.com";
 const NETWORK_ID = BigInt(process.env.NETWORK_ID ?? "1");
 const root = path.resolve(process.cwd());
 
-// 16 wallets. Order matters — register in this order, then place per
+// Wallets. Order matters — register in this order, then place per
 // `PLACEMENTS` below. New wallets are appended at the end so existing
-// devnet positions (A..E) are preserved on re-run.
+// devnet positions (A..P) are preserved on re-run.
+//
+// Three distinct trees in one network:
+//   A's tree — original, 16 wallets, 5 levels deep
+//   Q's tree — separate root, 4 wallets, 3 levels
+//   R       — standalone root with no children (yet)
 const DEMO_LABELS = [
-  "A", "B", "C", "D", "E",                     // existing tree (3-level)
-  "F", "G", "H",                                // new lv1 children of A
+  "A", "B", "C", "D", "E",                     // existing A-tree (3-level)
+  "F", "G", "H",                                // A's lv1
   "I",                                           // F → I (lv2)
   "J", "K", "L",                                // F → I → J → K → L (chain to lv5)
   "M", "N", "O",                                // B → E → M → N → O (chain to lv5)
   "P",                                           // G → P (lv2)
+  "Q",                                           // 2nd ROOT — independent tree
+  "Y",                                           // Q → Y (Q-tree lv1)
+  "Z",                                           // Y → Z (Q-tree lv2)
+  "W",                                           // Z → W (Q-tree lv3)
+  "R",                                           // 3rd ROOT — standalone, no children
 ] as const;
 type Label = (typeof DEMO_LABELS)[number];
 
-// child → parent. Ordered so each parent exists before child placement.
+// child → parent. Q, R have no entry → remain as roots.
 const PLACEMENTS: Array<[Label, Label]> = [
-  // Existing (no-op if already placed)
-  ["B", "A"],
-  ["C", "A"],
-  ["E", "B"],
-  ["D", "C"],
-  // New lv1 children of root
-  ["F", "A"],
-  ["G", "A"],
-  ["H", "A"],
-  // F's chain to lv5
-  ["I", "F"],
-  ["J", "I"],
-  ["K", "J"],
-  ["L", "K"],
-  // E's chain to lv5
-  ["M", "E"],
-  ["N", "M"],
-  ["O", "N"],
-  // G's lv2
+  // A's tree (existing)
+  ["B", "A"], ["C", "A"], ["E", "B"], ["D", "C"],
+  ["F", "A"], ["G", "A"], ["H", "A"],
+  ["I", "F"], ["J", "I"], ["K", "J"], ["L", "K"],
+  ["M", "E"], ["N", "M"], ["O", "N"],
   ["P", "G"],
+  // Q's tree (new)
+  ["Y", "Q"],
+  ["Z", "Y"],
+  ["W", "Z"],
 ];
 
 function loadKeypair(p: string): Keypair {

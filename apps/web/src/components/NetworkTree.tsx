@@ -174,31 +174,28 @@ function buildTree(positions: PositionView[]) {
       x: 0, y: 0, childIds: [],
     });
   }
-  // Build children
-  let roots: Node[] = [];
+  // Wire children, collect roots
+  const roots: Node[] = [];
   for (const n of byWallet.values()) {
     if (n.parent) {
       const parent = byWallet.get(n.parent.toBase58());
       if (parent) parent.childIds.push(n.wallet.toBase58());
-      else roots.push(n); // orphan
+      else roots.push(n); // orphaned (parent not in slice)
     } else {
       roots.push(n);
     }
   }
-  // Sort children so layout is deterministic (by joinedAt)
   for (const n of byWallet.values()) {
-    n.childIds.sort((a, b) => {
-      const A = byWallet.get(a)!.joinedAt;
-      const B = byWallet.get(b)!.joinedAt;
-      return Number(A - B);
-    });
+    n.childIds.sort((a, b) =>
+      Number(byWallet.get(a)!.joinedAt - byWallet.get(b)!.joinedAt),
+    );
   }
-  // Take first root (typically only one)
-  const root = roots[0];
-  if (!root) return null;
+  roots.sort((a, b) => Number(a.joinedAt - b.joinedAt));
+  if (roots.length === 0) return null;
 
-  // Assign x via subtree leaf count
+  // Walk every root with one shared cursor so trees end up side-by-side.
   let cursor = 0;
+  const ROOT_GAP = 1.5;
   function layout(node: Node, depth: number): { left: number; right: number } {
     node.y = 60 + depth * LEVEL_H;
     if (node.childIds.length === 0) {
@@ -217,9 +214,11 @@ function buildTree(positions: PositionView[]) {
     node.x = (left + right) / 2;
     return { left, right };
   }
-  layout(root, 0);
+  for (const root of roots) {
+    layout(root, 0);
+    cursor += ROOT_GAP;
+  }
 
-  // Edges
   const nodes = Array.from(byWallet.values());
   const edges: Array<{ x1: number; y1: number; x2: number; y2: number }> = [];
   for (const n of nodes) {
@@ -231,7 +230,11 @@ function buildTree(positions: PositionView[]) {
 
   const maxX = Math.max(...nodes.map((n) => n.x));
   const maxY = Math.max(...nodes.map((n) => n.y));
-  const width = maxX + 100;
-  const height = maxY + 100;
-  return { nodes, edges, width, height };
+  return {
+    nodes,
+    edges,
+    width: maxX + 100,
+    height: maxY + 100,
+    rootCount: roots.length,
+  };
 }
