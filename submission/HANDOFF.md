@@ -35,6 +35,40 @@ b3a6fbe feat(web,operator,docs): full app surface + submission package
 86d1586 chore: initial scaffold
 ```
 
+## Live URLs (already deployed by the agent — judges can hit these now)
+
+| Surface | URL | Status |
+|---|---|---|
+| Frontend (Cloudflare Pages) | https://conexple-pages-web.pages.dev | ✅ live, 8/8 static pages, Phantom adapter |
+| Operator API (Cloudflare Workers) | https://conexple-worker-operator.sornwin.workers.dev | ✅ live, cron registered, Queue bound, all endpoints respond |
+| `/health` | https://conexple-worker-operator.sornwin.workers.dev/health | ✅ 200 OK |
+| `/settle/status` | https://conexple-worker-operator.sornwin.workers.dev/settle/status | ✅ returns recent settlement runs |
+| `/webhook/purchase` | https://conexple-worker-operator.sornwin.workers.dev/webhook/purchase | ✅ HMAC-verified ingest → Queue → D1 |
+
+The on-chain layer (Anchor programs on Solana devnet) is **not yet
+deployed** — the toolchain finished installing partway through the
+session and the public devnet airdrop hit its rate limit. See
+the "Resume runbook" below for the steps you (or the agent in a
+follow-up session) need to run.
+
+## Devnet airdrop is rate-limited (must address before deploy)
+
+The deployer pubkey `8TLJpd7yJZD4ufSbK4YirnMhNdN68mVmfGvnsNztkLz8` got
+HTTP 429 from `api.devnet.solana.com` ("You've either reached your
+airdrop limit today or the airdrop faucet has run dry"). The agent
+hit this limit in this session.
+
+To proceed, **fund the deployer** via one of:
+
+1. https://faucet.solana.com — paste the deployer pubkey, request 5 SOL
+   (uses Twitter/captcha verification; works with most browsers)
+2. Helius devnet faucet (requires free Helius API key — copy URL into
+   `.env`, replace `HELIUS_RPC_URL` Worker secret)
+3. Wait 24h for the public devnet rate limit to reset
+
+The deployer keypair is at `keys/devnet-deployer.json` (gitignored).
+Public key in `keys/devnet-deployer.pub` if you make one.
+
 ## What only you can do
 
 ### 1. Generate the pitch + technical demo videos
