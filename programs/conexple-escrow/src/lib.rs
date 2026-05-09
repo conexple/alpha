@@ -257,7 +257,7 @@ pub struct InitializePool<'info> {
         init,
         payer = admin,
         space = PoolAccount::SIZE,
-        seeds = [b"pool", &network_id.to_le_bytes()],
+        seeds = [b"pool", network_id.to_le_bytes().as_ref()],
         bump,
     )]
     pub pool: Account<'info, PoolAccount>,
@@ -273,7 +273,7 @@ pub struct InitializeMerchant<'info> {
         init,
         payer = merchant,
         space = MerchantEscrow::SIZE,
-        seeds = [b"merchant", &network_id.to_le_bytes(), &merchant_id.to_le_bytes()],
+        seeds = [b"merchant", network_id.to_le_bytes().as_ref(), merchant_id.to_le_bytes().as_ref()],
         bump,
     )]
     pub merchant_escrow: Account<'info, MerchantEscrow>,
@@ -294,8 +294,8 @@ pub struct Deposit<'info> {
         mut,
         seeds = [
             b"merchant",
-            &merchant_escrow.network_id.to_le_bytes(),
-            &merchant_escrow.merchant_id.to_le_bytes(),
+            merchant_escrow.network_id.to_le_bytes().as_ref(),
+            merchant_escrow.merchant_id.to_le_bytes().as_ref(),
         ],
         bump = merchant_escrow.bump,
     )]
@@ -317,8 +317,8 @@ pub struct CreatePending<'info> {
     #[account(
         seeds = [
             b"merchant",
-            &merchant_escrow.network_id.to_le_bytes(),
-            &merchant_escrow.merchant_id.to_le_bytes(),
+            merchant_escrow.network_id.to_le_bytes().as_ref(),
+            merchant_escrow.merchant_id.to_le_bytes().as_ref(),
         ],
         bump = merchant_escrow.bump,
     )]
@@ -330,10 +330,10 @@ pub struct CreatePending<'info> {
         space = PendingCommission::SIZE,
         seeds = [
             b"pending",
-            &merchant_escrow.network_id.to_le_bytes(),
-            &params.purchase_id.to_le_bytes(),
-            &(params.kind as u8).to_le_bytes(),
-            &(params.slot as u8).to_le_bytes(),
+            merchant_escrow.network_id.to_le_bytes().as_ref(),
+            params.purchase_id.to_le_bytes().as_ref(),
+            &[params.kind as u8],
+            &[params.slot as u8],
         ],
         bump,
     )]
@@ -351,8 +351,8 @@ pub struct VoidPurchase<'info> {
         mut,
         seeds = [
             b"merchant",
-            &merchant_escrow.network_id.to_le_bytes(),
-            &merchant_escrow.merchant_id.to_le_bytes(),
+            merchant_escrow.network_id.to_le_bytes().as_ref(),
+            merchant_escrow.merchant_id.to_le_bytes().as_ref(),
         ],
         bump = merchant_escrow.bump,
     )]
@@ -362,8 +362,8 @@ pub struct VoidPurchase<'info> {
         mut,
         seeds = [
             b"pending",
-            &pending.network_id.to_le_bytes(),
-            &pending.purchase_id.to_le_bytes(),
+            pending.network_id.to_le_bytes().as_ref(),
+            pending.purchase_id.to_le_bytes().as_ref(),
             &[pending.kind as u8],
             &[pending.slot],
         ],
@@ -378,7 +378,7 @@ pub struct VoidPurchase<'info> {
 pub struct SettlePending<'info> {
     #[account(
         mut,
-        seeds = [b"pool", &merchant_escrow.network_id.to_le_bytes()],
+        seeds = [b"pool", merchant_escrow.network_id.to_le_bytes().as_ref()],
         bump = pool.bump,
     )]
     pub pool: Account<'info, PoolAccount>,
@@ -387,8 +387,8 @@ pub struct SettlePending<'info> {
         mut,
         seeds = [
             b"merchant",
-            &merchant_escrow.network_id.to_le_bytes(),
-            &merchant_escrow.merchant_id.to_le_bytes(),
+            merchant_escrow.network_id.to_le_bytes().as_ref(),
+            merchant_escrow.merchant_id.to_le_bytes().as_ref(),
         ],
         bump = merchant_escrow.bump,
     )]
@@ -404,8 +404,8 @@ pub struct SettlePending<'info> {
         mut,
         seeds = [
             b"pending",
-            &pending.network_id.to_le_bytes(),
-            &pending.purchase_id.to_le_bytes(),
+            pending.network_id.to_le_bytes().as_ref(),
+            pending.purchase_id.to_le_bytes().as_ref(),
             &[pending.kind as u8],
             &[pending.slot],
         ],

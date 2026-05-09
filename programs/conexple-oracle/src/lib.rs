@@ -120,7 +120,7 @@ pub struct InitializeRegistry<'info> {
         init,
         payer = admin,
         space = OracleRegistry::SIZE,
-        seeds = [b"oracle_registry", &network_id.to_le_bytes()],
+        seeds = [b"oracle_registry", network_id.to_le_bytes().as_ref()],
         bump,
     )]
     pub registry: Account<'info, OracleRegistry>,
@@ -133,7 +133,7 @@ pub struct InitializeRegistry<'info> {
 pub struct RegisterOracle<'info> {
     #[account(
         mut,
-        seeds = [b"oracle_registry", &registry.network_id.to_le_bytes()],
+        seeds = [b"oracle_registry", registry.network_id.to_le_bytes().as_ref()],
         bump = registry.bump,
     )]
     pub registry: Account<'info, OracleRegistry>,
@@ -144,7 +144,7 @@ pub struct RegisterOracle<'info> {
 pub struct RevokeOracle<'info> {
     #[account(
         mut,
-        seeds = [b"oracle_registry", &registry.network_id.to_le_bytes()],
+        seeds = [b"oracle_registry", registry.network_id.to_le_bytes().as_ref()],
         bump = registry.bump,
     )]
     pub registry: Account<'info, OracleRegistry>,
@@ -154,7 +154,7 @@ pub struct RevokeOracle<'info> {
 #[derive(Accounts)]
 pub struct LogSubmission<'info> {
     #[account(
-        seeds = [b"oracle_registry", &registry.network_id.to_le_bytes()],
+        seeds = [b"oracle_registry", registry.network_id.to_le_bytes().as_ref()],
         bump = registry.bump,
     )]
     pub registry: Account<'info, OracleRegistry>,

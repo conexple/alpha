@@ -295,7 +295,7 @@ pub struct InitializeNetwork<'info> {
         init,
         payer = admin,
         space = NetworkState::SIZE,
-        seeds = [b"network", &network_id.to_le_bytes()],
+        seeds = [b"network", network_id.to_le_bytes().as_ref()],
         bump,
     )]
     pub network: Account<'info, NetworkState>,
@@ -310,7 +310,7 @@ pub struct InitializeNetwork<'info> {
 pub struct AdvanceCycle<'info> {
     #[account(
         mut,
-        seeds = [b"network", &network.network_id.to_le_bytes()],
+        seeds = [b"network", network.network_id.to_le_bytes().as_ref()],
         bump = network.bump,
     )]
     pub network: Account<'info, NetworkState>,
@@ -320,7 +320,7 @@ pub struct AdvanceCycle<'info> {
 pub struct RegisterMember<'info> {
     #[account(
         mut,
-        seeds = [b"network", &network.network_id.to_le_bytes()],
+        seeds = [b"network", network.network_id.to_le_bytes().as_ref()],
         bump = network.bump,
     )]
     pub network: Account<'info, NetworkState>,
@@ -329,7 +329,7 @@ pub struct RegisterMember<'info> {
         init,
         payer = wallet,
         space = Position::SIZE,
-        seeds = [b"position", &network.network_id.to_le_bytes(), wallet.key().as_ref()],
+        seeds = [b"position", network.network_id.to_le_bytes().as_ref(), wallet.key().as_ref()],
         bump,
     )]
     pub position: Account<'info, Position>,
@@ -343,20 +343,20 @@ pub struct RegisterMember<'info> {
 #[derive(Accounts)]
 pub struct PlaceMember<'info> {
     #[account(
-        seeds = [b"network", &network.network_id.to_le_bytes()],
+        seeds = [b"network", network.network_id.to_le_bytes().as_ref()],
         bump = network.bump,
     )]
     pub network: Account<'info, NetworkState>,
 
     #[account(
         mut,
-        seeds = [b"position", &network.network_id.to_le_bytes(), position.wallet.as_ref()],
+        seeds = [b"position", network.network_id.to_le_bytes().as_ref(), position.wallet.as_ref()],
         bump = position.bump,
     )]
     pub position: Account<'info, Position>,
 
     #[account(
-        seeds = [b"position", &network.network_id.to_le_bytes(), parent_position.wallet.as_ref()],
+        seeds = [b"position", network.network_id.to_le_bytes().as_ref(), parent_position.wallet.as_ref()],
         bump = parent_position.bump,
         constraint = parent_position.network_id == network.network_id @ ConexpleNetworkError::WrongNetwork,
     )]
@@ -369,14 +369,14 @@ pub struct PlaceMember<'info> {
 #[instruction(round: u64)]
 pub struct RecordPurchase<'info> {
     #[account(
-        seeds = [b"network", &network.network_id.to_le_bytes()],
+        seeds = [b"network", network.network_id.to_le_bytes().as_ref()],
         bump = network.bump,
     )]
     pub network: Account<'info, NetworkState>,
 
     #[account(
         mut,
-        seeds = [b"position", &network.network_id.to_le_bytes(), position.wallet.as_ref()],
+        seeds = [b"position", network.network_id.to_le_bytes().as_ref(), position.wallet.as_ref()],
         bump = position.bump,
     )]
     pub position: Account<'info, Position>,
@@ -387,9 +387,9 @@ pub struct RecordPurchase<'info> {
         space = PurchaseRecord::SIZE,
         seeds = [
             b"purchase",
-            &network.network_id.to_le_bytes(),
+            network.network_id.to_le_bytes().as_ref(),
             position.wallet.as_ref(),
-            &round.to_le_bytes(),
+            round.to_le_bytes().as_ref(),
         ],
         bump,
     )]
@@ -404,14 +404,14 @@ pub struct RecordPurchase<'info> {
 #[derive(Accounts)]
 pub struct AddEarnings<'info> {
     #[account(
-        seeds = [b"network", &network.network_id.to_le_bytes()],
+        seeds = [b"network", network.network_id.to_le_bytes().as_ref()],
         bump = network.bump,
     )]
     pub network: Account<'info, NetworkState>,
 
     #[account(
         mut,
-        seeds = [b"position", &network.network_id.to_le_bytes(), position.wallet.as_ref()],
+        seeds = [b"position", network.network_id.to_le_bytes().as_ref(), position.wallet.as_ref()],
         bump = position.bump,
     )]
     pub position: Account<'info, Position>,
@@ -422,14 +422,14 @@ pub struct AddEarnings<'info> {
 #[derive(Accounts)]
 pub struct ExpirePosition<'info> {
     #[account(
-        seeds = [b"network", &network.network_id.to_le_bytes()],
+        seeds = [b"network", network.network_id.to_le_bytes().as_ref()],
         bump = network.bump,
     )]
     pub network: Account<'info, NetworkState>,
 
     #[account(
         mut,
-        seeds = [b"position", &network.network_id.to_le_bytes(), position.wallet.as_ref()],
+        seeds = [b"position", network.network_id.to_le_bytes().as_ref(), position.wallet.as_ref()],
         bump = position.bump,
     )]
     pub position: Account<'info, Position>,
@@ -438,14 +438,14 @@ pub struct ExpirePosition<'info> {
 #[derive(Accounts)]
 pub struct ForceExpire<'info> {
     #[account(
-        seeds = [b"network", &network.network_id.to_le_bytes()],
+        seeds = [b"network", network.network_id.to_le_bytes().as_ref()],
         bump = network.bump,
     )]
     pub network: Account<'info, NetworkState>,
 
     #[account(
         mut,
-        seeds = [b"position", &network.network_id.to_le_bytes(), position.wallet.as_ref()],
+        seeds = [b"position", network.network_id.to_le_bytes().as_ref(), position.wallet.as_ref()],
         bump = position.bump,
     )]
     pub position: Account<'info, Position>,

@@ -101,7 +101,7 @@ pub struct InitializeRules<'info> {
         init,
         payer = admin,
         space = ProtocolConfig::SIZE,
-        seeds = [b"config", &params.network_id.to_le_bytes()],
+        seeds = [b"config", params.network_id.to_le_bytes().as_ref()],
         bump,
     )]
     pub config: Account<'info, ProtocolConfig>,
@@ -115,7 +115,7 @@ pub struct InitializeRules<'info> {
 #[derive(Accounts)]
 pub struct VerifyPlacement<'info> {
     #[account(
-        seeds = [b"config", &config.network_id.to_le_bytes()],
+        seeds = [b"config", config.network_id.to_le_bytes().as_ref()],
         bump = config.bump,
     )]
     pub config: Account<'info, ProtocolConfig>,
