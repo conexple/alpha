@@ -51,23 +51,42 @@ session and the public devnet airdrop hit its rate limit. See
 the "Resume runbook" below for the steps you (or the agent in a
 follow-up session) need to run.
 
-## Devnet airdrop is rate-limited (must address before deploy)
+## Devnet airdrop is rate-limited — fund manually (one-time, ~30 sec)
 
-The deployer pubkey `8TLJpd7yJZD4ufSbK4YirnMhNdN68mVmfGvnsNztkLz8` got
-HTTP 429 from `api.devnet.solana.com` ("You've either reached your
-airdrop limit today or the airdrop faucet has run dry"). The agent
-hit this limit in this session.
+The agent verified all 4 programs compile and built `.so` files (target/
+gitignored — recompile with `anchor build` in WSL after cloning). The
+ONLY thing blocking `anchor deploy --provider.cluster devnet` is funding.
 
-To proceed, **fund the deployer** via one of:
+The deployer pubkey `8TLJpd7yJZD4ufSbK4YirnMhNdN68mVmfGvnsNztkLz8` is at
+zero SOL. The public devnet faucet rejects this IP with 429 ("airdrop
+limit today reached"). The agent tried three faucets via Playwright
+automation and hit:
 
-1. https://faucet.solana.com — paste the deployer pubkey, request 5 SOL
-   (uses Twitter/captcha verification; works with most browsers)
-2. Helius devnet faucet (requires free Helius API key — copy URL into
-   `.env`, replace `HELIUS_RPC_URL` Worker secret)
-3. Wait 24h for the public devnet rate limit to reset
+| Faucet | Result |
+|---|---|
+| `faucet.solana.com` | Requires GitHub OAuth (browser + Cloudflare Turnstile + AI agent block) |
+| `faucet.quicknode.com/solana/devnet` | Requires existing mainnet SOL on the wallet (anti-abuse) |
+| `dev-faucet.solanahub.app` | Backed by the same `api.devnet.solana.com`, also 429 |
 
-The deployer keypair is at `keys/devnet-deployer.json` (gitignored).
-Public key in `keys/devnet-deployer.pub` if you make one.
+To proceed, **fund the deployer manually**:
+
+1. Open https://faucet.solana.com in your browser (logged into GitHub)
+2. Paste pubkey: `8TLJpd7yJZD4ufSbK4YirnMhNdN68mVmfGvnsNztkLz8`
+3. Pick "5" → "Confirm Airdrop"
+4. Wait for the success notification
+5. Verify with: `wsl bash -c "/root/.local/share/solana/install/active_release/bin/solana balance --url devnet 8TLJpd7yJZD4ufSbK4YirnMhNdN68mVmfGvnsNztkLz8"`
+
+Then run the auto-deploy chain:
+
+```pwsh
+wsl bash /mnt/c/Users/suanw/projects/conexple/alpha/agent-temp/wsl-deploy.sh
+wsl bash /mnt/c/Users/suanw/projects/conexple/alpha/agent-temp/post-deploy.sh
+```
+
+The first script does `anchor deploy` (uses ~5 SOL across 4 programs).
+The second script runs `init-network.ts`, `mint-demo-usdc.ts`,
+`seed-demo.ts`, and `e2e-smoke.ts` — populating the demo network and
+writing a Solscan link to `submission/smoke-receipt.json`.
 
 ## What only you can do
 
