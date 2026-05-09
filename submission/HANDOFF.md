@@ -6,19 +6,32 @@
 > doesn't yet, and what only you can do (record videos, sign in to
 > Colosseum, click submit).
 
-## What is built (in this commit history)
+## At-a-glance status (2026-05-09 end-of-session)
 
 | Layer | What | Where | Status |
 |---|---|---|---|
-| Anchor programs | conexple_protocol, _network, _escrow, _oracle | `programs/` | source written, **build/test pending toolchain** |
-| Anchor tests | end-to-end happy path (3-level network + purchase) | `tests/full-flow.ts` | written, **run pending build** |
-| Operator backend | Hono + D1 + KV + Queue, 5 worker handlers, scheduler cron | `apps/operator/` | source written, **wrangler deploy pending** |
-| Web frontend | Next.js 15 App Router + Tailwind + Phantom adapter, 5 routes | `apps/web/` | source written, **next build pending pnpm install + IDLs** |
-| SDK | PDA derivations, types, program-binding helper | `packages/sdk/` | source written |
-| Scripts | deploy-devnet.sh, init-network.ts, mint-demo-usdc.ts, seed-demo.ts, e2e-smoke.ts | `scripts/` | source written, **run after deploy** |
-| Cloudflare resources | D1, KV, Queue (free tier) | provisioned in account `SORNKan Co., Ltd.` | **provisioned** |
-| Plan + intel | requirements, plan, todos, colosseum-intel | `instruction/work/` | **written** |
-| Public README | pitch, demo URL placeholder, video URL placeholder | `README.md` | needs deploy URL + video URL filled in |
+| Anchor programs | conexple_protocol, _network, _escrow, _oracle | `programs/` | source ✓ committed; **anchor build/deploy pending toolchain install** |
+| Anchor tests | end-to-end happy path (3-level network + purchase) | `tests/full-flow.ts` | source ✓; runs after `anchor build` |
+| Operator backend | Hono + D1 + KV + Queue + Cron + Queue consumer, 6 workers | `apps/operator/` | source ✓ + typecheck ✓ + 4 vitest tests pass; **`wrangler deploy` pending** |
+| Web frontend | Next.js 15 + Tailwind + Phantom adapter, 5 routes | `apps/web/` | source ✓ + typecheck ✓ + **`next build` succeeds (8/8 static pages, 102 kB shared bundle)** |
+| SDK | PDA helpers + types + Anchor program glue | `packages/sdk/` | source ✓ + typecheck ✓ |
+| Scripts | deploy-devnet.sh, init-network.ts, mint-demo-usdc.ts, seed-demo.ts, e2e-smoke.ts, demo-purchases.ts | `scripts/` | source ✓; **run after anchor deploy** |
+| Cloudflare resources | D1 (`conexple-d1-operator`), KV (`conexple-kv-rpc-cache`), Queue (`conexple-queue-purchase-events`) | account `SORNKan Co., Ltd.` (a24ce30…) | **✓ provisioned**, IDs captured in wrangler.toml |
+| Plan + intel + tasks | requirements, plan, colosseum-intel, todos | `instruction/work/` | ✓ |
+| Public docs | architecture.md, mechanics.md, payout.md, operator-guide.md | `docs/` | ✓ |
+| Public README | pitch + 60-sec arch + quickstart + repo layout + license | `README.md` | ✓ skeleton — fill demo URL + 2 video URLs once recorded |
+| Submission package | HANDOFF (you are here), pitch-script, tech-demo-script, pitch-deck-outline | `submission/` | ✓ |
+| CI | `.github/workflows/ci.yml` typecheck + anchor build | repo | ✓ scaffolded; runs once GitHub repo exists |
+
+**Commit history (so far):**
+```
+44fd44b fix(programs): use guaranteed-decodable placeholder program IDs
+1a9c3ba fix(web): tolerate missing program-id env vars during static export
+e856f88 fix: TypeScript typecheck clean across operator + web + sdk
+4ed7c36 docs(public): mechanics + payout + operator-guide; tests(operator): hmac
+b3a6fbe feat(web,operator,docs): full app surface + submission package
+86d1586 chore: initial scaffold
+```
 
 ## What only you can do
 

@@ -24,7 +24,7 @@
 
 use anchor_lang::prelude::*;
 
-declare_id!("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
+declare_id!("9nrHZqJcT3zLcK6eTu7ZLBBAU3Rr2eecnFYF413YePt9");
 
 pub mod error;
 pub mod state;
