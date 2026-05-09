@@ -6,8 +6,9 @@ import dynamic from "next/dynamic";
 import {
   readPosition, readNetwork, readAllPositions,
   type PositionView, type NetworkView,
-  formatUsdc, relativeTime, shortenPub, solscanAccount,
+  formatUsdc, relativeTime, shortenPub, solscanAccount, solscanTx,
 } from "@/lib/program-clients";
+import { registerMember } from "@/lib/wallet-actions";
 import { StatTile } from "@/components/StatTile";
 import { PubkeyChip } from "@/components/PubkeyChip";
 
@@ -209,17 +210,126 @@ function PositionDetails({
 }
 
 function NoPosition() {
+  const { publicKey, sendTransaction } = useWallet();
+  const [initialSpend, setInitialSpend] = useState("1000");
+  const [multiplier, setMultiplier] = useState("10");
+  const [submitting, setSubmitting] = useState(false);
+  const [txSig, setTxSig] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const cap = (() => {
+    try {
+      return BigInt(initialSpend || "0") * BigInt(multiplier || "0");
+    } catch {
+      return 0n;
+    }
+  })();
+
+  async function handleRegister() {
+    if (!publicKey || !sendTransaction) return;
+    setSubmitting(true);
+    setError(null);
+    setTxSig(null);
+    try {
+      const sig = await registerMember(
+        { publicKey, sendTransaction },
+        BigInt(initialSpend),
+        Number(multiplier),
+      );
+      setTxSig(sig);
+      // Give devnet a moment to propagate, then reload so the read-side
+      // (readPosition / readAllPositions) picks up the new account.
+      setTimeout(() => window.location.reload(), 3000);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      setError(msg.slice(0, 280));
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   return (
-    <section className="card space-y-4 text-graphite">
-      <h2 className="font-display text-2xl text-ink">No position in this network — yet.</h2>
-      <p>
-        For the demo, the agent pre-seeded 16 wallets in a 5-level tree.
-        Your connected wallet isn't one of them — that's expected. To
-        actually join, you'd need a referrer to invite you, which the
-        operator's placement engine would resolve.
+    <section className="card space-y-6 text-graphite">
+      <div>
+        <h2 className="font-display text-2xl text-ink">No position in this network — yet.</h2>
+        <p className="mt-2 max-w-2xl">
+          Self-register to mint a Position PDA on chain. You'll start
+          unplaced (parent = none) — the oracle assigns you under a referrer
+          on the next placement cycle. Until then, your purchases earn
+          straight to the social pool.
+        </p>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2 max-w-xl">
+        <label className="block">
+          <span className="text-[10px] uppercase tracking-[0.18em] text-stone">
+            Initial spend (base units)
+          </span>
+          <input
+            type="number"
+            value={initialSpend}
+            onChange={(e) => setInitialSpend(e.target.value)}
+            min="1"
+            disabled={submitting}
+            className="mt-1 w-full rounded-md border border-edge bg-cream px-3 py-2 font-mono text-sm text-ink focus:border-ink focus:outline-none"
+          />
+        </label>
+        <label className="block">
+          <span className="text-[10px] uppercase tracking-[0.18em] text-stone">
+            Multiplier (×)
+          </span>
+          <input
+            type="number"
+            value={multiplier}
+            onChange={(e) => setMultiplier(e.target.value)}
+            min="1"
+            max="100"
+            disabled={submitting}
+            className="mt-1 w-full rounded-md border border-edge bg-cream px-3 py-2 font-mono text-sm text-ink focus:border-ink focus:outline-none"
+          />
+        </label>
+      </div>
+
+      <p className="text-xs text-stone">
+        Earnings cap = initial_spend × multiplier ={" "}
+        <strong className="font-mono text-ink">{cap.toLocaleString()}</strong>{" "}
+        base units. Once the cap is hit, your position locks (extension_locked)
+        and decays after 2 inactive cycles — the karma loop.
       </p>
-      <p className="text-sm">
-        For now, browse the seeded network in <a href="/explorer" className="text-ink underline-offset-4 hover:underline">/explorer</a> →
+
+      <div className="flex flex-wrap items-center gap-3">
+        <button
+          onClick={handleRegister}
+          disabled={submitting || !publicKey || !sendTransaction || cap === 0n}
+          className="rounded-full bg-ink px-6 py-3 text-sm font-medium text-cream transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {submitting ? "Submitting on chain…" : "Register me on chain →"}
+        </button>
+        {txSig && (
+          <a
+            href={solscanTx(txSig)}
+            target="_blank"
+            rel="noreferrer"
+            className="pill border-cnx-olive/40 bg-cnx-olive/10 text-cnx-olive"
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-cnx-olive animate-pulse-soft" />
+            tx {shortenPub(txSig, 6)} confirmed · view on Solscan
+          </a>
+        )}
+      </div>
+
+      {error && (
+        <p className="rounded-md border border-cnx-rose/40 bg-cnx-rose/5 p-3 font-mono text-xs text-cnx-rose">
+          {error}
+        </p>
+      )}
+
+      <p className="text-xs text-stone">
+        Or browse the seeded network in{" "}
+        <a href="/explorer" className="text-ink underline-offset-4 hover:underline">
+          /explorer
+        </a>
+        {" "}— 21 wallets across 3 trees.
       </p>
     </section>
   );
