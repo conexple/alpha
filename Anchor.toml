@@ -1,0 +1,32 @@
+[toolchain]
+anchor_version = "0.30.1"
+solana_version = "2.1.5"
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.devnet]
+conexple_protocol = "Coneprotect11111111111111111111111111111111"
+conexple_network  = "Conenetwork111111111111111111111111111111111"
+conexple_escrow   = "Coneescrow1111111111111111111111111111111111"
+conexple_oracle   = "Coneoracle1111111111111111111111111111111111"
+
+[programs.localnet]
+conexple_protocol = "Coneprotect11111111111111111111111111111111"
+conexple_network  = "Conenetwork111111111111111111111111111111111"
+conexple_escrow   = "Coneescrow1111111111111111111111111111111111"
+conexple_oracle   = "Coneoracle1111111111111111111111111111111111"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "devnet"
+wallet = "keys/devnet-deployer.json"
+
+[scripts]
+test = "pnpm exec tsx tests/e2e/full-flow.ts"
+
+[test.validator]
+url = "https://api.devnet.solana.com"

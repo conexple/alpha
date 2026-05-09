@@ -1,0 +1,21 @@
+[package]
+name = "conexple-protocol"
+version = "0.1.0"
+description = "Conexple — protocol rules and placement verification"
+edition = "2021"
+license = "Apache-2.0"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "conexple_protocol"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = []
+idl-build = ["anchor-lang/idl-build"]
+
+[dependencies]
+anchor-lang = "0.30.1"

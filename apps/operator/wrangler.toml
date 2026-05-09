@@ -1,0 +1,50 @@
+name = "conexple-worker-operator"
+main = "src/index.ts"
+compatibility_date = "2026-04-01"
+compatibility_flags = ["nodejs_compat"]
+account_id = "a24ce30584273b42333051f1cdec48e2"
+
+# Vars (non-secret). Secrets via `wrangler secret put`:
+#   ORACLE_SECRET            base58 keypair string for the oracle signer
+#   HELIUS_RPC_URL           devnet RPC URL with key — fronted by rpc-cache
+#   PURCHASE_WEBHOOK_HMAC    shared secret with demo storefront
+[vars]
+SOLANA_CLUSTER = "devnet"
+SOLANA_RPC_FALLBACK = "https://api.devnet.solana.com"
+
+# Filled by post-deploy: program IDs + network/pool/oracle PDAs
+PROGRAM_ID_PROTOCOL = "Coneprotect11111111111111111111111111111111"
+PROGRAM_ID_NETWORK = "Conenetwork111111111111111111111111111111111"
+PROGRAM_ID_ESCROW = "Coneescrow1111111111111111111111111111111111"
+PROGRAM_ID_ORACLE = "Coneoracle1111111111111111111111111111111111"
+
+NETWORK_ID = "1"
+
+# ── Bindings ───────────────────────────────────────────────────────────────
+
+[[d1_databases]]
+binding = "DB"
+database_name = "conexple-d1-operator"
+database_id = "71f8087c-7f63-415e-a92d-d6d577a7d49e"
+migrations_dir = "drizzle"
+
+[[kv_namespaces]]
+binding = "RPC_CACHE"
+id = "69a3584be9e846dcb3c81f33ef324376"
+
+[[queues.producers]]
+queue = "conexple-queue-purchase-events"
+binding = "PURCHASE_QUEUE"
+
+[[queues.consumers]]
+queue = "conexple-queue-purchase-events"
+max_batch_size = 25
+max_batch_timeout = 5
+
+# Cycle scheduler — daily at 23:00 UTC (06:00 ICT next day)
+[triggers]
+crons = ["0 23 * * *"]
+
+# Durable Objects intentionally omitted in V1 to stay on Workers Free.
+# Idempotency + serialization is handled via D1 unique keys + transactions.
+# Re-enable when traffic exceeds the demo scale.

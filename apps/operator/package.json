@@ -1,0 +1,35 @@
+{
+  "name": "operator",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "lint": "echo 'lint skipped (V1)'",
+    "db:generate": "drizzle-kit generate",
+    "db:apply:local": "wrangler d1 migrations apply conexple-d1-operator --local",
+    "db:apply:remote": "wrangler d1 migrations apply conexple-d1-operator --remote"
+  },
+  "dependencies": {
+    "@solana/web3.js": "^1.95.5",
+    "@solana/spl-token": "^0.4.9",
+    "@coral-xyz/anchor": "^0.30.1",
+    "bs58": "^6.0.0",
+    "drizzle-orm": "^0.36.4",
+    "hono": "^4.6.10"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.5.30",
+    "@cloudflare/workers-types": "^4.20241112.0",
+    "@types/node": "^20.14.0",
+    "drizzle-kit": "^0.28.1",
+    "miniflare": "^3.20241106.1",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.4",
+    "wrangler": "^4.80.0"
+  }
+}

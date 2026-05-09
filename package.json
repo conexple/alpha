@@ -1,0 +1,38 @@
+{
+  "name": "conexple",
+  "private": true,
+  "version": "0.1.0-alpha.1",
+  "description": "Open-source consumer affiliate protocol on Solana — hackathon prototype.",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  },
+  "packageManager": "pnpm@10.27.0",
+  "scripts": {
+    "build": "pnpm -r --filter='./apps/*' --filter='./packages/*' run build",
+    "dev:web": "pnpm --filter web dev",
+    "dev:operator": "pnpm --filter operator dev",
+    "test": "pnpm -r run test",
+    "anchor:build": "anchor build",
+    "anchor:test": "anchor test",
+    "anchor:deploy:devnet": "anchor deploy --provider.cluster devnet",
+    "deploy:devnet": "bash scripts/deploy-devnet.sh",
+    "seed": "tsx scripts/seed-demo.ts",
+    "smoke": "tsx scripts/e2e-smoke.ts",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,json,md}\"",
+    "lint": "pnpm -r run lint"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "prettier": "^3.3.3",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.3"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissing": ["react", "react-dom"]
+    }
+  }
+}

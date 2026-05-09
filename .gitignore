@@ -1,0 +1,126 @@
+# =============================================================================
+# Secrets — never commit
+# =============================================================================
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+*.pem
+*.key
+id_rsa*
+*.p12
+*.pfx
+
+# Solana keypairs — JSON arrays of 64 numbers
+# Convention: keep all keypairs under /keys/ which we gitignore wholesale.
+# Anything matching the common keypair filename patterns is also blocked.
+keys/
+wallets/
+secrets/
+.solana/
+*-keypair.json
+*_keypair.json
+keypair-*.json
+id.json
+wallet.json
+wallet-*.json
+mywallet.json
+deployer.json
+deploy-*.json
+oracle.json
+oracle-*.json
+*.recovery
+*.seed
+
+# Cloudflare local secret files
+.dev.vars
+.env.local
+.env.development.local
+.env.production.local
+
+# =============================================================================
+# Build outputs
+# =============================================================================
+
+# Anchor / Cargo
+target/
+.anchor/
+test-ledger/
+Cargo.lock
+!programs/*/Cargo.lock
+
+# Node / pnpm
+node_modules/
+.pnpm-store/
+.pnp/
+.yarn/
+.npm/
+
+# Next.js
+.next/
+out/
+.vercel/
+
+# Cloudflare
+.wrangler/
+.miniflare/
+.turbo/
+
+# Generic
+dist/
+build/
+*.tsbuildinfo
+
+# =============================================================================
+# Tooling
+# =============================================================================
+
+# IDE / OS
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.shared.json
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing / coverage
+coverage/
+.nyc_output/
+*.lcov
+playwright-report/
+test-results/
+
+# =============================================================================
+# Local data
+# =============================================================================
+*.sqlite
+*.sqlite3
+*.db
+local.db
+
+# =============================================================================
+# Misc
+# =============================================================================
+.cache/
+tmp/
+.tmp/
+
+# =============================================================================
+# Agent scratch — never commit
+# =============================================================================
+agent-temp/
+.agent-temp/
+
+# Active workflow state stays local during the session; archive is committed.
+# Uncomment when publishing the public snapshot:
+# instruction/work/
