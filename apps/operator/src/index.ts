@@ -39,8 +39,8 @@ export default {
   fetch: app.fetch,
 
   // Cron: cycle cut-off settlement run
-  async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
-    ctx.waitUntil(runScheduledSettlement(env, event.scheduledTime));
+  async scheduled(controller: ScheduledController, env: Env, ctx: ExecutionContext) {
+    ctx.waitUntil(runScheduledSettlement(env, controller.scheduledTime));
   },
 
   // Queue: purchase events (consumed in batches of 25)

@@ -65,24 +65,24 @@ async function decidePlacement(
     throw new Error("referrer cannot be the new wallet");
   }
 
-  let candidate = await loadPosition(env, networkId, referrerKey);
-  if (!candidate) {
+  const start = await loadPosition(env, networkId, referrerKey);
+  if (!start) {
     throw new Error(`referrer position not in mirror (run sync)`);
   }
+  let candidate: PositionRow = start;
   let visited = 0;
   while (visited < MAX_NODES) {
     visited++;
     if (candidate.depth >= MAX_DEPTH) {
       throw new Error("referrer subtree is at max depth — cannot place deeper");
     }
-    // Look for first eligible slot under candidate
-    const children = await env.DB.prepare(
+    const result = await env.DB.prepare(
       "SELECT * FROM positions WHERE network_id = ? AND parent = ? AND status = 'active' ORDER BY joined_at ASC",
     )
       .bind(networkId, candidate.wallet)
       .all<PositionRow>();
-    if ((children.results?.length ?? 0) === 0) {
-      // Slot here
+    const children = result.results ?? [];
+    if (children.length === 0) {
       return {
         parent: candidate.wallet,
         depth: candidate.depth + 1,
@@ -90,7 +90,7 @@ async function decidePlacement(
       };
     }
     // Depth-first: descend into the first child
-    candidate = children.results![0]!;
+    candidate = children[0]!;
   }
   throw new Error("placement traversal exceeded MAX_NODES");
 }

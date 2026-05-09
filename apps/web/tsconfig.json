@@ -8,12 +8,13 @@
     "module": "esnext",
     "moduleResolution": "Bundler",
     "jsx": "preserve",
-    "plugins": [{ "name": "next" }],
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
       "@conexple/sdk": ["../../packages/sdk/src/index.ts"],
       "@conexple/sdk/*": ["../../packages/sdk/src/*"]
-    }
+    },
+    "plugins": [{ "name": "next" }]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
