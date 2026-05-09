@@ -12,14 +12,16 @@
 |---|---|---|---|
 | Anchor programs | conexple_protocol, _network, _escrow, _oracle | `programs/` | source ✓ committed; **anchor build/deploy pending toolchain install** |
 | Anchor tests | end-to-end happy path (3-level network + purchase) | `tests/full-flow.ts` | source ✓; runs after `anchor build` |
-| Operator backend | Hono + D1 + KV + Queue + Cron + Queue consumer, 6 workers | `apps/operator/` | source ✓ + typecheck ✓ + 4 vitest tests pass; **`wrangler deploy` pending** |
-| Web frontend | Next.js 15 + Tailwind + Phantom adapter, 5 routes | `apps/web/` | source ✓ + typecheck ✓ + **`next build` succeeds (8/8 static pages, 102 kB shared bundle)** |
+| Operator backend | Hono + D1 + KV + Queue + Cron + Queue consumer, 6 workers | `apps/operator/` | ✅ **LIVE** at https://conexple-worker-operator.sornwin.workers.dev |
+| Web frontend | Next.js 15 + Tailwind + Phantom adapter, 5 routes (static export) | `apps/web/` | ✅ **LIVE** at https://conexple-pages-web.pages.dev |
 | SDK | PDA helpers + types + Anchor program glue | `packages/sdk/` | source ✓ + typecheck ✓ |
 | Scripts | deploy-devnet.sh, init-network.ts, mint-demo-usdc.ts, seed-demo.ts, e2e-smoke.ts, demo-purchases.ts | `scripts/` | source ✓; **run after anchor deploy** |
-| Cloudflare resources | D1 (`conexple-d1-operator`), KV (`conexple-kv-rpc-cache`), Queue (`conexple-queue-purchase-events`) | account `SORNKan Co., Ltd.` (a24ce30…) | **✓ provisioned**, IDs captured in wrangler.toml |
+| Cloudflare resources | D1 (`conexple-d1-operator`), KV (`conexple-kv-rpc-cache`), Queue (`conexple-queue-purchase-events`) | account `SORNKan Co., Ltd.` (a24ce30…) | ✅ **provisioned + 0001_initial.sql applied to remote D1** |
+| Cloudflare secrets | ORACLE_SECRET, HELIUS_RPC_URL, PURCHASE_WEBHOOK_HMAC | operator worker | ✅ **set via wrangler secret put** |
+| End-to-end pipeline | webhook → Queue → consumer → D1 → /settle/run → settled | live worker | ✅ **verified** — POSTed signed payload, observed pending_commission row + settlement run via `/settle/status` |
 | Plan + intel + tasks | requirements, plan, colosseum-intel, todos | `instruction/work/` | ✓ |
 | Public docs | architecture.md, mechanics.md, payout.md, operator-guide.md | `docs/` | ✓ |
-| Public README | pitch + 60-sec arch + quickstart + repo layout + license | `README.md` | ✓ skeleton — fill demo URL + 2 video URLs once recorded |
+| Public README | pitch + 60-sec arch + quickstart + repo layout + license | `README.md` | ✓ live URLs filled — 2 video URLs to fill once recorded |
 | Submission package | HANDOFF (you are here), pitch-script, tech-demo-script, pitch-deck-outline | `submission/` | ✓ |
 | CI | `.github/workflows/ci.yml` typecheck + anchor build | repo | ✓ scaffolded; runs once GitHub repo exists |
 
