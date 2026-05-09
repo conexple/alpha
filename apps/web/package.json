@@ -10,22 +10,23 @@
     "test": "echo 'web tests skipped (V1)'",
     "typecheck": "tsc --noEmit",
     "lint": "next lint",
-    "deploy": "next build && wrangler pages deploy .vercel/output/static"
+    "deploy": "next build && wrangler pages deploy out --project-name conexple-pages-web --branch main"
   },
   "dependencies": {
+    "@conexple/sdk": "workspace:*",
     "@coral-xyz/anchor": "^0.30.1",
+    "@solana/spl-token": "^0.4.9",
     "@solana/wallet-adapter-base": "^0.9.23",
     "@solana/wallet-adapter-phantom": "^0.9.24",
     "@solana/wallet-adapter-react": "^0.15.35",
     "@solana/wallet-adapter-react-ui": "^0.9.35",
     "@solana/web3.js": "^1.95.5",
-    "@solana/spl-token": "^0.4.9",
     "next": "^15.1.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "@conexple/sdk": "workspace:*"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@opennextjs/cloudflare": "^1.19.8",
     "@types/node": "^20.14.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
