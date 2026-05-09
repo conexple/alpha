@@ -6,6 +6,7 @@ import { settlementRoute } from "./workers/scheduler";
 import { oracleRoute } from "./workers/oracle";
 import { purchaseIngestRoute } from "./workers/purchase";
 import { rpcCacheRoute } from "./workers/rpc-cache";
+import { merchantRoute } from "./workers/merchant";
 import { runScheduledSettlement } from "./workers/scheduler";
 import { handlePurchaseQueue } from "./workers/purchase";
 
@@ -30,6 +31,7 @@ app.route("/settle", settlementRoute);
 app.route("/oracle", oracleRoute);
 app.route("/webhook", purchaseIngestRoute);
 app.route("/rpc", rpcCacheRoute);
+app.route("/merchant", merchantRoute);
 
 // ── Worker handler ──────────────────────────────────────────────────────────
 

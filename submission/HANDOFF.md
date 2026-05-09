@@ -1,0 +1,223 @@
+# Handoff — what's built, what's left for the human
+
+> Author: agent build, 2026-05-09
+> Reader: Bosso (founder, sole human in the loop)
+> Purpose: tell you exactly what state the repo is in, what runs, what
+> doesn't yet, and what only you can do (record videos, sign in to
+> Colosseum, click submit).
+
+## What is built (in this commit history)
+
+| Layer | What | Where | Status |
+|---|---|---|---|
+| Anchor programs | conexple_protocol, _network, _escrow, _oracle | `programs/` | source written, **build/test pending toolchain** |
+| Anchor tests | end-to-end happy path (3-level network + purchase) | `tests/full-flow.ts` | written, **run pending build** |
+| Operator backend | Hono + D1 + KV + Queue, 5 worker handlers, scheduler cron | `apps/operator/` | source written, **wrangler deploy pending** |
+| Web frontend | Next.js 15 App Router + Tailwind + Phantom adapter, 5 routes | `apps/web/` | source written, **next build pending pnpm install + IDLs** |
+| SDK | PDA derivations, types, program-binding helper | `packages/sdk/` | source written |
+| Scripts | deploy-devnet.sh, init-network.ts, mint-demo-usdc.ts, seed-demo.ts, e2e-smoke.ts | `scripts/` | source written, **run after deploy** |
+| Cloudflare resources | D1, KV, Queue (free tier) | provisioned in account `SORNKan Co., Ltd.` | **provisioned** |
+| Plan + intel | requirements, plan, todos, colosseum-intel | `instruction/work/` | **written** |
+| Public README | pitch, demo URL placeholder, video URL placeholder | `README.md` | needs deploy URL + video URL filled in |
+
+## What only you can do
+
+### 1. Generate the pitch + technical demo videos
+
+The hackathon requires **two** videos (per `instruction/work/colosseum-intel.md`):
+
+- **Video 1 — Pitch (≤ 3 min):** record yourself + slides. Script in
+  `submission/pitch-script.md`.
+- **Video 2 — Technical demo (2–3 min):** screen recording of the
+  deployed demo. Script in `submission/tech-demo-script.md`.
+
+Tools:
+- Loom is the de-facto standard at Colosseum (judges expect it).
+- YouTube unlisted is also acceptable and easier to embed.
+
+Don't read the slides. Voice over the screen recording. Captions
+help non-Thai judges.
+
+### 2. Submit at arena.colosseum.org
+
+Sign in with the email you registered for the hackathon
+(`suanwin.paows@gmail.com` if you used the same one). Fill in:
+
+- Project name: **Conexple**
+- Tagline: *Open-source consumer affiliate protocol on Solana —
+  redirect existing merchant marketing commissions to everyday
+  consumers, not influencers.*
+- Description: lift from `README.md` "What is Conexple" section
+- GitHub URL: `https://github.com/conexple/conexple` (publish first —
+  see step 3)
+- Demo URL: the Cloudflare Pages URL captured by the deploy script
+- Pitch video URL: Loom or YouTube unlisted from step 1
+- Technical demo video URL: same, from step 1
+- **Tick the Public Goods award checkbox** if it exists in the form
+  (Apache 2.0 + open protocol fits perfectly — see colosseum-intel.md)
+
+### 3. Publish the repo (this is the tricky one)
+
+The code is currently in a local git repo at `C:\Users\suanw\projects\conexple\alpha`
+on `main` branch. To publish:
+
+```pwsh
+# In PowerShell, from alpha/
+gh repo create conexple/conexple --public --description "Open-source consumer affiliate protocol on Solana"
+git remote add origin https://github.com/conexple/conexple.git
+git push -u origin main
+```
+
+This requires the `conexple` GitHub organization to exist. If you
+haven't created it yet, either:
+
+- Create the org via the GitHub UI (free, takes 30 seconds) and
+  publish there, or
+- Publish under your personal account: `gh repo create suanwin-paows/conexple --public`
+  and update the README's "Repo target" line accordingly.
+
+Pre-publish, run the secret scrub:
+
+```bash
+git log -p | grep -iE "secret|key|password|.env" | head
+# expect: zero matches in committed diff
+ls keys/
+# expect: only .gitkeep — never commit JSON keypairs
+```
+
+### 4. Record traction (optional, recommended)
+
+Per Colosseum-intel: even small traction signals matter.
+
+- Tweet 1 thread on the founder's X account day-of submission with
+  the demo URL and the simulator embed.
+- Post the same in 1 Solana Thai Telegram (e.g. Solana Thailand,
+  Bitkub developer community).
+- 5 quoted replies = evidence of validation. Screenshot for the deck.
+
+## What the agent build did NOT finish
+
+These are listed honestly so you can decide whether to push more or
+ship as-is.
+
+### A. Anchor build + deploy
+
+The Rust toolchain (rustc + cargo + Solana CLI + Anchor + AVM) is
+installed in WSL Ubuntu but the install was launched in the
+background of the build session. **You may need to verify it
+finished**:
+
+```pwsh
+wsl bash -c "/root/.cargo/bin/rustc --version; /root/.local/share/solana/install/active_release/bin/solana --version; /root/.cargo/bin/anchor --version"
+```
+
+If those all print versions, run from WSL:
+
+```bash
+cd /mnt/c/Users/suanw/projects/conexple/alpha
+solana-keygen new --no-bip39-passphrase -o keys/devnet-deployer.json --force
+solana config set --url devnet --keypair keys/devnet-deployer.json
+solana airdrop 5
+anchor build
+anchor deploy --provider.cluster devnet
+anchor keys list   # capture program IDs
+```
+
+Then update `Anchor.toml` and `apps/operator/wrangler.toml` and
+`apps/web/.env.local` with the four real program IDs.
+
+Then run `pnpm exec tsx scripts/init-network.ts`,
+`pnpm exec tsx scripts/mint-demo-usdc.ts`, and
+`pnpm exec tsx scripts/seed-demo.ts` to populate the demo network.
+
+### B. Operator backend deployment
+
+After Anchor deploy:
+
+```pwsh
+# Generate fresh oracle keypair for the worker (separate from deployer)
+solana-keygen new --no-bip39-passphrase -o keys/oracle-devnet.json
+solana airdrop 1 (pubkey from above) --url devnet
+
+# Convert JSON keypair to base58 string for ORACLE_SECRET
+node -e "const k = require('./keys/oracle-devnet.json'); const bs58 = require('bs58'); console.log(bs58.default.encode(Uint8Array.from(k)))"
+
+# Set secrets
+cd apps/operator
+echo "<base58 string>" | wrangler secret put ORACLE_SECRET
+echo "https://devnet.helius-rpc.com/?api-key=YOUR_KEY" | wrangler secret put HELIUS_RPC_URL
+echo "$(openssl rand -hex 32)" | wrangler secret put PURCHASE_WEBHOOK_HMAC
+
+# Apply D1 migrations
+pnpm db:apply:remote
+
+# Deploy
+pnpm deploy
+```
+
+### C. Frontend deployment
+
+```pwsh
+cd apps/web
+# Set env vars (next build picks up .env.production)
+cat > .env.production <<EOF
+NEXT_PUBLIC_RPC_URL=https://conexple-worker-operator.workers.dev/rpc
+NEXT_PUBLIC_NETWORK_ID=1
+NEXT_PUBLIC_PROGRAM_PROTOCOL=<from anchor keys list>
+NEXT_PUBLIC_PROGRAM_NETWORK=<from anchor keys list>
+NEXT_PUBLIC_PROGRAM_ESCROW=<from anchor keys list>
+NEXT_PUBLIC_PROGRAM_NETWORK=<from anchor keys list>
+NEXT_PUBLIC_DEMO_USDC_MINT=<from mint-demo-usdc.ts output>
+NEXT_PUBLIC_OPERATOR_URL=https://conexple-worker-operator.workers.dev
+EOF
+pnpm build
+pnpm wrangler pages deploy .next  # or use git integration
+```
+
+### D. End-to-end smoke
+
+After all of the above:
+
+```pwsh
+pnpm smoke   # writes submission/smoke-receipt.json with a Solscan link
+```
+
+Open the Solscan link. If you see one transaction with a
+`record_purchase` log, you have your "on-chain proof" for the pitch
+video.
+
+### E. Pitch deck
+
+Outline only — see `submission/pitch-deck-outline.md`. Build the
+deck in Keynote / Google Slides / Pitch.com. 12 slides max.
+
+## Where things live
+
+| File | Why |
+|---|---|
+| `instruction/work/requirements.md` | original user instruction + interpretation |
+| `instruction/work/plan.md` | the master plan + decision log |
+| `instruction/work/colosseum-intel.md` | hackathon field intel — read before recording |
+| `instruction/work/todos.md` | active task list (mostly resolved) |
+| `submission/HANDOFF.md` | THIS file |
+| `submission/pitch-script.md` | 3-min pitch script |
+| `submission/tech-demo-script.md` | 2–3 min technical demo script |
+| `submission/pitch-deck-outline.md` | 12-slide outline |
+| `submission/smoke-receipt.json` | populated after pnpm smoke runs |
+
+## What was deliberately NOT built
+
+Per `docs/00-goals.md §Hard non-goals` and the cut-list in
+`instruction/work/plan.md`:
+
+- ❌ Mainnet deployment, real merchants, real funds
+- ❌ Audited contracts (we say so explicitly in README + SECURITY.md)
+- ❌ CNXP token, GameFi, InsureCare verticals
+- ❌ Mobile app, DAO governance
+- 🟡 Infinity Override implementation — concept is in code path but
+  not actively triggered in the demo (V1 default qualifier never
+  matches in the seed because no wallet has 10× spend)
+- 🟡 Token-2022 — V1 uses legacy SPL Token for the mock USDC mint
+  to keep escrow program simple
+- 🟡 Durable Objects — V1 uses D1 idempotency keys instead, to stay
+  on the Workers Free plan ($0/mo)

@@ -7,10 +7,12 @@
 Deployed to **Solana devnet only.** Smart contracts are unaudited.
 Do not use with real funds.
 
-- **Live demo:** https://conexple.pages.dev *(set after Pages deploy)*
-- **Pitch video:** https://youtu.be/... *(set after upload)*
-- **Docs:** [docs/](./docs/)
-- **License:** [Apache 2.0](./LICENSE)
+- **Live demo:** https://conexple.pages.dev *(populated after `wrangler pages deploy`)*
+- **Pitch video (≤ 3 min):** https://youtu.be/... *(set after upload — see `submission/pitch-script.md`)*
+- **Technical demo (2–3 min):** https://youtu.be/... *(set after upload — see `submission/tech-demo-script.md`)*
+- **Pitch deck (PDF):** `submission/pitch-deck.pdf` *(built from `pitch-deck-outline.md`)*
+- **Solscan-verifiable example tx:** `submission/smoke-receipt.json` *(populated after `pnpm smoke`)*
+- **License:** [Apache 2.0](./LICENSE) · permissive, patent grant, fork-friendly
 
 ## What is Conexple
 
@@ -64,40 +66,49 @@ git clone https://github.com/conexple/conexple
 cd conexple
 pnpm install
 
-# 2. Local Solana
-solana config set --url devnet
-solana-keygen new -o ~/.config/solana/devnet-deployer.json
-solana airdrop 5 --url devnet
+# 2. Local Solana toolchain (WSL Ubuntu recommended on Windows)
+solana-keygen new --no-bip39-passphrase -o keys/devnet-deployer.json
+solana config set --url devnet --keypair keys/devnet-deployer.json
+solana airdrop 5
 
-# 3. Build + deploy programs
-anchor build
-anchor deploy --provider.cluster devnet
-./scripts/deploy-devnet.sh
+# 3. Build + deploy programs (one-shot, idempotent)
+bash scripts/deploy-devnet.sh
 
-# 4. Seed demo data
-pnpm tsx scripts/seed-demo.ts
+# 4. Seed demo data (1 merchant + 5 wallets + 3-level network)
+pnpm seed
 
-# 5. Run frontend locally
-pnpm --filter web dev   # http://localhost:3000
+# 5. Verify on-chain (writes Solscan link to submission/smoke-receipt.json)
+pnpm smoke
 
-# 6. Run operator backend locally
-pnpm --filter operator dev   # wrangler dev on http://localhost:8787
+# 6. Run frontend + operator locally
+pnpm --filter web dev          # http://localhost:3000
+pnpm --filter operator dev     # http://localhost:8787 (wrangler dev)
 ```
 
-For deployment to Cloudflare Pages and Workers, see
-[apps/web/README.md](./apps/web/README.md) and
-[apps/operator/README.md](./apps/operator/README.md).
+For full handoff (videos, deck, Cloudflare deploy, Colosseum submission),
+see [`submission/HANDOFF.md`](./submission/HANDOFF.md).
 
 ## Repo layout
 
 ```
-programs/      Anchor programs (the open protocol)
-apps/web/      Next.js consumer + operator frontend (Cloudflare Pages)
-apps/operator/ Cloudflare Workers backend
-packages/sdk/  TypeScript clients for the programs
-scripts/       Deploy + seed + smoke
-docs/          Mechanics, payout, architecture
+programs/                    Anchor programs (the open protocol)
+  conexple-protocol/         rules + verify_placement
+  conexple-network/          Position state, register/place/extend/expire
+  conexple-escrow/           merchant USDC vaults + payouts + pool
+  conexple-oracle/           registered backend signers + audit log
+
+apps/
+  web/                       Next.js 15 frontend (Cloudflare Pages)
+  operator/                  Cloudflare Workers backend (Hono + D1 + KV + Queue)
+
+packages/sdk/                shared TypeScript types + PDA helpers
+
+scripts/                     deploy-devnet · init-network · mint-demo-usdc · seed-demo · e2e-smoke
+tests/                       Anchor end-to-end happy-path test
+submission/                  pitch script · tech demo script · deck outline · HANDOFF
 ```
+
+Detailed reading order: `instruction/work/plan.md` → `submission/HANDOFF.md`.
 
 ## Contributing
 
