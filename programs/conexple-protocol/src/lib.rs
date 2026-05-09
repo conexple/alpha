@@ -12,7 +12,7 @@
 
 use anchor_lang::prelude::*;
 
-declare_id!("Coneprotect11111111111111111111111111111111");
+declare_id!("11111111111111111111111111111111");
 
 pub mod error;
 pub mod state;

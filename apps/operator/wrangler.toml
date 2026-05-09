@@ -12,11 +12,13 @@ account_id = "a24ce30584273b42333051f1cdec48e2"
 SOLANA_CLUSTER = "devnet"
 SOLANA_RPC_FALLBACK = "https://api.devnet.solana.com"
 
-# Filled by post-deploy: program IDs + network/pool/oracle PDAs
-PROGRAM_ID_PROTOCOL = "Coneprotect11111111111111111111111111111111"
-PROGRAM_ID_NETWORK = "Conenetwork111111111111111111111111111111111"
-PROGRAM_ID_ESCROW = "Coneescrow1111111111111111111111111111111111"
-PROGRAM_ID_ORACLE = "Coneoracle1111111111111111111111111111111111"
+# Placeholder program IDs (overwritten by post-deploy step — see HANDOFF.md).
+# These are real Solana system program addresses; we use them as
+# guaranteed-decodable placeholders so the worker boots before anchor deploy.
+PROGRAM_ID_PROTOCOL = "11111111111111111111111111111111"
+PROGRAM_ID_NETWORK = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+PROGRAM_ID_ESCROW = "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+PROGRAM_ID_ORACLE = "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"
 
 NETWORK_ID = "1"
 

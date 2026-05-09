@@ -7,16 +7,16 @@ resolution = true
 skip-lint = false
 
 [programs.devnet]
-conexple_protocol = "Coneprotect11111111111111111111111111111111"
-conexple_network  = "Conenetwork111111111111111111111111111111111"
-conexple_escrow   = "Coneescrow1111111111111111111111111111111111"
-conexple_oracle   = "Coneoracle1111111111111111111111111111111111"
+conexple_protocol = "11111111111111111111111111111111"
+conexple_network  = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+conexple_escrow   = "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+conexple_oracle   = "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"
 
 [programs.localnet]
-conexple_protocol = "Coneprotect11111111111111111111111111111111"
-conexple_network  = "Conenetwork111111111111111111111111111111111"
-conexple_escrow   = "Coneescrow1111111111111111111111111111111111"
-conexple_oracle   = "Coneoracle1111111111111111111111111111111111"
+conexple_protocol = "11111111111111111111111111111111"
+conexple_network  = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+conexple_escrow   = "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+conexple_oracle   = "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"
 
 [registry]
 url = "https://api.apr.dev"
