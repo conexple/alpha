@@ -55,6 +55,7 @@ pub struct PendingCommission {
     pub purchase_id: u64,
     pub recipient: Pubkey,
     pub kind: PendingKind,
+    pub slot: u8,                // 0..6 — disambiguates the 7 split slots within a purchase
     pub amount: u64,
     pub anchor_at: i64,
     pub settle_at: i64,
@@ -62,5 +63,5 @@ pub struct PendingCommission {
 }
 
 impl PendingCommission {
-    pub const SIZE: usize = 8 + 1 + 8 + 8 + 8 + 32 + 1 + 8 + 8 + 8 + 1 + 32; // padding
+    pub const SIZE: usize = 8 + 1 + 8 + 8 + 8 + 32 + 1 + 1 + 8 + 8 + 8 + 1 + 32; // padding
 }

@@ -120,6 +120,7 @@ pub mod conexple_escrow {
         p.purchase_id = params.purchase_id;
         p.recipient = params.recipient;
         p.kind = params.kind;
+        p.slot = params.slot;
         p.amount = params.amount;
         p.anchor_at = params.anchor_at;
         p.settle_at = params.settle_at;
@@ -363,8 +364,8 @@ pub struct VoidPurchase<'info> {
             b"pending",
             &pending.network_id.to_le_bytes(),
             &pending.purchase_id.to_le_bytes(),
-            &(pending.kind as u8).to_le_bytes(),
-            &[0u8],
+            &[pending.kind as u8],
+            &[pending.slot],
         ],
         bump = pending.bump,
     )]
@@ -405,8 +406,8 @@ pub struct SettlePending<'info> {
             b"pending",
             &pending.network_id.to_le_bytes(),
             &pending.purchase_id.to_le_bytes(),
-            &(pending.kind as u8).to_le_bytes(),
-            &[0u8],
+            &[pending.kind as u8],
+            &[pending.slot],
         ],
         bump = pending.bump,
     )]
