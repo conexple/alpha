@@ -15,7 +15,11 @@ const OPERATOR_URL =
   process.env.OPERATOR_URL ?? "https://conexple-worker-operator.workers.dev";
 const HMAC = process.env.PURCHASE_WEBHOOK_HMAC ?? "";
 const NETWORK_ID = process.env.NETWORK_ID ?? "1";
-const root = path.resolve(import.meta.dirname, "..");
+// Backdate block_time by N days so settle_at (block_time + 30d) lands in the
+// past and the next /settle/run actually has rows to process. Default 0
+// preserves the production-realistic "fresh purchase, 30-day hold" path.
+const BACKDATE_DAYS = Number(process.env.BACKDATE_DAYS ?? "0");
+const root = path.resolve(process.cwd());
 
 if (!HMAC) {
   console.error("Set PURCHASE_WEBHOOK_HMAC in env (the same value used for wrangler secret put)");
@@ -57,12 +61,13 @@ function bs58Encode(buf: Uint8Array): string {
 
 async function pushOne(wallet: string, amount: number) {
   const correlation_id = crypto.randomUUID();
+  const block_time = Math.floor(Date.now() / 1000) - BACKDATE_DAYS * 86400;
   const body = JSON.stringify({
     network_id: NETWORK_ID,
     merchant_id: 1,
     buyer: wallet,
     amount,
-    block_time: Math.floor(Date.now() / 1000),
+    block_time,
     correlation_id,
   });
   const sig = crypto.createHmac("sha256", HMAC).update(body).digest("hex");
