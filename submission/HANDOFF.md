@@ -115,33 +115,84 @@ ship as-is.
 
 ### A. Anchor build + deploy
 
-The Rust toolchain (rustc + cargo + Solana CLI + Anchor + AVM) is
-installed in WSL Ubuntu but the install was launched in the
-background of the build session. **You may need to verify it
-finished**:
+This is the only step that didn't complete in the agent session, and
+it's strictly because of a Windows-native build-tools gap. Two paths
+forward; pick whichever finishes first.
+
+**Path 1 — WSL Ubuntu (probably already further along)**
+
+The agent kicked off a WSL install of Rust + Solana CLI + Anchor in
+the background. By session end it had finished `apt install` and was
+on the rustup step. Verify:
 
 ```pwsh
-wsl bash -c "/root/.cargo/bin/rustc --version; /root/.local/share/solana/install/active_release/bin/solana --version; /root/.cargo/bin/anchor --version"
+wsl bash -c "/root/.cargo/bin/rustc --version 2>/dev/null; /root/.local/share/solana/install/active_release/bin/solana --version 2>/dev/null; /root/.cargo/bin/anchor --version 2>/dev/null"
 ```
 
-If those all print versions, run from WSL:
+If any line is empty, the install is still in flight. Re-run after
+30–60 minutes, or run `wsl bash /mnt/c/Users/suanw/projects/conexple/alpha/agent-temp/wsl-install.sh`
+to resume. Once all three print versions:
 
 ```bash
-cd /mnt/c/Users/suanw/projects/conexple/alpha
-solana-keygen new --no-bip39-passphrase -o keys/devnet-deployer.json --force
-solana config set --url devnet --keypair keys/devnet-deployer.json
-solana airdrop 5
-anchor build
-anchor deploy --provider.cluster devnet
-anchor keys list   # capture program IDs
+wsl bash -lc "
+  source \$HOME/.cargo/env
+  export PATH=/root/.local/share/solana/install/active_release/bin:\$PATH
+  cd /mnt/c/Users/suanw/projects/conexple/alpha
+  solana-keygen new --no-bip39-passphrase -o keys/devnet-deployer.json --force
+  solana config set --url devnet --keypair keys/devnet-deployer.json
+  solana airdrop 5
+  anchor build
+  anchor keys sync
+  anchor build
+  anchor deploy --provider.cluster devnet
+  anchor keys list
+"
 ```
 
-Then update `Anchor.toml` and `apps/operator/wrangler.toml` and
-`apps/web/.env.local` with the four real program IDs.
+**Path 2 — Windows native + MSVC Build Tools (also kicked off in background)**
 
-Then run `pnpm exec tsx scripts/init-network.ts`,
-`pnpm exec tsx scripts/mint-demo-usdc.ts`, and
-`pnpm exec tsx scripts/seed-demo.ts` to populate the demo network.
+The agent started `winget install Microsoft.VisualStudio.2022.BuildTools`
+in the background. Once that finishes (~3 GB download, 10–20 min):
+
+```pwsh
+# Verify MSVC linker is reachable
+where.exe link.exe   # expect: C:\Program Files\Microsoft Visual Studio\...\bin\Hostx64\x64\link.exe
+                     #          (BEFORE C:\Program Files\Git\usr\bin\link.exe)
+
+# Restore PATH order (close + reopen the shell after VS install) and:
+$env:Path = "C:\Users\suanw\.local\bin;C:\Users\suanw\.local\share\solana\install\active_release\bin;C:\Users\suanw\.cargo\bin;$env:Path"
+cd C:\Users\suanw\projects\conexple\alpha
+anchor build
+anchor deploy --provider.cluster devnet
+```
+
+The agent already pre-extracted `platform-tools v1.52` to
+`C:\Users\suanw\.cache\solana\v1.52\platform-tools\` and pre-created
+the directory junction at
+`C:\Users\suanw\.local\share\solana\install\active_release\bin\platform-tools-sdk\sbf\dependencies\platform-tools`,
+so `cargo-build-sbf` will not try to download/symlink the toolchain.
+
+If `link.exe` from Git for Windows is still earlier in PATH than
+MSVC's, **remove `C:\Program Files\Git\usr\bin` from the PATH** for
+the build session — Git's `link.exe` is GNU coreutils' hard-link
+creator and shadows MSVC's linker. Or just put MSVC's bin first.
+
+**After either path succeeds:**
+
+```bash
+# capture program IDs (already in Anchor.toml from anchor keys sync — verify)
+cat Anchor.toml | grep "conexple_"
+
+# initialize on chain
+pnpm exec tsx scripts/init-network.ts
+pnpm exec tsx scripts/mint-demo-usdc.ts
+pnpm exec tsx scripts/seed-demo.ts
+pnpm smoke
+```
+
+Update `apps/operator/wrangler.toml`, `apps/web/.env.production`, and
+the root `.env` with the four real program IDs (already auto-synced
+into Anchor.toml + lib.rs by `anchor keys sync`).
 
 ### B. Operator backend deployment
 
