@@ -1,0 +1,1246 @@
+{
+  "address": "9nrHZqJcT3zLcK6eTu7ZLBBAU3Rr2eecnFYF413YePt9",
+  "metadata": {
+    "name": "conexple_network",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Conexple — Position state, network mutations, ancestor traversal"
+  },
+  "instructions": [
+    {
+      "name": "add_earnings",
+      "docs": [
+        "CPI from conexple_escrow during execute_payout.",
+        "Increments cumulative_earned; locks extension when cap reached."
+      ],
+      "discriminator": [
+        33,
+        238,
+        51,
+        61,
+        134,
+        44,
+        42,
+        111
+      ],
+      "accounts": [
+        {
+          "name": "network",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  110,
+                  101,
+                  116,
+                  119,
+                  111,
+                  114,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "network.network_id",
+                "account": "NetworkState"
+              }
+            ]
+          }
+        },
+        {
+          "name": "position",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  115,
+                  105,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "network.network_id",
+                "account": "NetworkState"
+              },
+              {
+                "kind": "account",
+                "path": "position.wallet",
+                "account": "Position"
+              }
+            ]
+          }
+        },
+        {
+          "name": "oracle_authority",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "advance_cycle",
+      "docs": [
+        "Roll the cycle forward. Permissionless — anyone can call once",
+        "`now >= cycle_started_at + cycle_seconds`."
+      ],
+      "discriminator": [
+        22,
+        127,
+        215,
+        164,
+        176,
+        53,
+        37,
+        224
+      ],
+      "accounts": [
+        {
+          "name": "network",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  110,
+                  101,
+                  116,
+                  119,
+                  111,
+                  114,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "network.network_id",
+                "account": "NetworkState"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "expire_position",
+      "docs": [
+        "Permissionless expiry — eligibility provable on-chain.",
+        "docs/03 §5: 2 cycles since last_purchase_round → expire."
+      ],
+      "discriminator": [
+        146,
+        203,
+        82,
+        231,
+        253,
+        127,
+        123,
+        214
+      ],
+      "accounts": [
+        {
+          "name": "network",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  110,
+                  101,
+                  116,
+                  119,
+                  111,
+                  114,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "network.network_id",
+                "account": "NetworkState"
+              }
+            ]
+          }
+        },
+        {
+          "name": "position",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  115,
+                  105,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "network.network_id",
+                "account": "NetworkState"
+              },
+              {
+                "kind": "account",
+                "path": "position.wallet",
+                "account": "Position"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "force_expire",
+      "docs": [
+        "Operator-only force expire (docs/03 §6 — auto-threshold or manual ops)."
+      ],
+      "discriminator": [
+        181,
+        233,
+        225,
+        150,
+        213,
+        57,
+        145,
+        169
+      ],
+      "accounts": [
+        {
+          "name": "network",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  110,
+                  101,
+                  116,
+                  119,
+                  111,
+                  114,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "network.network_id",
+                "account": "NetworkState"
+              }
+            ]
+          }
+        },
+        {
+          "name": "position",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  115,
+                  105,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "network.network_id",
+                "account": "NetworkState"
+              },
+              {
+                "kind": "account",
+                "path": "position.wallet",
+                "account": "Position"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_network",
+      "docs": [
+        "Initialize the network root account. One per network."
+      ],
+      "discriminator": [
+        75,
+        50,
+        251,
+        50,
+        0,
+        159,
+        20,
+        5
+      ],
+      "accounts": [
+        {
+          "name": "network",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  110,
+                  101,
+                  116,
+                  119,
+                  111,
+                  114,
+                  107
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "network_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "network_id",
+          "type": "u64"
+        },
+        {
+          "name": "oracle",
+          "type": "pubkey"
+        },
+        {
+          "name": "cycle_seconds",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "place_member",
+      "docs": [
+        "Oracle-attested placement. The oracle PDA must match",
+        "`network.oracle`; this is how the off-chain placement engine's",
+        "decision lands on-chain with cryptographic provenance."
+      ],
+      "discriminator": [
+        255,
+        220,
+        98,
+        98,
+        33,
+        111,
+        188,
+        198
+      ],
+      "accounts": [
+        {
+          "name": "network",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  110,
+                  101,
+                  116,
+                  119,
+                  111,
+                  114,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "network.network_id",
+                "account": "NetworkState"
+              }
+            ]
+          }
+        },
+        {
+          "name": "position",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  115,
+                  105,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "network.network_id",
+                "account": "NetworkState"
+              },
+              {
+                "kind": "account",
+                "path": "position.wallet",
+                "account": "Position"
+              }
+            ]
+          }
+        },
+        {
+          "name": "parent_position",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  115,
+                  105,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "network.network_id",
+                "account": "NetworkState"
+              },
+              {
+                "kind": "account",
+                "path": "parent_position.wallet",
+                "account": "Position"
+              }
+            ]
+          }
+        },
+        {
+          "name": "oracle_authority",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "record_purchase",
+      "docs": [
+        "Buyer purchase event. Records one PurchaseRecord per (wallet, round)",
+        "for deduplication, then bumps last_purchase_round if not locked."
+      ],
+      "discriminator": [
+        107,
+        25,
+        137,
+        125,
+        231,
+        17,
+        11,
+        60
+      ],
+      "accounts": [
+        {
+          "name": "network",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  110,
+                  101,
+                  116,
+                  119,
+                  111,
+                  114,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "network.network_id",
+                "account": "NetworkState"
+              }
+            ]
+          }
+        },
+        {
+          "name": "position",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  115,
+                  105,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "network.network_id",
+                "account": "NetworkState"
+              },
+              {
+                "kind": "account",
+                "path": "position.wallet",
+                "account": "Position"
+              }
+            ]
+          }
+        },
+        {
+          "name": "purchase",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  117,
+                  114,
+                  99,
+                  104,
+                  97,
+                  115,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "network.network_id",
+                "account": "NetworkState"
+              },
+              {
+                "kind": "account",
+                "path": "position.wallet",
+                "account": "Position"
+              },
+              {
+                "kind": "arg",
+                "path": "round"
+              }
+            ]
+          }
+        },
+        {
+          "name": "oracle_authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "round",
+          "type": "u64"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "register_member",
+      "docs": [
+        "A wallet registers itself. Initial state: parent=None, depth=0,",
+        "status=Active. Placement happens later via `place_member`."
+      ],
+      "discriminator": [
+        44,
+        19,
+        160,
+        59,
+        17,
+        122,
+        38,
+        16
+      ],
+      "accounts": [
+        {
+          "name": "network",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  110,
+                  101,
+                  116,
+                  119,
+                  111,
+                  114,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "network.network_id",
+                "account": "NetworkState"
+              }
+            ]
+          }
+        },
+        {
+          "name": "position",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  115,
+                  105,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "network.network_id",
+                "account": "NetworkState"
+              },
+              {
+                "kind": "account",
+                "path": "wallet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "wallet",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "initial_spend",
+          "type": "u64"
+        },
+        {
+          "name": "multiplier",
+          "type": "u32"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "NetworkState",
+      "discriminator": [
+        212,
+        237,
+        148,
+        56,
+        97,
+        245,
+        51,
+        169
+      ]
+    },
+    {
+      "name": "Position",
+      "discriminator": [
+        170,
+        188,
+        143,
+        228,
+        122,
+        64,
+        247,
+        208
+      ]
+    },
+    {
+      "name": "PurchaseRecord",
+      "discriminator": [
+        239,
+        38,
+        40,
+        199,
+        4,
+        96,
+        209,
+        2
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "CycleAdvanced",
+      "discriminator": [
+        199,
+        6,
+        196,
+        138,
+        207,
+        108,
+        26,
+        84
+      ]
+    },
+    {
+      "name": "EarningsAdded",
+      "discriminator": [
+        227,
+        24,
+        150,
+        215,
+        103,
+        211,
+        113,
+        150
+      ]
+    },
+    {
+      "name": "MemberPlaced",
+      "discriminator": [
+        18,
+        35,
+        213,
+        70,
+        92,
+        220,
+        253,
+        255
+      ]
+    },
+    {
+      "name": "MemberRegistered",
+      "discriminator": [
+        57,
+        155,
+        128,
+        94,
+        1,
+        149,
+        25,
+        250
+      ]
+    },
+    {
+      "name": "PositionExpired",
+      "discriminator": [
+        90,
+        59,
+        204,
+        35,
+        39,
+        112,
+        76,
+        3
+      ]
+    },
+    {
+      "name": "PositionLocked",
+      "discriminator": [
+        104,
+        146,
+        72,
+        115,
+        248,
+        123,
+        152,
+        127
+      ]
+    },
+    {
+      "name": "PurchaseRecorded",
+      "discriminator": [
+        158,
+        183,
+        78,
+        209,
+        180,
+        30,
+        113,
+        231
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "CycleTooFast",
+      "msg": "settlement cycle is faster than the daily minimum (24h)"
+    },
+    {
+      "code": 6001,
+      "name": "CycleNotElapsed",
+      "msg": "cycle has not yet elapsed"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidInitialSpend",
+      "msg": "initial spend must be > 0"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidMultiplier",
+      "msg": "multiplier must be > 0"
+    },
+    {
+      "code": 6004,
+      "name": "UnauthorizedPlacementSigner",
+      "msg": "placement signer is not the registered oracle"
+    },
+    {
+      "code": 6005,
+      "name": "AlreadyPlaced",
+      "msg": "position is already placed under a parent"
+    },
+    {
+      "code": 6006,
+      "name": "ParentNotActive",
+      "msg": "parent position is not active"
+    },
+    {
+      "code": 6007,
+      "name": "PlacementTooDeep",
+      "msg": "placement depth exceeds MAX_PLACEMENT_DEPTH"
+    },
+    {
+      "code": 6008,
+      "name": "PositionNotActive",
+      "msg": "position is not active"
+    },
+    {
+      "code": 6009,
+      "name": "UnauthorizedOracle",
+      "msg": "oracle authority does not match network.oracle"
+    },
+    {
+      "code": 6010,
+      "name": "UnauthorizedAdmin",
+      "msg": "authority does not match network.admin"
+    },
+    {
+      "code": 6011,
+      "name": "InvalidPurchaseAmount",
+      "msg": "purchase amount must be > 0"
+    },
+    {
+      "code": 6012,
+      "name": "InvalidEarningsAmount",
+      "msg": "earnings amount must be > 0"
+    },
+    {
+      "code": 6013,
+      "name": "RoundMismatch",
+      "msg": "round does not match current cycle_index"
+    },
+    {
+      "code": 6014,
+      "name": "ExpiryNotEligible",
+      "msg": "expiry not eligible: position has been active in last 2 cycles"
+    },
+    {
+      "code": 6015,
+      "name": "WrongNetwork",
+      "msg": "parent_position belongs to a different network"
+    }
+  ],
+  "types": [
+    {
+      "name": "CycleAdvanced",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "network_id",
+            "type": "u64"
+          },
+          {
+            "name": "cycle_index",
+            "type": "u64"
+          },
+          {
+            "name": "started_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EarningsAdded",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "network_id",
+            "type": "u64"
+          },
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "cumulative",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ExpireReason",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Inactivity"
+          },
+          {
+            "name": "Forced"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MemberPlaced",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "network_id",
+            "type": "u64"
+          },
+          {
+            "name": "child",
+            "type": "pubkey"
+          },
+          {
+            "name": "parent",
+            "type": "pubkey"
+          },
+          {
+            "name": "depth",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MemberRegistered",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "network_id",
+            "type": "u64"
+          },
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "joined_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "NetworkState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "network_id",
+            "type": "u64"
+          },
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "oracle",
+            "type": "pubkey"
+          },
+          {
+            "name": "cycle_seconds",
+            "type": "i64"
+          },
+          {
+            "name": "cycle_index",
+            "type": "u64"
+          },
+          {
+            "name": "cycle_started_at",
+            "type": "i64"
+          },
+          {
+            "name": "member_count",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Position",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "network_id",
+            "type": "u64"
+          },
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "parent",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "depth",
+            "type": "u8"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "PositionStatus"
+              }
+            }
+          },
+          {
+            "name": "cumulative_earned",
+            "type": "u64"
+          },
+          {
+            "name": "earnings_cap",
+            "type": "u64"
+          },
+          {
+            "name": "last_purchase_round",
+            "type": "u64"
+          },
+          {
+            "name": "extension_locked",
+            "type": "bool"
+          },
+          {
+            "name": "joined_at",
+            "type": "i64"
+          },
+          {
+            "name": "expired_at",
+            "type": {
+              "option": "i64"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "PositionExpired",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "network_id",
+            "type": "u64"
+          },
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "reason",
+            "type": {
+              "defined": {
+                "name": "ExpireReason"
+              }
+            }
+          },
+          {
+            "name": "cycles_inactive",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PositionLocked",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "network_id",
+            "type": "u64"
+          },
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "cumulative_earned",
+            "type": "u64"
+          },
+          {
+            "name": "cap",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PositionStatus",
+      "repr": {
+        "kind": "rust"
+      },
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Expired"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PurchaseRecord",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "network_id",
+            "type": "u64"
+          },
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "round",
+            "type": "u64"
+          },
+          {
+            "name": "total_amount",
+            "type": "u64"
+          },
+          {
+            "name": "purchase_count",
+            "type": "u32"
+          },
+          {
+            "name": "last_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PurchaseRecorded",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "network_id",
+            "type": "u64"
+          },
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "round",
+            "type": "u64"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "total_in_round",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ]
+}

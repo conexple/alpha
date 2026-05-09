@@ -1,0 +1,462 @@
+{
+  "address": "9CQFV9oPYKWE4Yg4w8mwJxsdibPeZJrKoTqcp2iTi1qz",
+  "metadata": {
+    "name": "conexple_oracle",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Conexple — oracle registry and signed payout submission"
+  },
+  "instructions": [
+    {
+      "name": "initialize_registry",
+      "discriminator": [
+        189,
+        181,
+        20,
+        17,
+        174,
+        57,
+        249,
+        59
+      ],
+      "accounts": [
+        {
+          "name": "registry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  114,
+                  97,
+                  99,
+                  108,
+                  101,
+                  95,
+                  114,
+                  101,
+                  103,
+                  105,
+                  115,
+                  116,
+                  114,
+                  121
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "network_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "network_id",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "log_submission",
+      "docs": [
+        "Audit-only entry point. Off-chain backend calls this *in addition*",
+        "to whatever instruction it's actually submitting (record_purchase,",
+        "settle_pending, etc.) so we have an on-chain log that \"oracle X",
+        "submitted purpose=foo at time T\". Cheap; pays for itself in audit",
+        "clarity."
+      ],
+      "discriminator": [
+        45,
+        60,
+        35,
+        244,
+        120,
+        176,
+        106,
+        100
+      ],
+      "accounts": [
+        {
+          "name": "registry",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  114,
+                  97,
+                  99,
+                  108,
+                  101,
+                  95,
+                  114,
+                  101,
+                  103,
+                  105,
+                  115,
+                  116,
+                  114,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "registry.network_id",
+                "account": "OracleRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "oracle_signer",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "purpose",
+          "type": {
+            "defined": {
+              "name": "SubmissionPurpose"
+            }
+          }
+        },
+        {
+          "name": "ref_id",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "register_oracle",
+      "discriminator": [
+        176,
+        200,
+        234,
+        37,
+        199,
+        129,
+        164,
+        111
+      ],
+      "accounts": [
+        {
+          "name": "registry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  114,
+                  97,
+                  99,
+                  108,
+                  101,
+                  95,
+                  114,
+                  101,
+                  103,
+                  105,
+                  115,
+                  116,
+                  114,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "registry.network_id",
+                "account": "OracleRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "admin",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "oracle_pubkey",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "revoke_oracle",
+      "discriminator": [
+        244,
+        253,
+        191,
+        174,
+        58,
+        179,
+        203,
+        48
+      ],
+      "accounts": [
+        {
+          "name": "registry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  114,
+                  97,
+                  99,
+                  108,
+                  101,
+                  95,
+                  114,
+                  101,
+                  103,
+                  105,
+                  115,
+                  116,
+                  114,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "registry.network_id",
+                "account": "OracleRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "admin",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "oracle_pubkey",
+          "type": "pubkey"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "OracleRegistry",
+      "discriminator": [
+        94,
+        153,
+        19,
+        250,
+        94,
+        0,
+        12,
+        172
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "OracleRegistered",
+      "discriminator": [
+        97,
+        225,
+        241,
+        71,
+        180,
+        49,
+        38,
+        60
+      ]
+    },
+    {
+      "name": "OracleRevoked",
+      "discriminator": [
+        46,
+        163,
+        216,
+        49,
+        163,
+        153,
+        239,
+        118
+      ]
+    },
+    {
+      "name": "OracleSubmitted",
+      "discriminator": [
+        200,
+        160,
+        146,
+        188,
+        244,
+        18,
+        107,
+        118
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "Unauthorized",
+      "msg": "admin authority does not match registry admin"
+    },
+    {
+      "code": 6001,
+      "name": "TooManySigners",
+      "msg": "registry already at max signer capacity"
+    },
+    {
+      "code": 6002,
+      "name": "AlreadyRegistered",
+      "msg": "oracle pubkey already registered"
+    },
+    {
+      "code": 6003,
+      "name": "NotRegistered",
+      "msg": "oracle pubkey is not registered"
+    },
+    {
+      "code": 6004,
+      "name": "SignerNotRegistered",
+      "msg": "signer is not in the registry"
+    }
+  ],
+  "types": [
+    {
+      "name": "OracleRegistered",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "network_id",
+            "type": "u64"
+          },
+          {
+            "name": "oracle",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "OracleRegistry",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "network_id",
+            "type": "u64"
+          },
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "signers",
+            "type": {
+              "vec": "pubkey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "OracleRevoked",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "network_id",
+            "type": "u64"
+          },
+          {
+            "name": "oracle",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "OracleSubmitted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "network_id",
+            "type": "u64"
+          },
+          {
+            "name": "oracle",
+            "type": "pubkey"
+          },
+          {
+            "name": "purpose",
+            "type": {
+              "defined": {
+                "name": "SubmissionPurpose"
+              }
+            }
+          },
+          {
+            "name": "ref_id",
+            "type": "u64"
+          },
+          {
+            "name": "submitted_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SubmissionPurpose",
+      "repr": {
+        "kind": "rust"
+      },
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "PlaceMember"
+          },
+          {
+            "name": "RecordPurchase"
+          },
+          {
+            "name": "AddEarnings"
+          },
+          {
+            "name": "SettlePending"
+          },
+          {
+            "name": "Other"
+          }
+        ]
+      }
+    }
+  ]
+}

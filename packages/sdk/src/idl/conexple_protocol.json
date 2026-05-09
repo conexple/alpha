@@ -1,0 +1,342 @@
+{
+  "address": "D1HVppRLhT6wmUxmaM4QABytmcBDEmKuuuMoa7HkKSbn",
+  "metadata": {
+    "name": "conexple_protocol",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Conexple — protocol rules and placement verification"
+  },
+  "instructions": [
+    {
+      "name": "initialize_rules",
+      "docs": [
+        "Initialize a network's immutable rule snapshot.",
+        "",
+        "Idempotency: the ProtocolConfig PDA is keyed by `network_id`, so each",
+        "network has exactly one config. Re-init attempts hit `init` constraint",
+        "failure."
+      ],
+      "discriminator": [
+        100,
+        252,
+        219,
+        123,
+        214,
+        116,
+        41,
+        246
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "params.network_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "InitializeRulesParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "verify_placement",
+      "docs": [
+        "Verify a proposed placement conforms to protocol rules.",
+        "",
+        "This is a pure check — it does not touch chain state. Used by the",
+        "off-chain placement engine to confirm a candidate parent before",
+        "submitting `place_member` to `conexple_network`."
+      ],
+      "discriminator": [
+        44,
+        243,
+        148,
+        33,
+        27,
+        19,
+        215,
+        173
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "config.network_id",
+                "account": "ProtocolConfig"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "proposed_depth",
+          "type": "u8"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "ProtocolConfig",
+      "discriminator": [
+        207,
+        91,
+        250,
+        28,
+        152,
+        179,
+        215,
+        209
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "RulesInitialized",
+      "discriminator": [
+        192,
+        123,
+        153,
+        27,
+        40,
+        55,
+        99,
+        104
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "MarginCapExceeded",
+      "msg": "margin_bps exceeds the protocol-wide 50% cap"
+    },
+    {
+      "code": 6001,
+      "name": "CycleTooFast",
+      "msg": "settlement cycle is faster than the daily minimum"
+    },
+    {
+      "code": 6002,
+      "name": "MultiplierOutOfRange",
+      "msg": "multiplier must be between 1 and 1000 inclusive"
+    },
+    {
+      "code": 6003,
+      "name": "PoolSplitOutOfRange",
+      "msg": "pool_split_bps must be between 0 and 10000 inclusive"
+    },
+    {
+      "code": 6004,
+      "name": "PlacementTooDeep",
+      "msg": "placement depth exceeds the configured level_count"
+    }
+  ],
+  "types": [
+    {
+      "name": "InitializeRulesParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "network_id",
+            "type": "u64"
+          },
+          {
+            "name": "margin_bps_max",
+            "type": "u16"
+          },
+          {
+            "name": "multiplier",
+            "type": "u32"
+          },
+          {
+            "name": "cycle",
+            "type": {
+              "defined": {
+                "name": "SettlementCycle"
+              }
+            }
+          },
+          {
+            "name": "pool_split_bps",
+            "type": "u16"
+          },
+          {
+            "name": "infinity_min_spend_multiple",
+            "type": "u32"
+          },
+          {
+            "name": "infinity_min_consecutive_cycles",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProtocolConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "network_id",
+            "type": "u64"
+          },
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "level_count",
+            "type": "u8"
+          },
+          {
+            "name": "split_parts",
+            "type": "u8"
+          },
+          {
+            "name": "margin_bps_max",
+            "type": "u16"
+          },
+          {
+            "name": "multiplier",
+            "type": "u32"
+          },
+          {
+            "name": "cycle",
+            "type": {
+              "defined": {
+                "name": "SettlementCycle"
+              }
+            }
+          },
+          {
+            "name": "pool_split_bps",
+            "type": "u16"
+          },
+          {
+            "name": "infinity_min_spend_multiple",
+            "type": "u32"
+          },
+          {
+            "name": "infinity_min_consecutive_cycles",
+            "type": "u8"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RulesInitialized",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "network_id",
+            "type": "u64"
+          },
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "margin_bps_max",
+            "type": "u16"
+          },
+          {
+            "name": "cycle",
+            "type": {
+              "defined": {
+                "name": "SettlementCycle"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "SettlementCycle",
+      "docs": [
+        "Settlement cycle. Sub-daily cycles are forbidden (`is_supported`)."
+      ],
+      "repr": {
+        "kind": "rust"
+      },
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Daily"
+          },
+          {
+            "name": "Weekly"
+          },
+          {
+            "name": "Monthly"
+          },
+          {
+            "name": "Quarterly"
+          },
+          {
+            "name": "Yearly"
+          }
+        ]
+      }
+    }
+  ]
+}

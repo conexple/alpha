@@ -1,0 +1,867 @@
+{
+  "address": "9eTvjKrfbYy6JhFMJnuFo5ATCN6uS115J196bvPbmMXU",
+  "metadata": {
+    "name": "conexple_escrow",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Conexple — merchant USDC escrow, payouts, social/operator pool"
+  },
+  "instructions": [
+    {
+      "name": "create_pending",
+      "docs": [
+        "Initialize a PendingCommission entry — anchored at purchase time,",
+        "settles at `purchase_time + hold_seconds`. Backend creates one of",
+        "these per purchase per recipient slot (level1..5 + override + pool)."
+      ],
+      "discriminator": [
+        36,
+        75,
+        74,
+        125,
+        254,
+        138,
+        85,
+        131
+      ],
+      "accounts": [
+        {
+          "name": "merchant_escrow",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  101,
+                  114,
+                  99,
+                  104,
+                  97,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "merchant_escrow.network_id",
+                "account": "MerchantEscrow"
+              },
+              {
+                "kind": "account",
+                "path": "merchant_escrow.merchant_id",
+                "account": "MerchantEscrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "pending",
+          "writable": true
+        },
+        {
+          "name": "oracle_authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "CreatePendingParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "deposit",
+      "docs": [
+        "Merchant deposits USDC into their escrow."
+      ],
+      "discriminator": [
+        242,
+        35,
+        198,
+        137,
+        82,
+        225,
+        242,
+        182
+      ],
+      "accounts": [
+        {
+          "name": "merchant_escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  101,
+                  114,
+                  99,
+                  104,
+                  97,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "merchant_escrow.network_id",
+                "account": "MerchantEscrow"
+              },
+              {
+                "kind": "account",
+                "path": "merchant_escrow.merchant_id",
+                "account": "MerchantEscrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "merchant_token",
+          "writable": true
+        },
+        {
+          "name": "merchant",
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "initialize_merchant",
+      "docs": [
+        "Initialize a merchant escrow + USDC vault PDA."
+      ],
+      "discriminator": [
+        7,
+        90,
+        74,
+        38,
+        99,
+        111,
+        142,
+        77
+      ],
+      "accounts": [
+        {
+          "name": "merchant_escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  101,
+                  114,
+                  99,
+                  104,
+                  97,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "network_id"
+              },
+              {
+                "kind": "arg",
+                "path": "merchant_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "docs": [
+            "Vault token account is created/owned by the merchant_escrow PDA.",
+            "Caller is responsible for creating this with merchant_escrow as authority."
+          ]
+        },
+        {
+          "name": "merchant",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "network_id",
+          "type": "u64"
+        },
+        {
+          "name": "merchant_id",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "initialize_pool",
+      "docs": [
+        "Initialize the network's pool account. One per network."
+      ],
+      "discriminator": [
+        95,
+        180,
+        10,
+        172,
+        84,
+        174,
+        232,
+        40
+      ],
+      "accounts": [
+        {
+          "name": "pool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "network_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "network_id",
+          "type": "u64"
+        },
+        {
+          "name": "pool_split_bps",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "settle_pending",
+      "docs": [
+        "Settle a single pending commission — transfers USDC to recipient ATA",
+        "or pool depending on kind. Only callable when block time >= settle_at.",
+        "",
+        "V1 simplification: each pending settles in its own tx. Batching is an",
+        "off-chain concern (operator builds one transaction with many of these",
+        "instructions; for demo, individual settles are easier to trace)."
+      ],
+      "discriminator": [
+        121,
+        35,
+        75,
+        28,
+        146,
+        164,
+        93,
+        159
+      ],
+      "accounts": [
+        {
+          "name": "pool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "merchant_escrow.network_id",
+                "account": "MerchantEscrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "merchant_escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  101,
+                  114,
+                  99,
+                  104,
+                  97,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "merchant_escrow.network_id",
+                "account": "MerchantEscrow"
+              },
+              {
+                "kind": "account",
+                "path": "merchant_escrow.merchant_id",
+                "account": "MerchantEscrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "recipient_token",
+          "writable": true
+        },
+        {
+          "name": "pending",
+          "writable": true
+        },
+        {
+          "name": "oracle_authority",
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "void_purchase",
+      "docs": [
+        "Void a pending commission BEFORE settle_at — refund window."
+      ],
+      "discriminator": [
+        170,
+        251,
+        216,
+        50,
+        6,
+        129,
+        71,
+        154
+      ],
+      "accounts": [
+        {
+          "name": "merchant_escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  101,
+                  114,
+                  99,
+                  104,
+                  97,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "merchant_escrow.network_id",
+                "account": "MerchantEscrow"
+              },
+              {
+                "kind": "account",
+                "path": "merchant_escrow.merchant_id",
+                "account": "MerchantEscrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "pending",
+          "writable": true
+        },
+        {
+          "name": "merchant",
+          "signer": true
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "MerchantEscrow",
+      "discriminator": [
+        149,
+        209,
+        174,
+        180,
+        112,
+        147,
+        221,
+        227
+      ]
+    },
+    {
+      "name": "PendingCommission",
+      "discriminator": [
+        183,
+        152,
+        234,
+        104,
+        146,
+        182,
+        154,
+        87
+      ]
+    },
+    {
+      "name": "PoolAccount",
+      "discriminator": [
+        116,
+        210,
+        187,
+        119,
+        196,
+        196,
+        52,
+        137
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "EscrowDeposited",
+      "discriminator": [
+        28,
+        193,
+        105,
+        27,
+        40,
+        101,
+        65,
+        211
+      ]
+    },
+    {
+      "name": "PendingSettled",
+      "discriminator": [
+        118,
+        98,
+        61,
+        115,
+        235,
+        161,
+        164,
+        219
+      ]
+    },
+    {
+      "name": "PendingVoided",
+      "discriminator": [
+        153,
+        219,
+        220,
+        153,
+        42,
+        118,
+        42,
+        61
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidAmount",
+      "msg": "amount must be > 0"
+    },
+    {
+      "code": 6001,
+      "name": "WrongMerchant",
+      "msg": "merchant key does not match merchant_escrow.merchant"
+    },
+    {
+      "code": 6002,
+      "name": "UnauthorizedOracle",
+      "msg": "oracle authority not recognised"
+    },
+    {
+      "code": 6003,
+      "name": "SettleInPast",
+      "msg": "settle_at must be in the future"
+    },
+    {
+      "code": 6004,
+      "name": "NotPending",
+      "msg": "pending commission is not in Pending status"
+    },
+    {
+      "code": 6005,
+      "name": "HoldNotElapsed",
+      "msg": "hold period has not elapsed (now < settle_at)"
+    },
+    {
+      "code": 6006,
+      "name": "PastSettle",
+      "msg": "cannot void a pending commission past its settle_at"
+    },
+    {
+      "code": 6007,
+      "name": "UnauthorizedVoid",
+      "msg": "caller is not authorised to void this purchase"
+    },
+    {
+      "code": 6008,
+      "name": "PoolSplitOutOfRange",
+      "msg": "pool_split_bps must be between 0 and 10000 inclusive"
+    }
+  ],
+  "types": [
+    {
+      "name": "CreatePendingParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "purchase_id",
+            "type": "u64"
+          },
+          {
+            "name": "recipient",
+            "type": "pubkey"
+          },
+          {
+            "name": "kind",
+            "type": {
+              "defined": {
+                "name": "PendingKind"
+              }
+            }
+          },
+          {
+            "name": "slot",
+            "type": "u8"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "anchor_at",
+            "type": "i64"
+          },
+          {
+            "name": "settle_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowDeposited",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "network_id",
+            "type": "u64"
+          },
+          {
+            "name": "merchant_id",
+            "type": "u64"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "deposited_total",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MerchantEscrow",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "network_id",
+            "type": "u64"
+          },
+          {
+            "name": "merchant_id",
+            "type": "u64"
+          },
+          {
+            "name": "merchant",
+            "type": "pubkey"
+          },
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "deposited_total",
+            "type": "u64"
+          },
+          {
+            "name": "paid_out_total",
+            "type": "u64"
+          },
+          {
+            "name": "voided_total",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PendingCommission",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "network_id",
+            "type": "u64"
+          },
+          {
+            "name": "merchant_id",
+            "type": "u64"
+          },
+          {
+            "name": "purchase_id",
+            "type": "u64"
+          },
+          {
+            "name": "recipient",
+            "type": "pubkey"
+          },
+          {
+            "name": "kind",
+            "type": {
+              "defined": {
+                "name": "PendingKind"
+              }
+            }
+          },
+          {
+            "name": "slot",
+            "type": "u8"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "anchor_at",
+            "type": "i64"
+          },
+          {
+            "name": "settle_at",
+            "type": "i64"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "PendingStatus"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "PendingKind",
+      "repr": {
+        "kind": "rust"
+      },
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "LevelCommission"
+          },
+          {
+            "name": "InfinityOverride"
+          },
+          {
+            "name": "SocialPool"
+          },
+          {
+            "name": "OperatorPool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PendingSettled",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "network_id",
+            "type": "u64"
+          },
+          {
+            "name": "purchase_id",
+            "type": "u64"
+          },
+          {
+            "name": "recipient",
+            "type": "pubkey"
+          },
+          {
+            "name": "kind",
+            "type": {
+              "defined": {
+                "name": "PendingKind"
+              }
+            }
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PendingStatus",
+      "repr": {
+        "kind": "rust"
+      },
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Pending"
+          },
+          {
+            "name": "Settled"
+          },
+          {
+            "name": "Voided"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PendingVoided",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "network_id",
+            "type": "u64"
+          },
+          {
+            "name": "purchase_id",
+            "type": "u64"
+          },
+          {
+            "name": "recipient",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PoolAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "network_id",
+            "type": "u64"
+          },
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "social_balance",
+            "type": "u64"
+          },
+          {
+            "name": "operator_balance",
+            "type": "u64"
+          },
+          {
+            "name": "pool_split_bps",
+            "type": "u16"
+          }
+        ]
+      }
+    }
+  ]
+}
