@@ -10,10 +10,31 @@ export const metadata: Metadata = {
   description:
     "Redirect existing merchant marketing commissions to everyday consumers — 5-level unilevel + Infinity Override on Solana, on-chain rules, anti-MLM by structural design.",
   metadataBase: new URL("https://conexple-pages-web.pages.dev"),
+  icons: {
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+  },
   openGraph: {
-    title: "Conexple — Open consumer affiliate protocol",
-    description: "Pay loyal customers, not influencers. On-chain on Solana.",
+    title: "Conexple — Pay loyal customers, not influencers.",
+    description:
+      "Open-source consumer affiliate protocol on Solana. Every rule, payout, and position lives on chain.",
     type: "website",
+    url: "https://conexple-pages-web.pages.dev",
+    siteName: "Conexple",
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "Conexple — pay loyal customers, not influencers. 5-level unilevel + Infinity Override on Solana.",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Conexple — Pay loyal customers, not influencers.",
+    description:
+      "Open-source consumer affiliate protocol on Solana. Every rule, payout, and position on chain.",
+    images: ["/og.png"],
   },
 };
 
