@@ -1,34 +1,105 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --bg: #0a0b14;
-  --paper: #f7f6f1;
-  --accent: #9945ff;
-  --accent-2: #14f195;
+  --cream:    #FBF7F1;
+  --paper:    #F4EFE6;
+  --edge:     #E5DDCD;
+  --ink:      #0E1116;
+  --graphite: #3B3A36;
+  --stone:    #8B847B;
+  --purple:   #9945FF;
+  --teal:     #14F195;
+  --amber:    #E8B14E;
+  --rose:     #D9534A;
+  --olive:    #5C6B3A;
 }
 
 html, body {
-  background: var(--bg);
-  color: var(--paper);
-  font-family: var(--font-sans, system-ui, sans-serif);
+  background: var(--cream);
+  color: var(--ink);
+  font-family: 'Geist', 'IBM Plex Sans Thai', system-ui, sans-serif;
+  font-feature-settings: "ss01", "cv11";
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection { background: var(--ink); color: var(--cream); }
+
+/* Subtle grain background overlay */
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  background: theme('backgroundImage.grain');
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: -1;
+  mix-blend-mode: multiply;
+}
+
+/* Display headings — Fraunces with optical sizing */
+h1, h2, .display {
+  font-family: 'Fraunces', Georgia, serif;
+  font-optical-sizing: auto;
+  letter-spacing: -0.02em;
+  font-weight: 400;
 }
 
 a {
-  color: var(--accent);
+  color: inherit;
   text-decoration: none;
+  transition: opacity 0.15s ease;
 }
-a:hover { text-decoration: underline; }
+a:hover { opacity: 0.7; }
 
-/* Wallet adapter overrides */
+/* Wallet adapter overrides (we draw it in our palette) */
 .wallet-adapter-button {
-  background: linear-gradient(90deg, #9945ff 0%, #14f195 100%);
-  color: #0a0b14 !important;
-  border-radius: 0.5rem !important;
-  font-weight: 600 !important;
+  background: var(--ink) !important;
+  color: var(--cream) !important;
+  font-family: 'Geist', sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+  letter-spacing: 0.01em !important;
+  border-radius: 999px !important;
+  height: 38px !important;
+  padding: 0 18px !important;
+  transition: all 0.2s ease !important;
 }
+.wallet-adapter-button:hover {
+  background: var(--graphite) !important;
+  transform: translateY(-1px);
+}
+.wallet-adapter-button-trigger { background: var(--ink) !important; }
+.wallet-adapter-modal { font-family: 'Geist', sans-serif !important; }
 .wallet-adapter-modal-wrapper {
-  background: #14151f !important;
+  background: var(--cream) !important;
+  border: 1px solid var(--edge) !important;
+  border-radius: 16px !important;
+}
+.wallet-adapter-modal-title { color: var(--ink) !important; font-family: 'Fraunces', serif !important; font-weight: 500 !important; }
+.wallet-adapter-modal-list li {
+  background: var(--paper) !important;
+  border: 1px solid var(--edge) !important;
+  border-radius: 12px !important;
+  margin-bottom: 8px !important;
+  color: var(--ink) !important;
+}
+.wallet-adapter-modal-list li:hover { background: var(--cream) !important; }
+
+/* Reusable utility components */
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-12;
+  }
+  .card {
+    @apply rounded-2xl border border-edge bg-paper p-6 shadow-soft;
+  }
+  .pill {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-edge bg-cream px-3 py-1 text-xs font-medium tracking-wide;
+  }
+  .num {
+    font-feature-settings: "tnum", "lnum";
+  }
 }

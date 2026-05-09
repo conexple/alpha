@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import dynamic from "next/dynamic";
 
 const WalletMultiButton = dynamic(
@@ -9,7 +10,6 @@ const WalletMultiButton = dynamic(
 );
 
 const links = [
-  { href: "/", label: "Home" },
   { href: "/dashboard", label: "Dashboard" },
   { href: "/explorer", label: "Network" },
   { href: "/operator", label: "Operator" },
@@ -17,20 +17,67 @@ const links = [
 ];
 
 export function TopNav() {
+  const pathname = usePathname();
   return (
-    <header className="border-b border-white/10 bg-cnx-ink/80 backdrop-blur sticky top-0 z-30">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        <Link href="/" className="font-mono text-lg tracking-tight">
-          conexple<span className="text-cnx-accent2">.</span>
+    <header className="sticky top-0 z-30 border-b border-edge bg-cream/85 backdrop-blur-md">
+      <div className="container-page flex items-center justify-between py-4">
+        <Link href="/" className="group flex items-baseline gap-1.5">
+          <span className="font-display text-2xl font-medium tracking-tightest text-ink">
+            conexple
+          </span>
+          <span className="h-1.5 w-1.5 rounded-full bg-cnx-amber transition-transform group-hover:scale-150" />
+          <span className="hidden font-mono text-[10px] uppercase tracking-[0.2em] text-stone sm:inline">
+            v0.1 alpha
+          </span>
         </Link>
-        <nav className="hidden gap-6 text-sm text-white/80 md:flex">
-          {links.slice(1).map((l) => (
-            <Link key={l.href} href={l.href} className="hover:text-white">
+
+        <nav className="hidden items-center gap-7 text-sm font-medium md:flex">
+          {links.map((l) => {
+            const active = pathname === l.href || pathname?.startsWith(l.href + "/");
+            return (
+              <Link
+                key={l.href}
+                href={l.href}
+                className={`relative transition-colors ${
+                  active ? "text-ink" : "text-stone hover:text-ink"
+                }`}
+              >
+                {l.label}
+                {active && (
+                  <span className="absolute -bottom-[19px] left-0 right-0 h-px bg-ink" />
+                )}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="flex items-center gap-2">
+          <a
+            href="https://github.com/conexple/conexple"
+            target="_blank"
+            rel="noreferrer"
+            className="hidden rounded-full border border-edge bg-paper px-3 py-1.5 text-xs font-medium text-graphite transition-colors hover:border-ink hover:text-ink sm:inline-flex"
+          >
+            GitHub →
+          </a>
+          <WalletMultiButton />
+        </div>
+      </div>
+
+      {/* Mobile nav */}
+      <div className="container-page flex items-center gap-5 overflow-x-auto border-t border-edge py-2 text-xs font-medium md:hidden">
+        {links.map((l) => {
+          const active = pathname === l.href || pathname?.startsWith(l.href + "/");
+          return (
+            <Link
+              key={l.href}
+              href={l.href}
+              className={active ? "text-ink" : "text-stone"}
+            >
               {l.label}
             </Link>
-          ))}
-        </nav>
-        <WalletMultiButton />
+          );
+        })}
       </div>
     </header>
   );

@@ -1,12 +1,20 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "@solana/wallet-adapter-react-ui/styles.css";
 import { WalletProviders } from "@/components/WalletProviders";
 import { TopNav } from "@/components/TopNav";
+import { SiteFooter } from "@/components/SiteFooter";
 
 export const metadata: Metadata = {
-  title: "Conexple — Open Consumer Affiliate Protocol",
+  title: "Conexple — Open consumer affiliate protocol on Solana",
   description:
-    "Redirect existing merchant marketing commissions to everyday consumers — on Solana, on-chain, anti-MLM by design.",
+    "Redirect existing merchant marketing commissions to everyday consumers — 5-level unilevel + Infinity Override on Solana, on-chain rules, anti-MLM by structural design.",
+  metadataBase: new URL("https://conexple-pages-web.pages.dev"),
+  openGraph: {
+    title: "Conexple — Open consumer affiliate protocol",
+    description: "Pay loyal customers, not influencers. On-chain on Solana.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -15,18 +23,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <WalletProviders>
           <TopNav />
-          <main className="mx-auto max-w-6xl px-4 py-8">{children}</main>
-          <footer className="mx-auto max-w-6xl px-4 py-12 text-xs text-cnx-muted">
-            v0.1 alpha · hackathon prototype · devnet only ·{" "}
-            <a
-              className="underline"
-              href="https://github.com/conexple/conexple"
-              target="_blank"
-              rel="noreferrer"
-            >
-              github
-            </a>
-          </footer>
+          <main className="container-page py-10 sm:py-16">{children}</main>
+          <SiteFooter />
         </WalletProviders>
       </body>
     </html>

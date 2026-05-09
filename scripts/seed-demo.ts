@@ -1,16 +1,26 @@
-// scripts/seed-demo.ts — populate devnet with demo data so the frontend
-// shows a non-empty network on first load.
+// scripts/seed-demo.ts — populate devnet with a rich demo network.
 //
-// Creates:
-//   * 1 demo merchant (id = 1)  — name "Demo Merchant 01"
-//   * 5 demo wallets (deterministic, generated from a fixed seed)
-//   * A 3-level network:
-//       A
-//       ├── B
-//       │   └── E
-//       └── C
+// Tree (5 levels deep, 5 lv1 branches, 16 wallets):
 //
-// Wallets get airdropped SOL (for fees) + demo USDC (for purchases).
+//   A (lv0, root)
+//   ├── B  (lv1)
+//   │   └── E  (lv2, existing)
+//   │       └── M  (lv3, NEW)
+//   │           └── N  (lv4, NEW)
+//   │               └── O  (lv5, NEW) ← max-depth path #1: A→B→E→M→N→O
+//   ├── C  (lv1, existing)
+//   │   └── D  (lv2, existing — depth-2 leaf)
+//   ├── F  (lv1, NEW)
+//   │   └── I  (lv2, NEW)
+//   │       └── J  (lv3, NEW)
+//   │           └── K  (lv4, NEW)
+//   │               └── L  (lv5, NEW) ← max-depth path #2: A→F→I→J→K→L
+//   ├── G  (lv1, NEW)
+//   │   └── P  (lv2, NEW)              ← shorter sibling for variety
+//   └── H  (lv1, NEW — leaf)
+//
+// Wallets fund themselves with 0.05 SOL from deployer (devnet airdrop is
+// rate-limited per-IP). Existing positions are skipped on re-run.
 
 import {
   Connection,
@@ -30,8 +40,42 @@ const RPC = process.env.SOLANA_RPC_URL ?? "https://api.devnet.solana.com";
 const NETWORK_ID = BigInt(process.env.NETWORK_ID ?? "1");
 const root = path.resolve(process.cwd());
 
-const DEMO_LABELS = ["A", "B", "C", "D", "E"] as const;
+// 16 wallets. Order matters — register in this order, then place per
+// `PLACEMENTS` below. New wallets are appended at the end so existing
+// devnet positions (A..E) are preserved on re-run.
+const DEMO_LABELS = [
+  "A", "B", "C", "D", "E",                     // existing tree (3-level)
+  "F", "G", "H",                                // new lv1 children of A
+  "I",                                           // F → I (lv2)
+  "J", "K", "L",                                // F → I → J → K → L (chain to lv5)
+  "M", "N", "O",                                // B → E → M → N → O (chain to lv5)
+  "P",                                           // G → P (lv2)
+] as const;
 type Label = (typeof DEMO_LABELS)[number];
+
+// child → parent. Ordered so each parent exists before child placement.
+const PLACEMENTS: Array<[Label, Label]> = [
+  // Existing (no-op if already placed)
+  ["B", "A"],
+  ["C", "A"],
+  ["E", "B"],
+  ["D", "C"],
+  // New lv1 children of root
+  ["F", "A"],
+  ["G", "A"],
+  ["H", "A"],
+  // F's chain to lv5
+  ["I", "F"],
+  ["J", "I"],
+  ["K", "J"],
+  ["L", "K"],
+  // E's chain to lv5
+  ["M", "E"],
+  ["N", "M"],
+  ["O", "N"],
+  // G's lv2
+  ["P", "G"],
+];
 
 function loadKeypair(p: string): Keypair {
   return Keypair.fromSecretKey(
@@ -44,7 +88,7 @@ function loadIdl(name: string): Idl {
   ) as Idl;
 }
 function deterministicWallet(label: Label): Keypair {
-  // 32-byte seed = 32 chars of `label` repeated, sliced.
+  // 32-byte seed = "conexple-demo-<label>" padded with zeros.
   const seed = Buffer.alloc(32, 0);
   Buffer.from(`conexple-demo-${label}`).copy(seed);
   return Keypair.fromSeed(seed.subarray(0, 32));
@@ -60,7 +104,6 @@ async function main() {
   const network = new Program(loadIdl("conexple_network"), provider);
   const networkProgramId = network.programId;
 
-  // Oracle keypair — signs place_member (matches network.oracle)
   const oraclePath = path.join(root, "keys", "oracle-devnet.json");
   const oracle: Keypair = fs.existsSync(oraclePath)
     ? loadKeypair(oraclePath)
@@ -77,12 +120,12 @@ async function main() {
     networkProgramId,
   );
 
-  // ── Generate + register 5 demo wallets ───────────────────────────────
+  // ── Generate keypairs ────────────────────────────────────────────────
   const wallets: Record<Label, Keypair> = Object.fromEntries(
     DEMO_LABELS.map((l) => [l, deterministicWallet(l)]),
   ) as Record<Label, Keypair>;
 
-  // Persist wallet files for reproducibility (gitignored — keys/)
+  // Persist wallet files (gitignored — keys/)
   for (const [label, kp] of Object.entries(wallets)) {
     const file = path.join(root, "keys", `demo-${label}.json`);
     if (!fs.existsSync(file)) {
@@ -90,8 +133,21 @@ async function main() {
     }
   }
 
-  // Fund each demo wallet with 0.05 SOL from deployer (devnet airdrop is
-  // rate-limited; transferring from deployer is reliable).
+  // Fund oracle once (pays placement tx fees)
+  const oracleBal = await conn.getBalance(oracle.publicKey);
+  if (oracleBal < 0.01 * LAMPORTS_PER_SOL) {
+    const fundTx = new Transaction().add(
+      SystemProgram.transfer({
+        fromPubkey: deployer.publicKey,
+        toPubkey: oracle.publicKey,
+        lamports: 0.1 * LAMPORTS_PER_SOL,
+      }),
+    );
+    await sendAndConfirmTransaction(conn, fundTx, [deployer], { commitment: "confirmed" });
+    console.log(`funded oracle 0.1 SOL`);
+  }
+
+  // ── Fund each wallet with 0.05 SOL ──────────────────────────────────
   for (const [label, kp] of Object.entries(wallets)) {
     const bal = await conn.getBalance(kp.publicKey);
     if (bal < 0.02 * LAMPORTS_PER_SOL) {
@@ -103,19 +159,17 @@ async function main() {
             lamports: 0.05 * LAMPORTS_PER_SOL,
           }),
         );
-        const sig = await sendAndConfirmTransaction(conn, tx, [deployer], {
-          commitment: "confirmed",
-        });
+        const sig = await sendAndConfirmTransaction(conn, tx, [deployer], { commitment: "confirmed" });
         console.log(`funded ${label} 0.05 SOL: ${kp.publicKey.toBase58().slice(0, 8)}… (${sig.slice(0, 8)}…)`);
       } catch (e) {
         console.warn(`fund ${label} failed:`, String(e).slice(0, 200));
       }
     } else {
-      console.log(`${label} has ${bal / LAMPORTS_PER_SOL} SOL (skip)`);
+      console.log(`${label} has ${(bal / LAMPORTS_PER_SOL).toFixed(4)} SOL (skip funding)`);
     }
   }
 
-  // Each wallet self-registers
+  // ── Self-register ───────────────────────────────────────────────────
   for (const label of DEMO_LABELS) {
     const kp = wallets[label]!;
     const [positionPda] = PublicKey.findProgramAddressSync(
@@ -124,14 +178,12 @@ async function main() {
     );
     const info = await conn.getAccountInfo(positionPda);
     if (info) {
-      console.log(`▷ register ${label}: position exists, skipping`);
+      console.log(`▷ register ${label}: exists, skipping`);
       continue;
     }
     try {
-      const sig = await (network.methods as any).registerMember(
-        new anchor.BN(1_000),    // initial_spend (units of demo USDC base)
-        10,                      // multiplier
-      )
+      const sig = await (network.methods as any)
+        .registerMember(new anchor.BN(1_000), 10)
         .accounts({
           network: networkPda,
           position: positionPda,
@@ -140,21 +192,14 @@ async function main() {
         })
         .signers([kp])
         .rpc();
-      console.log(`▷ register ${label}: ${sig}`);
+      console.log(`▷ register ${label}: ${sig.slice(0, 12)}…`);
     } catch (e) {
       console.warn(`register ${label} failed:`, String(e).slice(0, 200));
     }
   }
 
-  // ── Place B/C under A, E under B ─────────────────────────────────────
-  // (oracle = deployer in V1)
-  const placements: Array<[Label, Label]> = [
-    ["B", "A"],
-    ["C", "A"],
-    ["E", "B"],
-    ["D", "C"],
-  ];
-  for (const [child, parent] of placements) {
+  // ── Place ───────────────────────────────────────────────────────────
+  for (const [child, parent] of PLACEMENTS) {
     const childKp = wallets[child]!;
     const parentKp = wallets[parent]!;
     const [childPos] = PublicKey.findProgramAddressSync(
@@ -166,19 +211,8 @@ async function main() {
       networkProgramId,
     );
     try {
-      // Fund oracle if needed (it pays tx fees)
-      const oracleBal = await conn.getBalance(oracle.publicKey);
-      if (oracleBal < 0.01 * 1e9) {
-        const fundTx = new Transaction().add(
-          SystemProgram.transfer({
-            fromPubkey: deployer.publicKey,
-            toPubkey: oracle.publicKey,
-            lamports: 0.05 * 1e9,
-          }),
-        );
-        await sendAndConfirmTransaction(conn, fundTx, [deployer], { commitment: "confirmed" });
-      }
-      const sig = await (network.methods as any).placeMember()
+      const sig = await (network.methods as any)
+        .placeMember()
         .accounts({
           network: networkPda,
           position: childPos,
@@ -187,15 +221,20 @@ async function main() {
         })
         .signers([oracle])
         .rpc();
-      console.log(`▷ place ${child} under ${parent}: ${sig}`);
+      console.log(`▷ place ${child} → ${parent}: ${sig.slice(0, 12)}…`);
     } catch (e) {
-      console.warn(`place ${child} under ${parent} failed (likely already placed):`, String(e).slice(0, 200));
+      const msg = String(e);
+      if (msg.includes("AlreadyPlaced")) {
+        console.log(`▷ place ${child} → ${parent}: already placed (skip)`);
+      } else {
+        console.warn(`place ${child} → ${parent} failed:`, msg.slice(0, 200));
+      }
     }
   }
 
-  console.log("\n✅ Seed complete.");
+  console.log("\n✅ Seed complete. Wallets:");
   for (const label of DEMO_LABELS) {
-    console.log(`  ${label}: ${wallets[label]!.publicKey.toBase58()}`);
+    console.log(`  ${label.padEnd(2)}  ${wallets[label]!.publicKey.toBase58()}`);
   }
 }
 

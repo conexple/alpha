@@ -1,12 +1,70 @@
 {
   "cluster": "devnet",
   "networkId": "1",
-  "buyer": "kaEWeMzH7yK95RTi8w7xd8ZugJa2ngzfo9L81XchYTU",
-  "amount": "1000",
-  "round": "0",
-  "positionPda": "6T5pbbC96DttPxVhX139zbHAxk6UkWTF7zf6UMF8ngup",
-  "purchasePda": "CqaUKSGkgdbaa7RVFx7PVzWMXqMAwbvsBQSupUAxYAEJ",
-  "transaction": "3voysBjypcH3qNCusJ1g66BywVMSmojNQbWuqkpDcTtbXunGWbD3euQezntd5KY2A1N4VHku2omPyM2vjgMA5Q6t",
-  "solscan": "https://solscan.io/tx/3voysBjypcH3qNCusJ1g66BywVMSmojNQbWuqkpDcTtbXunGWbD3euQezntd5KY2A1N4VHku2omPyM2vjgMA5Q6t?cluster=devnet",
-  "recordedAt": "2026-05-09T10:16:25.052Z"
+  "summary": "16-wallet, 5-level network. 4 record_purchase txs at various depths.",
+  "tree": {
+    "A": { "depth": 0, "children": ["B", "C", "F", "G", "H"] },
+    "B": { "depth": 1, "children": ["E"] },
+    "C": { "depth": 1, "children": ["D"] },
+    "D": { "depth": 2, "children": [] },
+    "E": { "depth": 2, "children": ["M"] },
+    "F": { "depth": 1, "children": ["I"] },
+    "G": { "depth": 1, "children": ["P"] },
+    "H": { "depth": 1, "children": [] },
+    "I": { "depth": 2, "children": ["J"] },
+    "J": { "depth": 3, "children": ["K"] },
+    "K": { "depth": 4, "children": ["L"] },
+    "L": { "depth": 5, "children": [] },
+    "M": { "depth": 3, "children": ["N"] },
+    "N": { "depth": 4, "children": ["O"] },
+    "O": { "depth": 5, "children": [] },
+    "P": { "depth": 2, "children": [] }
+  },
+  "wallets": {
+    "A": "4yKcv3r8F4GDciZ9VAZxTtSJhvrfhZd94ejLbe7WeaqS",
+    "B": "Hr1CPBo8pzbRE6B5u8iU5HtLcnPCWR8J4H4nEB7S814L",
+    "C": "GuuN1ZJsLvh9NUhnUqjFeomEXoaURQSGvAdVefNpaWDu",
+    "D": "BbDSsoTq1JJmWYUE1QjiG8P1N16wbu2ipxB4Z8Z64tMG",
+    "E": "kaEWeMzH7yK95RTi8w7xd8ZugJa2ngzfo9L81XchYTU",
+    "F": "4B4VV8MnSMU89StUCC8CFmpL2JDQ6Xe3of7fUavCDMth",
+    "G": "8h4Auzm8eSWGLeT9VHHywXg4vH1BMAKMkysctXsJ9CCY",
+    "H": "9ifvya2ENQcJgYS8e5ESeT86Zh3zgMbaa9N8ruvwZgiP",
+    "I": "78KJU1kJ73mjf3PA5si6yW6suLBKaxW7sZh4wCeNLu3n",
+    "J": "EDFhk5DiXKNpHz4Psob3vCknpEC9EGEq9y9GpnGrz2vS",
+    "K": "FFaGsmUmhnFoG3Syg8DUrL4vJhJKWUDxX4UyDLTr6v82",
+    "L": "7YkTy9FTiwHvWcsrNgg41UCvZzZTpnGNbCpMiezQXByv",
+    "M": "CSgaBonDDFZDYBVwRGdEJt5m2h7dWAJkkYCMBEfdPuoi",
+    "N": "Gzh6ciKmHws5LNugnDCCf8pHLR9wreetrAMcY6DsiiHG",
+    "O": "E7a8xx2zg3BfugxH7DQXcwCPCs9LNrvbgzqTtoEAUALG",
+    "P": "Ahck1yDpjmmtuFAdH2rMdi5yfBpRVXqcx8sFbogXJbmJ"
+  },
+  "programIds": {
+    "protocol": "D1HVppRLhT6wmUxmaM4QABytmcBDEmKuuuMoa7HkKSbn",
+    "network": "9nrHZqJcT3zLcK6eTu7ZLBBAU3Rr2eecnFYF413YePt9",
+    "escrow": "9eTvjKrfbYy6JhFMJnuFo5ATCN6uS115J196bvPbmMXU",
+    "oracle": "9CQFV9oPYKWE4Yg4w8mwJxsdibPeZJrKoTqcp2iTi1qz"
+  },
+  "demoUsdcMint": "DMVSU4BNqqLSmQeo5wop3SnUsA3xkoEvJAqNHe2e1rNG",
+  "purchases": [
+    {
+      "buyer": "O", "depth": 5, "amount": 2500,
+      "uplines": ["N", "M", "E", "B", "A"],
+      "solscan": "https://solscan.io/tx/5azsHMLzZuNXTN3dthfLN9mVhrzY99kuzB7FDHWGs2Y1hUozwt5gSMF5spt4iVsURpLAEwLoBfFrK46aAzp9KTbv?cluster=devnet"
+    },
+    {
+      "buyer": "L", "depth": 5, "amount": 5000,
+      "uplines": ["K", "J", "I", "F", "A"],
+      "solscan": "https://solscan.io/tx/3zBUehb5MPUHNnYsv4EXbXmCrEeK2P8RHpuUU2193SX4WMF43gMAj5RyecV8MtLFCk91khfCwWee61P7naA3onPB?cluster=devnet"
+    },
+    {
+      "buyer": "P", "depth": 2, "amount": 1500,
+      "uplines": ["G", "A"],
+      "solscan": "https://solscan.io/tx/4Q4ca7HGFW1gCVvoT5y4pcvi1vVNV3LeFJyfU3Ey2BywFYzgzJWEYzLj8qacjdKxJByvX8ksDCXxD3nhDkGQmBdE?cluster=devnet"
+    },
+    {
+      "buyer": "D", "depth": 2, "amount": 3000,
+      "uplines": ["C", "A"],
+      "solscan": "https://solscan.io/tx/acCWFcSLDTHchTGgj3HYW7YiaMNFvH5KZ7DCAXhmCREv3QbwWFmcXuMdcs2E57Vr4ZGsspihwXarU4uZLRRcCpX?cluster=devnet"
+    }
+  ]
 }
