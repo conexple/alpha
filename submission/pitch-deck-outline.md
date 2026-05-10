@@ -32,10 +32,10 @@ style: |
 
 # The problem
 
-- ~80% of affiliate revenue flows to professional influencers
-- 0% flows to the customers who actually buy the product
-- Merchants pay it anyway — it's a price of doing business
-- Source: industry consensus, cite Statista or AffiliateWP inline
+- Global affiliate marketing: **$17–18B annually**, growing ~14% YoY (Post Affiliate Pro, 2025)
+- The entire pool flows to creators, publishers, coupon sites
+- **0% reaches the customer** whose purchase generated the commission
+- Merchants pay it anyway. The routing is wrong.
 
 ---
 
@@ -107,10 +107,10 @@ style: |
 
 # Market entry
 
-- Thailand: ~$10B annual e-commerce affiliate flow
-- ASEAN expansion arc: Thailand → Vietnam → Indonesia → Philippines
-- First operator: Conexple Thailand (Sornkan Co.)
-- 5 merchants in Q3, 50 by year-end
+- SEA influencer-driven e-commerce: **up to $46B annually**, **$21B directly trackable affiliate** (Cube × impact.com SEA Influencer Marketing Report, 2025)
+- Thailand: **16% of SEA e-commerce**, **83% buy on creator recommendation** (Priceza · Thailand E-Commerce Trends 2025)
+- ASEAN arc: Thailand → Vietnam → Indonesia → Philippines
+- First operator: Conexple Thailand (Sornkan Co.); 5 merchants Q3, 50 by year-end
 
 ---
 

@@ -29,15 +29,19 @@
 > Conexple redirects that pool — the merchant's existing affiliate
 > budget — to the people who actually purchased. On-chain. On Solana."
 
-### 0:20–0:45 — The market (slide: Thailand $10B + ASEAN map)
+### 0:20–0:45 — The market (slide: SEA $21B trackable + $46B total influenced)
 
-**Slide: Thailand commerce map + numbers.**
+**Slide: SEA / Thailand commerce stats.**
 
-> "Thailand alone moves around ten billion dollars a year through
-> e-commerce affiliate programs. Across South-East Asia it's roughly
-> forty billion.
+> "Southeast Asia moves twenty-one billion dollars a year through
+> trackable affiliate revenue — up to forty-six billion if you count
+> all influencer-driven sales. That's the impact dot com Cube report,
+> twenty-twenty-five.
 >
-> The buyer never sees a cut.
+> Thailand is sixteen percent of that market. Eighty-three percent of
+> Thai consumers buy on a creator's recommendation.
+>
+> The buyer never sees a cut. That's the money we're redistributing.
 >
 > We're a Thai team. Our company, Sornkan Co., already operates in
 > Thai consumer brands. Conexple is the protocol we wanted to use
@@ -102,7 +106,8 @@ Solscan link visible. Then back to slide.**
 > Five merchants in Q3, fifty by year-end.
 >
 > The protocol stays open. Any operator in any country can deploy it.
-> That's how we go from ten billion in Thailand to the rest of ASEAN.
+> That's how we expand from Thailand across the forty-six-billion-dollar
+> SEA market.
 >
 > Repo, demo, and deck — all linked. Talk soon."
 
