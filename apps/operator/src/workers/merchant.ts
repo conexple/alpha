@@ -122,7 +122,28 @@ merchantRoute.get("/list", async (c) => {
     const merchants = await listMerchants(c.env);
     return c.json({ network_id: c.env.NETWORK_ID, merchants });
   } catch (err) {
-    return c.json({ error: String(err).slice(0, 300) }, 500);
+    // Free Solana RPCs (api.devnet, public.helius free tier) reject Cloudflare
+    // Worker IPs with HTTP 403 on getProgramAccounts. Don't 500 the merchant
+    // page over it — fall back to the hardcoded display metadata so the
+    // dropdown still renders. Surface the failure via `degraded: true` so the
+    // frontend can choose to dim the vault-balance column.
+    const fallback = Object.entries(DISPLAY_META).map(([id, meta]) => ({
+      merchant_id: id,
+      name: meta.name,
+      margin_bps: meta.margin_bps,
+      pda: "",
+      vault: "",
+      vault_balance_base_units: "?",
+      deposited_total: "?",
+      paid_out_total: "?",
+      voided_total: "?",
+    }));
+    return c.json({
+      network_id: c.env.NETWORK_ID,
+      merchants: fallback,
+      degraded: true,
+      degraded_reason: String(err).slice(0, 200),
+    });
   }
 });
 
