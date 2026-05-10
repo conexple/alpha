@@ -1,3 +1,26 @@
+---
+marp: true
+theme: default
+paginate: true
+size: 16:9
+backgroundColor: "#FAF7F2"
+color: "#1A1A1A"
+header: "Conexple · Colosseum Frontier 2026"
+footer: "github.com/conexple/alpha · Apache 2.0"
+style: |
+  section { font-family: 'Georgia', 'IBM Plex Serif', serif; padding: 60px 80px; }
+  h1 { color: #1A1A1A; border-bottom: 2px solid #6B7C5A; padding-bottom: 10px; }
+  ul { line-height: 1.65; font-size: 0.95em; }
+  header, footer { color: #7A7A7A; font-size: 0.65em; }
+  section.lead { text-align: left; }
+  section.lead h1 { font-size: 2.4em; border-bottom: none; margin-bottom: 0.6em; }
+  section.lead ul { font-size: 1.05em; list-style: none; padding-left: 0; }
+  section.lead li { margin: 0.4em 0; }
+  strong { color: #5B6E48; }
+---
+
+<!-- _class: lead -->
+
 # Conexple
 
 - Open consumer affiliate protocol on Solana
