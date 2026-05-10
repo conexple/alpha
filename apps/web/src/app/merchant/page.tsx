@@ -1,16 +1,82 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StatTile } from "@/components/StatTile";
 
 const OPERATOR_API =
   process.env.NEXT_PUBLIC_OPERATOR_URL ?? "https://conexple-worker-operator.sornwin.workers.dev";
 
+interface Merchant {
+  id: string;
+  name: string;
+  marginBps: number;
+  pda: string;
+  vaultBalance?: string; // base units, USDC = 6 decimals
+}
+
+// Fallback catalog if /merchant/list is unreachable (e.g. local dev without
+// the operator running). Each entry mirrors a MerchantEscrow PDA already
+// initialized on devnet via scripts/init-merchant.ts.
+const FALLBACK_MERCHANTS: Merchant[] = [
+  { id: "1", name: "Demo Merchant 01", marginBps: 5000, pda: "—" },
+  { id: "2", name: "Demo Merchant 02", marginBps: 4500, pda: "HwrBWSzM8gDddmsUKob9cLMAgdhuTwVxUbhnvFJFe6Us" },
+  { id: "3", name: "Demo Merchant 03", marginBps: 3000, pda: "GRaZoLpY5VZZ91YEre4TjtjpkvhfKuU69fxUMVke8d7a" },
+];
+
+interface OperatorListItem {
+  merchant_id: string;
+  name: string;
+  margin_bps: number;
+  pda: string;
+  vault_balance_base_units: string;
+}
+
+function formatUsdc(baseUnits?: string): string | undefined {
+  if (!baseUnits) return undefined;
+  const n = Number(baseUnits) / 1_000_000;
+  return `${n.toFixed(2)} USDC`;
+}
+
 export default function MerchantPage() {
+  const [merchants, setMerchants] = useState<Merchant[]>(FALLBACK_MERCHANTS);
   const [merchantId, setMerchantId] = useState("1");
   const [purchaseId, setPurchaseId] = useState("");
   const [resp, setResp] = useState<string | null>(null);
   const [busy, setBusy] = useState<"void" | "force" | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const r = await fetch(`${OPERATOR_API}/merchant/list`, { method: "GET" });
+        if (!r.ok) return;
+        const data = (await r.json()) as { merchants?: OperatorListItem[] };
+        if (cancelled || !data.merchants?.length) return;
+        const fromChain: Merchant[] = data.merchants.map((m) => ({
+          id: m.merchant_id,
+          name: m.name,
+          marginBps: m.margin_bps,
+          pda: m.pda,
+          vaultBalance: m.vault_balance_base_units,
+        }));
+        // Merge: union of fallback + on-chain, on-chain wins on collisions.
+        const byId = new Map<string, Merchant>();
+        for (const m of FALLBACK_MERCHANTS) byId.set(m.id, m);
+        for (const m of fromChain) byId.set(m.id, m);
+        const merged = Array.from(byId.values()).sort(
+          (a, b) => Number(BigInt(a.id) - BigInt(b.id)),
+        );
+        setMerchants(merged);
+      } catch {
+        // Silent — keep fallback list.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const selected = merchants.find((m) => m.id === merchantId) ?? merchants[0]!;
 
   async function trigger(action: "void" | "force-expire") {
     setBusy(action === "void" ? "void" : "force");
@@ -37,28 +103,49 @@ export default function MerchantPage() {
           Merchant console
         </h1>
         <p className="mt-3 max-w-2xl text-graphite">
-          Demo controls for a single merchant. Void cancels a pending
-          commission within the 30-day refund window. Force-expire is
-          the operator's escape hatch when a customer is gaming the
-          system (auto-fires after 3 voids in 3 rounds).
+          Demo controls. The protocol is multi-merchant — switch between {merchants.length} merchants below.
+          Void cancels a pending commission within the 30-day refund window.
+          Force-expire is the operator's escape hatch when a customer is
+          gaming the system (auto-fires after 3 voids in 3 rounds).
         </p>
       </header>
 
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatTile label="Merchant ID" value={merchantId} />
-        <StatTile label="Cycle" value="0" sub="daily" />
-        <StatTile label="Cluster" value="devnet" emphasis="purple" />
+        <StatTile label="Merchant ID" value={selected.id} sub={selected.name} />
+        <StatTile label="Margin (bps)" value={String(selected.marginBps)} sub={`${(selected.marginBps / 100).toFixed(1)}%`} />
+        <StatTile
+          label="Vault balance"
+          value={formatUsdc(selected.vaultBalance) ?? "—"}
+          sub={selected.pda !== "—" ? `${selected.pda.slice(0, 4)}…${selected.pda.slice(-4)}` : "off-chain only"}
+          emphasis="purple"
+        />
         <StatTile label="Mock USDC" value="6 dec" sub="DMVS…1rNG" emphasis="amber" />
       </section>
 
       <section className="card max-w-2xl space-y-5">
         <h2 className="font-display text-2xl text-ink">Manage a pending purchase</h2>
-        <Field
-          label="Merchant ID"
-          value={merchantId}
-          onChange={setMerchantId}
-          hint="Numeric — assigned at initialize_merchant time"
-        />
+        <label className="block">
+          <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-stone">Merchant</span>
+          <select
+            value={merchantId}
+            onChange={(e) => setMerchantId(e.target.value)}
+            className="mt-1.5 w-full rounded-lg border border-edge bg-cream px-4 py-2.5 text-sm text-ink focus:border-ink focus:outline-none"
+          >
+            {merchants.map((m) => (
+              <option key={m.id} value={m.id}>
+                #{m.id} — {m.name} ({(m.marginBps / 100).toFixed(1)}% margin)
+              </option>
+            ))}
+          </select>
+          <span className="mt-1 block text-xs text-stone">
+            Numeric ID assigned at <code className="font-mono">initialize_merchant</code> time.
+            {selected.pda !== "—" && (
+              <>
+                {" "}MerchantEscrow PDA: <code className="font-mono">{selected.pda.slice(0, 6)}…{selected.pda.slice(-4)}</code>.
+              </>
+            )}
+          </span>
+        </label>
         <Field
           label="Purchase / wallet identifier"
           value={purchaseId}
