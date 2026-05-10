@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: "Conexple — Open consumer affiliate protocol on Solana",
   description:
     "Redirect existing merchant marketing commissions to everyday consumers — 5-level unilevel + Infinity Override on Solana, on-chain rules, anti-MLM by structural design.",
-  metadataBase: new URL("https://conexple-pages-web.pages.dev"),
+  metadataBase: new URL("https://conexple-worker-web.sornwin.workers.dev"),
   icons: {
     icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
   },
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     description:
       "Open-source consumer affiliate protocol on Solana. Every rule, payout, and position lives on chain.",
     type: "website",
-    url: "https://conexple-pages-web.pages.dev",
+    url: "https://conexple-worker-web.sornwin.workers.dev",
     siteName: "Conexple",
     images: [
       {

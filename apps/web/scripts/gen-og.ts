@@ -346,7 +346,7 @@ function renderSvg(trees: TreeNode[], programIds: string[]): string {
 
   // Bottom-right: domain
   parts.push(
-    `<text x="${W - 60}" y="620" text-anchor="end" font-family="Consolas, ui-monospace, monospace" font-size="11" fill="${PALETTE.muted}">conexple-pages-web.pages.dev</text>`,
+    `<text x="${W - 60}" y="620" text-anchor="end" font-family="Consolas, ui-monospace, monospace" font-size="11" fill="${PALETTE.muted}">conexple-worker-web.sornwin.workers.dev</text>`,
   );
 
   parts.push(`</svg>`);

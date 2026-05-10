@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "next lint",
     "gen:og": "tsx scripts/gen-og.ts",
-    "deploy": "next build && wrangler pages deploy out --project-name conexple-pages-web --branch main"
+    "deploy": "next build && wrangler deploy",
+    "deploy:legacy:pages": "echo 'Pages deploy retired — see wrangler.toml; use pnpm run deploy' && exit 1"
   },
   "dependencies": {
     "@conexple/sdk": "workspace:*",

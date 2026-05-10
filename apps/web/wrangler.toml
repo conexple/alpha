@@ -1,0 +1,12 @@
+name = "conexple-worker-web"
+compatibility_date = "2026-04-01"
+account_id = "a24ce30584273b42333051f1cdec48e2"
+
+# Static-assets-only Worker. The Next.js build (`output: 'export'`) emits
+# everything to ./out — Workers serves it via the [assets] binding. No
+# worker script needed because nothing here requires runtime SSR or APIs;
+# all dynamic data is read from the operator (conexple-worker-operator)
+# or directly from devnet RPC by the client.
+[assets]
+directory = "./out"
+not_found_handling = "404-page"
