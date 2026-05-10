@@ -1,0 +1,44 @@
+{
+  "ranAt": "2026-05-10T07:00:00.000Z",
+  "purpose": "Side 3 proof — third-party merchant onboards into Conexple network with their own wallet",
+  "rpc": "https://api.devnet.solana.com",
+  "cluster": "devnet",
+  "merchant": {
+    "id": "4",
+    "name": "Demo Merchant 04 (BYOK)",
+    "marginBps": 2500,
+    "wallet": "B678BA7gDhqy3YSWj3jqL1Tf2uJRbAABfhUurZFowPa6",
+    "walletKeyFile": "keys/merchant-04.json",
+    "merchantEscrowPda": "EuLxzKuGXnVZzSMqXw22b4bZgJbCye6BCu7N9ekHRq6R",
+    "vault": "GXG4zHYbWzK5FSuyjNeTLh4Cx8Fb3gkWW5hxvnJR7iES",
+    "merchantUsdcAta": "4E5GnvYbVWBxu7RgirvcA3WWFtajgSyPca22BNJKz31W",
+    "depositedBaseUnits": "25000000",
+    "depositedDisplayUsdc": "25"
+  },
+  "transactions": [
+    {
+      "step": 1,
+      "instruction": "initialize_merchant",
+      "signer": "B678BA7gDhqy3YSWj3jqL1Tf2uJRbAABfhUurZFowPa6",
+      "signerRole": "merchant (third-party, not deployer)",
+      "signature": "5mBeCRucKoAThAwmw6JuUL4dRh8MCLZ6xEwJJtLjC1ZBM7GM31Fzzqh52TP9rucLWwDcFwCkKAcBv2Gf7B44JphY",
+      "solscan": "https://solscan.io/tx/5mBeCRucKoAThAwmw6JuUL4dRh8MCLZ6xEwJJtLjC1ZBM7GM31Fzzqh52TP9rucLWwDcFwCkKAcBv2Gf7B44JphY?cluster=devnet"
+    },
+    {
+      "step": 2,
+      "instruction": "mintTo 25 USDC",
+      "signer": "8TLJpd7yJZD4ufSbK4YirnMhNdN68mVmfGvnsNztkLz8",
+      "signerRole": "deployer (mock USDC mint authority — in production, Circle issues USDC)",
+      "signature": "2U7GN99QZQGF3uubUThAoDgdV8QKc8JXYLX88NmWwgaSXL87ctbV3DYnm3FZGD8WtYvVjCacg1VCJxVHHpy7JDM7",
+      "solscan": "https://solscan.io/tx/2U7GN99QZQGF3uubUThAoDgdV8QKc8JXYLX88NmWwgaSXL87ctbV3DYnm3FZGD8WtYvVjCacg1VCJxVHHpy7JDM7?cluster=devnet"
+    },
+    {
+      "step": 3,
+      "instruction": "escrow.deposit 25 USDC",
+      "signer": "B678BA7gDhqy3YSWj3jqL1Tf2uJRbAABfhUurZFowPa6",
+      "signerRole": "merchant (using their own USDC ATA as source)",
+      "signature": "4xrytAYtqLj8K1vvhLd2gtc1tQk7W2DifgN6zm4pAYka9GPdu8zdQAsYVe4i1SaPwrRA3YdqTZuA5v6HPhjnbMHw",
+      "solscan": "https://solscan.io/tx/4xrytAYtqLj8K1vvhLd2gtc1tQk7W2DifgN6zm4pAYka9GPdu8zdQAsYVe4i1SaPwrRA3YdqTZuA5v6HPhjnbMHw?cluster=devnet"
+    }
+  ]
+}

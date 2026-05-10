@@ -36,12 +36,15 @@ export const merchantRoute = new Hono<{ Bindings: Env }>();
 const MERCHANT_ESCROW_SIZE = 145;
 
 // Off-chain display metadata. Merchants 02 / 03 are seeded by
-// scripts/init-merchant.ts; merchant 01 was the original hardcoded demo.
+// scripts/init-merchant.ts; merchant 04 is seeded by
+// scripts/init-merchant-byok.ts using a third-party (non-deployer) keypair;
+// merchant 01 was the original hardcoded demo.
 // Keep this map in sync with apps/web/src/app/merchant/page.tsx.
 const DISPLAY_META: Record<string, { name: string; margin_bps: number }> = {
   "1": { name: "Demo Merchant 01", margin_bps: 5000 },
   "2": { name: "Demo Merchant 02", margin_bps: 4500 },
   "3": { name: "Demo Merchant 03", margin_bps: 3000 },
+  "4": { name: "Demo Merchant 04 (BYOK)", margin_bps: 2500 },
 };
 
 function readU64Le(buf: Buffer, offset: number): bigint {
