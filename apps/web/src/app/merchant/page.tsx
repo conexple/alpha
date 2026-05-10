@@ -34,7 +34,12 @@ interface OperatorListItem {
 function formatUsdc(baseUnits?: string): string | undefined {
   if (!baseUnits) return undefined;
   const n = Number(baseUnits) / 1_000_000;
+  if (!Number.isFinite(n)) return undefined; // operator may send "?" in degraded mode
   return `${n.toFixed(2)} USDC`;
+}
+
+function hasPda(pda: string): boolean {
+  return Boolean(pda) && pda !== "—";
 }
 
 export default function MerchantPage() {
@@ -116,7 +121,7 @@ export default function MerchantPage() {
         <StatTile
           label="Vault balance"
           value={formatUsdc(selected.vaultBalance) ?? "—"}
-          sub={selected.pda !== "—" ? `${selected.pda.slice(0, 4)}…${selected.pda.slice(-4)}` : "off-chain only"}
+          sub={hasPda(selected.pda) ? `${selected.pda.slice(0, 4)}…${selected.pda.slice(-4)}` : "off-chain only"}
           emphasis="purple"
         />
         <StatTile label="Mock USDC" value="6 dec" sub="DMVS…1rNG" emphasis="amber" />
@@ -139,7 +144,7 @@ export default function MerchantPage() {
           </select>
           <span className="mt-1 block text-xs text-stone">
             Numeric ID assigned at <code className="font-mono">initialize_merchant</code> time.
-            {selected.pda !== "—" && (
+            {hasPda(selected.pda) && (
               <>
                 {" "}MerchantEscrow PDA: <code className="font-mono">{selected.pda.slice(0, 6)}…{selected.pda.slice(-4)}</code>.
               </>
