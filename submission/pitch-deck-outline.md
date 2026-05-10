@@ -82,7 +82,7 @@ style: |
 - Per-purchase commissions at sub-cent fees
 - Daily settlement at near-zero gas
 - USDC settlement matches merchant expectations
-- Helius and Triton One are official ecosystem partners
+- Production RPC via Helius (Frontier's official partner) — mainnet is a config change
 - This economic model doesn't work on Ethereum at this scale
 
 ---

@@ -95,7 +95,9 @@ Solscan link visible. Then back to slide.**
 > sense here. Daily settlement runs at near-zero gas. USDC matches
 > what merchants already understand.
 >
-> Helius and Triton are partners — we're on their devnet."
+> We run on Helius devnet RPC — Helius and Triton One are Frontier's
+> official RPC partners — so production mainnet is a config change,
+> not a rewrite."
 
 ### 2:25–2:45 — Ask + close (face cam)
 
