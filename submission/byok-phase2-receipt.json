@@ -1,0 +1,39 @@
+{
+  "ranAt": "2026-05-10T13:41:03.234Z",
+  "purpose": "Side 3 phase 2 proof — customer of merchant 04 (BYOK) bought, commission distributes to upline 4 levels deep",
+  "rpc": "https://api.devnet.solana.com",
+  "operator": "https://conexple-worker-operator.sornwin.workers.dev",
+  "cluster": "devnet",
+  "context": "K (FFaG, L4 leaf in tree A) buys 8000 base units from merchant 04 (BYOK). Customer signs purchase via webhook (/webhook/purchase, HMAC-signed). Operator queue consumer writes pending_commission rows to D1 with settle_at = block_time + 30d (BACKDATE_DAYS=60 makes settle_at past). /settle/run from CF Worker fails with 403 (known RPC IP block, mitigation per session 4). scripts/settle-onchain.ts runs same logic from local IP using oracle key, submits one tx with 4 add_earnings ixs (one per active upline level), each at floor(8000 * 0.5 / 7) = 571 base units. Result: J/I/F/A each gain 571 earned. /explorer/ Total earned jumps 354 -> 2638.",
+  "buyer": {
+    "wallet": "FFaGsmUmhnFoG3Syg8DUrL4vJhJKWUDxX4UyDLTr6v82",
+    "label": "K",
+    "depth": 4,
+    "tree": "A"
+  },
+  "merchant": {
+    "id": "4",
+    "name": "Demo Merchant 04 (BYOK)",
+    "wallet": "B678BA7gDhqy3YSWj3jqL1Tf2uJRbAABfhUurZFowPa6",
+    "merchantEscrowPda": "EuLxzKuGXnVZzSMqXw22b4bZgJbCye6BCu7N9ekHRq6R"
+  },
+  "purchase": {
+    "purchase_id": "16417583-7274-4cd8-b89f-c6615de4de99",
+    "amount_base_units": 8000,
+    "block_time_backdate_days": 60
+  },
+  "settlement": {
+    "signature": "aMnXq4v4YJsvUXYYq4S1jbrXs3MStjVcRq7ZYej77XWQdY9LDUSDa8W5S4V3m6rkbWUyj7DNoyh5AdgQrWR1n2S",
+    "solscan": "https://solscan.io/tx/aMnXq4v4YJsvUXYYq4S1jbrXs3MStjVcRq7ZYej77XWQdY9LDUSDa8W5S4V3m6rkbWUyj7DNoyh5AdgQrWR1n2S?cluster=devnet",
+    "perSlotBaseUnits": 571,
+    "totalDistributedToUplines": 2284,
+    "recipients": [
+      { "wallet": "EDFhk5DiXKNpHz4Psob3vCknpEC9EGEq9y9GpnGrz2vS", "label": "J", "level": 1, "amount": 571, "newEarned": 571 },
+      { "wallet": "78KJU1kJ73mjf3PA5si6yW6suLBKaxW7sZh4wCeNLu3n", "label": "I", "level": 2, "amount": 571, "newEarned": 571 },
+      { "wallet": "4B4VV8MnSMU89StUCC8CFmpL2JDQ6Xe3of7fUavCDMth", "label": "F", "level": 3, "amount": 571, "newEarned": 571 },
+      { "wallet": "4yKcv3r8F4GDciZ9VAZxTtSJhvrfhZd94ejLbe7WeaqS", "label": "A", "level": 4, "amount": 571, "newEarned": 819, "previousEarned": 248 }
+    ],
+    "totalEarnedAfter": 2638,
+    "totalEarnedBefore": 354
+  }
+}
