@@ -158,7 +158,7 @@ export default function Home() {
             </p>
             <div className="mt-6 flex flex-wrap gap-3 text-sm">
               <a
-                href="https://github.com/conexple/conexple"
+                href="https://github.com/conexple/alpha"
                 target="_blank"
                 rel="noreferrer"
                 className="rounded-full border border-edge bg-cream px-5 py-2.5 font-medium text-graphite hover:border-ink hover:text-ink"

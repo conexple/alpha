@@ -36,7 +36,7 @@ pnpm --filter web exec wrangler pages deploy .next \
 ```
 
 Or use the Cloudflare dashboard's git integration on the
-`conexple/conexple` repo — it will auto-detect Next.js and run
+`conexple/alpha` repo — it will auto-detect Next.js and run
 `pnpm --filter web build`.
 
 ## Environment variables

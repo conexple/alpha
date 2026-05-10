@@ -26,10 +26,10 @@ export function SiteFooter() {
           <FooterCol
             title="Protocol"
             links={[
-              { href: "https://github.com/conexple/conexple", label: "GitHub", ext: true },
-              { href: "https://github.com/conexple/conexple/blob/main/docs/mechanics.md", label: "Mechanics spec", ext: true },
-              { href: "https://github.com/conexple/conexple/blob/main/docs/payout.md", label: "Payout timing", ext: true },
-              { href: "https://github.com/conexple/conexple/blob/main/docs/architecture.md", label: "Architecture", ext: true },
+              { href: "https://github.com/conexple/alpha", label: "GitHub", ext: true },
+              { href: "https://github.com/conexple/alpha/blob/main/docs/mechanics.md", label: "Mechanics spec", ext: true },
+              { href: "https://github.com/conexple/alpha/blob/main/docs/payout.md", label: "Payout timing", ext: true },
+              { href: "https://github.com/conexple/alpha/blob/main/docs/architecture.md", label: "Architecture", ext: true },
             ]}
           />
           <FooterCol

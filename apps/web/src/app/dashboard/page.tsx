@@ -55,8 +55,21 @@ export default function DashboardPage() {
         <h1 className="font-display text-5xl text-ink">Connect to see your position</h1>
         <p className="text-graphite">
           Use Phantom (or any Solana wallet) pointed at <strong>devnet</strong>.
-          The network is pre-seeded with 16 demo wallets — your wallet
-          probably won't be a member yet, and that's fine.
+          The network is pre-seeded with 21 demo wallets across 3 distinct
+          trees — your wallet probably won't be a member yet, and that's fine.
+        </p>
+        <p className="mx-auto max-w-md rounded-md border border-cnx-amber/40 bg-cnx-amber/5 p-3 text-xs text-cnx-amber">
+          <strong>First time on devnet?</strong> You'll need a tiny amount of
+          SOL (~0.005) to pay rent on the Position PDA. Grab some at{" "}
+          <a
+            href="https://faucet.solana.com"
+            target="_blank"
+            rel="noreferrer"
+            className="underline-offset-4 hover:underline"
+          >
+            faucet.solana.com
+          </a>{" "}
+          before clicking Register below.
         </p>
         <div className="flex justify-center"><WalletMultiButton /></div>
       </div>
@@ -295,6 +308,20 @@ function NoPosition() {
         <strong className="font-mono text-ink">{cap.toLocaleString()}</strong>{" "}
         base units. Once the cap is hit, your position locks (extension_locked)
         and decays after 2 inactive cycles — the karma loop.
+      </p>
+
+      <p className="rounded-md border border-cnx-amber/40 bg-cnx-amber/5 p-3 text-xs text-cnx-amber">
+        <strong>Need devnet SOL?</strong> Position registration costs ~0.005 SOL
+        (PDA rent + tx fee). Devnet airdrops are free at{" "}
+        <a
+          href="https://faucet.solana.com"
+          target="_blank"
+          rel="noreferrer"
+          className="underline-offset-4 hover:underline"
+        >
+          faucet.solana.com
+        </a>{" "}
+        — paste your wallet pubkey, request 1 SOL, come back here.
       </p>
 
       <div className="flex flex-wrap items-center gap-3">

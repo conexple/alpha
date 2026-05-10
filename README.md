@@ -7,7 +7,7 @@
 Deployed to **Solana devnet only.** Smart contracts are unaudited.
 Do not use with real funds.
 
-- **Live demo:** [conexple-pages-web.pages.dev](https://conexple-pages-web.pages.dev) (Cloudflare Pages)
+- **Live demo:** [conexple-worker-web.sornwin.workers.dev](https://conexple-worker-web.sornwin.workers.dev) (Cloudflare Pages)
 - **Operator backend:** [conexple-worker-operator.sornwin.workers.dev](https://conexple-worker-operator.sornwin.workers.dev) (Cloudflare Workers — `/health`, `/settle/run`, `/webhook/purchase`, etc.)
 - **Solscan-verifiable example tx:** [3voysBj...A5Q6t](https://solscan.io/tx/3voysBjypcH3qNCusJ1g66BywVMSmojNQbWuqkpDcTtbXunGWbD3euQezntd5KY2A1N4VHku2omPyM2vjgMA5Q6t?cluster=devnet) (record_purchase by wallet E, amount=1000)
 - **Program IDs (Solana devnet):**
@@ -69,7 +69,7 @@ Detailed: [docs/architecture.md](./docs/architecture.md).
 
 ```bash
 # 1. Clone + install
-git clone https://github.com/conexple/conexple
+git clone https://github.com/conexple/alpha
 cd conexple
 pnpm install
 

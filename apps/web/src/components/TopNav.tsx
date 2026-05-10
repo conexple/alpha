@@ -53,7 +53,7 @@ export function TopNav() {
 
         <div className="flex items-center gap-2">
           <a
-            href="https://github.com/conexple/conexple"
+            href="https://github.com/conexple/alpha"
             target="_blank"
             rel="noreferrer"
             className="hidden rounded-full border border-edge bg-paper px-3 py-1.5 text-xs font-medium text-graphite transition-colors hover:border-ink hover:text-ink sm:inline-flex"

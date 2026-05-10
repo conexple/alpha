@@ -18,18 +18,31 @@ interface Settlement {
   error: string | null;
 }
 
+type ToastTone = "success" | "neutral" | "error";
+interface Toast {
+  tone: ToastTone;
+  text: string;
+}
+
 export default function OperatorPage() {
   const [network, setNetwork] = useState<NetworkView | null>(null);
   const [health, setHealth] = useState<{ ok: boolean; service?: string; cluster?: string; time?: string } | null>(null);
   const [settlements, setSettlements] = useState<Settlement[]>([]);
   const [running, setRunning] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
+  const [toast, setToast] = useState<Toast | null>(null);
 
   useEffect(() => {
     readNetwork().then(setNetwork);
     fetch(`${OPERATOR_API}/health`).then((r) => r.json()).then(setHealth).catch(() => {});
     refresh();
   }, []);
+
+  // Auto-dismiss toast after 8 seconds.
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(null), 8000);
+    return () => clearTimeout(t);
+  }, [toast]);
 
   async function refresh() {
     try {
@@ -42,14 +55,31 @@ export default function OperatorPage() {
 
   async function triggerRun() {
     setRunning(true);
-    setMessage(null);
+    setToast(null);
     try {
       const r = await fetch(`${OPERATOR_API}/settle/run`, { method: "POST" });
-      const j = await r.json();
-      setMessage(`run submitted — ${JSON.stringify(j)}`);
+      if (!r.ok) {
+        const text = (await r.text().catch(() => "")) || `HTTP ${r.status}`;
+        setToast({ tone: "error", text: `! ${text.slice(0, 200)}` });
+        return;
+      }
+      const j: { settled?: number; settlement_id?: string } = await r.json();
+      const settled = typeof j.settled === "number" ? j.settled : 0;
+      if (settled > 0) {
+        setToast({
+          tone: "success",
+          text: `✓ Settled ${settled} rows. Settlement ${j.settlement_id ?? "—"}.`,
+        });
+      } else {
+        setToast({
+          tone: "neutral",
+          text: `· No pending rows ready (all cleared).`,
+        });
+      }
       await refresh();
     } catch (e) {
-      setMessage(String(e));
+      const msg = e instanceof Error ? e.message : String(e);
+      setToast({ tone: "error", text: `! ${msg.slice(0, 200)}` });
     } finally {
       setRunning(false);
     }
@@ -101,9 +131,22 @@ export default function OperatorPage() {
             disabled={running}
             className="self-start rounded-full bg-ink px-6 py-3 text-sm font-medium text-cream transition-transform hover:-translate-y-0.5 disabled:opacity-50"
           >
-            {running ? "Running…" : "Trigger cycle now"}
+            {running ? "Triggering…" : "Trigger cycle now"}
           </button>
-          {message && <p className="font-mono text-xs text-graphite">{message}</p>}
+          {toast && (
+            <div
+              role="status"
+              className={`rounded-md px-3 py-2 font-mono text-xs ${
+                toast.tone === "success"
+                  ? "bg-cnx-olive/10 text-cnx-olive"
+                  : toast.tone === "error"
+                    ? "bg-cnx-rose/5 text-cnx-rose"
+                    : "bg-stone/5 text-stone"
+              }`}
+            >
+              {toast.text}
+            </div>
+          )}
         </article>
 
         <article className="card flex flex-col gap-3">
