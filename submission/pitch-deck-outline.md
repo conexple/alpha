@@ -1,102 +1,128 @@
-# Pitch deck — 12 slide outline
+# Conexple
 
-> Build in Pitch.com / Keynote / Google Slides / Figma.
-> Export as PDF for the submission form.
-> 12 slides, one idea per slide. No tables, no walls of text.
+- Open consumer affiliate protocol on Solana
+- Pay loyal customers — not influencers
+- Bosso · Sornkan Co. · Bangkok, Thailand
+- suanwin.paows@gmail.com
 
-## Slide 1 — Title
+---
 
-- Logo (Conexple) — top center
-- Tagline: **Open consumer affiliate protocol on Solana**
-- One line under: "Pay loyal customers — not influencers."
-- Bottom: founder name, company, country, contact
+# The problem
 
-## Slide 2 — The problem (one number)
+- ~80% of affiliate revenue flows to professional influencers
+- 0% flows to the customers who actually buy the product
+- Merchants pay it anyway — it's a price of doing business
+- Source: industry consensus, cite Statista or AffiliateWP inline
 
-- 80% of affiliate revenue → professional influencers
-- 0% → the customers who actually bought the product
-- Source: lift any reasonable industry stat, cite inline
+---
 
-## Slide 3 — Why this is broken
+# Why this is broken
 
-- Bullet 1: Merchants pay anyway — it's a price of doing business
-- Bullet 2: Influencers don't move the needle for most categories
-- Bullet 3: Loyal customers refer friends but get nothing
-- Bullet 4: Existing loyalty programs don't compound across tiers
+- Influencers don't move the needle for most product categories
+- Loyal customers refer friends — and get nothing back
+- Existing loyalty programs don't compound across tiers
+- The affiliate budget exists; the routing is wrong
 
-## Slide 4 — Conexple
+---
 
-- Diagram: small purchase icon → ÷7 → 5 upline + 1 social pool + 1 override
-- One line: "Same affiliate budget. Redistributed."
+# Conexple — same budget, redistributed
 
-## Slide 5 — Why this is not MLM
+- Every purchase splits into seven parts
+- Five parts to the buyer's upline (five levels deep)
+- One part funds a public, on-chain social pool
+- One part is an Infinity Override for long-term active members
+- Merchant pays nothing extra
 
-- Table-style (use icons not boxes):
-  - 50% margin cap (on-chain)
-  - No recruitment requirement
-  - No auto-assign
-  - 5-level depth cap
-  - Open protocol, forkable
-- Tagline at bottom: "Read every rule on-chain."
+---
 
-## Slide 6 — Mechanics (one diagram, the same one in the demo)
+# Why this is not MLM
 
-- Show the simulator's network tree visualization
-- Highlight one purchase flowing through 5 upline + pool
+- 50% margin cap — enforced on-chain
+- No recruitment requirement — earnings depend on purchases
+- No auto-assign — placements only come from a referral
+- 5-level depth cap — no infinite pyramid
+- Apache 2.0 — forkable if the operator misbehaves
 
-## Slide 7 — Why Solana
+---
 
-- Per-purchase commission accruals at sub-cent fees
-- Daily settlement cron at zero gas
+# Mechanics — one purchase, traced
+
+- Diagram of a leaf wallet's purchase flowing up 5 levels
+- Each upline accrues a deterministic share
+- Social pool catches the remainder
+- All accruals visible on Solscan in real time
+
+---
+
+# Why Solana
+
+- Per-purchase commissions at sub-cent fees
+- Daily settlement at near-zero gas
 - USDC settlement matches merchant expectations
-- Helius + Triton One are official partners
-- Subtitle: "This doesn't work on Ethereum at this scale."
+- Helius and Triton One are official ecosystem partners
+- This economic model doesn't work on Ethereum at this scale
 
-## Slide 8 — Live demo
+---
 
-- Screenshot of the deployed Pages URL with a wallet connected
-- Screenshot of one Solscan transaction
-- URL and QR code prominently
-- One-line caption: "Devnet. Working. Solscan-verifiable."
+# Live demo — devnet, today
 
-## Slide 9 — Market entry
+- Web: conexple-worker-web.sornwin.workers.dev
+- 4 Anchor programs deployed, 21 positions across 3 trees, 4 merchants
+- Total on-chain earnings distributed: 2,638 base units across 6 wallets
+- BYOK proof: a third-party merchant plugged in end-to-end on chain
 
-- Map of Thailand, $10B annual e-commerce affiliate flow
-- ASEAN expansion arrows: Thailand → Vietnam → Indonesia → Philippines
-- Subtitle: "First operator: Conexple Thailand."
+---
 
-## Slide 10 — Business model
+# Architecture
+
+- 4 Anchor programs: protocol, network, escrow, oracle
+- Cloudflare Workers: operator backend + static web frontend
+- D1 for off-chain mirror, KV for RPC cache, Queue for ingest
+- Cron Trigger drives the daily settlement run
+
+---
+
+# Market entry
+
+- Thailand: ~$10B annual e-commerce affiliate flow
+- ASEAN expansion arc: Thailand → Vietnam → Indonesia → Philippines
+- First operator: Conexple Thailand (Sornkan Co.)
+- 5 merchants in Q3, 50 by year-end
+
+---
+
+# Business model
 
 - Operator takes 10% of social pool (configurable per network)
 - No token launch
 - Settlement currency: USDC (mainnet target — devnet uses mock)
-- Public-goods angle: protocol stays open; operators compete on UX
+- Protocol stays open; operators compete on UX
 
-## Slide 11 — Team
+---
 
-- Bosso (founder): designer + dev, Sornkan Co.
-- Supporting context: experience operating Thai consumer brands
-- One sentence: "We will operate post-hackathon as the first network."
+# Compliance — Thai direct-selling law
 
-## Slide 12 — Ask + close
+- Designed against พ.ร.บ. ขายตรงฯ 2545
+- No auto-assign of placements (legal red line)
+- No recruitment-required qualification
+- Margin cap and pool-distribution rules on-chain
+- Submission opts into Public Goods award
 
-- Repo: github.com/conexple/alpha
-- Live demo: <Pages URL>
-- Pitch video: <Loom/YouTube URL>
+---
+
+# Team
+
+- Bosso — founder, designer + dev
+- Sornkan Co. operates Thai consumer brands today
+- We will operate Conexple Thailand as the first network
+- The protocol stays open for any operator
+
+---
+
+# Ask + close
+
+- Repo: github.com/conexple/alpha (Apache 2.0)
+- Demo: conexple-worker-web.sornwin.workers.dev
+- Pitch video: see submission
 - Ask: a Frontier slot, then accelerator conversation
-- Subtitle: "Open protocol. Thai-rooted. ASEAN-bound."
-
-## Optional appendix slides (if you have time)
-
-- Roadmap: V1 (devnet/hackathon) → V2 (mainnet pilot, 5 merchants) → V3 (ASEAN expansion)
-- Risks: regulatory (Thai direct selling act — we explicitly designed around it),
-  operator-misbehavior (open protocol mitigates), token-launch risk (avoided)
-- Comparable past Colosseum winners (Banger.lol, Decal, Nomu) — different but adjacent
-
-## Style guide
-
-- 2 fonts max (sans + mono)
-- 4 colors max (Solana purple #9945ff, Solana teal #14f195, ink #0a0b14, paper #f7f6f1)
-- Plenty of whitespace
-- One claim per slide
-- Cite numbers inline (e.g. "Statista 2025 Thailand commerce report")
+- Open protocol. Thai-rooted. ASEAN-bound.
