@@ -11,8 +11,10 @@ Plays the role of the off-chain operator described in
 | `GET /health` | service heartbeat (no auth) |
 | `POST /placement/decide` | depth-first placement decision under a referrer |
 | `POST /webhook/purchase` | HMAC-signed purchase webhook → Queue |
-| `POST /settle/run` | manual settlement run (also runs daily on Cron) |
-| `GET /settle/status` | recent settlement runs |
+| `POST /settle/run` | manual settlement run (also runs daily on Cron); submits oracle-signed `add_earnings` txs from the Worker. **Note:** devnet free RPCs (api.devnet.solana.com, rpcpool, etc.) reject Cloudflare Workers' IP range with HTTP 403; without a paid Helius/Triton key the Worker can't reach the chain. Use `scripts/settle-onchain.ts` (see below) as a fallback. |
+| `GET /settle/pending` | read-only — lists pending rows ready for settlement, with the corresponding buyer + amount joined; used by the local fallback script |
+| `POST /settle/record` | record the result of an oracle-signed `add_earnings` tx that was submitted off-Worker (i.e. from the local script). Body: `{purchase_id, signature, recipients:[{wallet, level, amount}]}` |
+| `GET /settle/status` | recent settlement runs (id is the on-chain signature when available, `cron-<ts>` otherwise) |
 | `POST /oracle/sign` | sign a base64 transaction with the oracle key |
 | `POST /oracle/sign-submit` | sign + send + confirm |
 | `POST /merchant/void` | void a pending purchase (V1: D1 stub) |
@@ -38,6 +40,30 @@ In another terminal:
 ```bash
 curl http://localhost:8787/health
 ```
+
+## Running a settlement (local fallback)
+
+Because the Cloudflare Workers IP range is blocked from Solana's free
+devnet RPCs, the on-chain `add_earnings` submission for the demo runs
+from a local script that uses the developer's IP, then reports back to
+the Worker. Run it from the repo root:
+
+```bash
+OPERATOR_URL=https://conexple-worker-operator.sornwin.workers.dev \
+pnpm exec tsx scripts/settle-onchain.ts
+```
+
+The script:
+
+1. `GET /settle/pending` for ready rows
+2. groups by `purchase_id`, traces the buyer's upline 1..5 hops, builds
+   one `add_earnings` ix per active ancestor at `floor(margin/7)`
+3. submits one oracle-signed tx per purchase, awaits confirmation
+4. `POST /settle/record` with the signature + recipient list so the
+   D1 audit + dashboard reflects real on-chain state.
+
+The Solscan-verifiable signatures are stored as `settlements.id` and
+the oracle signature lands in `oracle_audit`.
 
 ## Deploy
 

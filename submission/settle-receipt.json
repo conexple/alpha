@@ -1,0 +1,62 @@
+{
+  "ranAt": "2026-05-10T06:33:52.093Z",
+  "operator": "https://conexple-worker-operator.sornwin.workers.dev",
+  "rpc": "https://api.devnet.solana.com",
+  "results": [
+    {
+      "purchase_id": "71153cdf-40f6-4388-8794-00c20b948bbc",
+      "buyer": "kaEWeMzH7yK95RTi8w7xd8ZugJa2ngzfo9L81XchYTU",
+      "amount": 1000,
+      "perSlot": 71,
+      "recipients": [
+        {
+          "wallet": "Hr1CPBo8pzbRE6B5u8iU5HtLcnPCWR8J4H4nEB7S814L",
+          "level": 1,
+          "amount": 71
+        },
+        {
+          "wallet": "4yKcv3r8F4GDciZ9VAZxTtSJhvrfhZd94ejLbe7WeaqS",
+          "level": 2,
+          "amount": 71
+        }
+      ],
+      "status": "settled",
+      "signature": "49aWHxWU7eU412hDykdt1Tq8opnydYvhWYmvTVotYN2cX24w8nykAN2tZhwcd4VhZtUaHPFCX7TwakzYQXYzMX8h"
+    },
+    {
+      "purchase_id": "54bc3b09-8aba-467e-84d4-c9cce1f97f0e",
+      "buyer": "BbDSsoTq1JJmWYUE1QjiG8P1N16wbu2ipxB4Z8Z64tMG",
+      "amount": 500,
+      "perSlot": 35,
+      "recipients": [
+        {
+          "wallet": "GuuN1ZJsLvh9NUhnUqjFeomEXoaURQSGvAdVefNpaWDu",
+          "level": 1,
+          "amount": 35
+        },
+        {
+          "wallet": "4yKcv3r8F4GDciZ9VAZxTtSJhvrfhZd94ejLbe7WeaqS",
+          "level": 2,
+          "amount": 35
+        }
+      ],
+      "status": "settled",
+      "signature": "2ziPeqtU7zQDHXj17ycJbFoafzcQx4n8PQpiBhXbvtxnKEDQmXsu1SRd4cSGg8ZELVXWgpYvYhepDaDUHQtqjo2m"
+    },
+    {
+      "purchase_id": "4eab9914-732b-48f6-be53-c79c58ff7d5b",
+      "buyer": "GuuN1ZJsLvh9NUhnUqjFeomEXoaURQSGvAdVefNpaWDu",
+      "amount": 2000,
+      "perSlot": 142,
+      "recipients": [
+        {
+          "wallet": "4yKcv3r8F4GDciZ9VAZxTtSJhvrfhZd94ejLbe7WeaqS",
+          "level": 1,
+          "amount": 142
+        }
+      ],
+      "status": "settled",
+      "signature": "3WsBMjSDqukBLXQnBHfaz3PDMbf9qgUY9goRFPpziNezXKEHXz8wH1FgPd42dnJ9aprouyjh43gsoUwxHXBFTPFM"
+    }
+  ]
+}
