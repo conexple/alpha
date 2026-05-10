@@ -96,7 +96,7 @@ VO:
 ### 2:25–2:30 — Outro
 
 VO:
-> "Code is at github.com/conexple/conexple. Repo is Apache 2.0,
+> "Code is at github.com/conexple/alpha. Repo is Apache 2.0,
 > contracts are unaudited — this is alpha. Pitch video covers the
 > business side. Thanks for watching."
 

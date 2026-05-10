@@ -80,7 +80,7 @@
 
 ## Slide 12 — Ask + close
 
-- Repo: github.com/conexple/conexple
+- Repo: github.com/conexple/alpha
 - Live demo: <Pages URL>
 - Pitch video: <Loom/YouTube URL>
 - Ask: a Frontier slot, then accelerator conversation

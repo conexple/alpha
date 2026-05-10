@@ -13,7 +13,7 @@
 | Anchor programs | conexple_protocol, _network, _escrow, _oracle | `programs/` | source ✓ committed; **anchor build/deploy pending toolchain install** |
 | Anchor tests | end-to-end happy path (3-level network + purchase) | `tests/full-flow.ts` | source ✓; runs after `anchor build` |
 | Operator backend | Hono + D1 + KV + Queue + Cron + Queue consumer, 6 workers | `apps/operator/` | ✅ **LIVE** at https://conexple-worker-operator.sornwin.workers.dev |
-| Web frontend | Next.js 15 + Tailwind + Phantom adapter, 5 routes (static export) | `apps/web/` | ✅ **LIVE** at https://conexple-pages-web.pages.dev |
+| Web frontend | Next.js 15 + Tailwind + Phantom adapter, 5 routes (static export) | `apps/web/` | ✅ **LIVE** at https://conexple-worker-web.sornwin.workers.dev |
 | SDK | PDA helpers + types + Anchor program glue | `packages/sdk/` | source ✓ + typecheck ✓ |
 | Scripts | deploy-devnet.sh, init-network.ts, mint-demo-usdc.ts, seed-demo.ts, e2e-smoke.ts, demo-purchases.ts | `scripts/` | source ✓; **run after anchor deploy** |
 | Cloudflare resources | D1 (`conexple-d1-operator`), KV (`conexple-kv-rpc-cache`), Queue (`conexple-queue-purchase-events`) | account `SORNKan Co., Ltd.` (a24ce30…) | ✅ **provisioned + 0001_initial.sql applied to remote D1** |
@@ -39,7 +39,7 @@ b3a6fbe feat(web,operator,docs): full app surface + submission package
 
 | Surface | URL | Status |
 |---|---|---|
-| Frontend (Cloudflare Pages) | https://conexple-pages-web.pages.dev | ✅ live, 8/8 static pages, Phantom adapter |
+| Frontend (Cloudflare Pages) | https://conexple-worker-web.sornwin.workers.dev | ✅ live, 8/8 static pages, Phantom adapter |
 | Operator API (Cloudflare Workers) | https://conexple-worker-operator.sornwin.workers.dev | ✅ live, cron registered, Queue bound, all endpoints respond |
 | `/health` | https://conexple-worker-operator.sornwin.workers.dev/health | ✅ 200 OK |
 | `/settle/status` | https://conexple-worker-operator.sornwin.workers.dev/settle/status | ✅ returns recent settlement runs |
@@ -116,7 +116,7 @@ Sign in with the email you registered for the hackathon
   redirect existing merchant marketing commissions to everyday
   consumers, not influencers.*
 - Description: lift from `README.md` "What is Conexple" section
-- GitHub URL: `https://github.com/conexple/conexple` (publish first —
+- GitHub URL: `https://github.com/conexple/alpha` (publish first —
   see step 3)
 - Demo URL: the Cloudflare Pages URL captured by the deploy script
 - Pitch video URL: Loom or YouTube unlisted from step 1
@@ -131,8 +131,8 @@ on `main` branch. To publish:
 
 ```pwsh
 # In PowerShell, from alpha/
-gh repo create conexple/conexple --public --description "Open-source consumer affiliate protocol on Solana"
-git remote add origin https://github.com/conexple/conexple.git
+gh repo create conexple/alpha --public --description "Open-source consumer affiliate protocol on Solana"
+git remote add origin https://github.com/conexple/alpha.git
 git push -u origin main
 ```
 
