@@ -43,6 +43,34 @@ jobs:
         run: |
           sh -c "$(curl -sSfL https://release.anza.xyz/v2.1.5/install)"
           echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+      - name: Cache platform-tools v1.43
+        id: cache-platform-tools
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/solana/v1.43/platform-tools
+          key: platform-tools-v1.43-linux-x86_64
+      - name: Pre-extract platform-tools v1.43
+        # cargo-build-sbf (Solana 2.1.5) expects platform-tools v1.43 at
+        # ~/.cache/solana/v1.43/platform-tools/. Its auto-download path fails
+        # on ubuntu-latest with `Os { code: 2, kind: NotFound }`, so we fetch
+        # and extract the linux-x86_64 archive ourselves before `anchor build`.
+        if: steps.cache-platform-tools.outputs.cache-hit != 'true'
+        run: |
+          set -euxo pipefail
+          mkdir -p "$HOME/.cache/solana/v1.43/platform-tools"
+          curl -sSfL \
+            https://github.com/anza-xyz/platform-tools/releases/download/v1.43/platform-tools-linux-x86_64.tar.bz2 \
+            -o /tmp/platform-tools-v1.43.tar.bz2
+          tar -xjf /tmp/platform-tools-v1.43.tar.bz2 \
+            -C "$HOME/.cache/solana/v1.43/platform-tools"
+          rm /tmp/platform-tools-v1.43.tar.bz2
+      - name: Verify platform-tools layout
+        # Fail loud if rust/ or llvm/ is missing — cargo-build-sbf will
+        # otherwise produce the same NotFound error we are trying to fix.
+        run: |
+          ls -la "$HOME/.cache/solana/v1.43/platform-tools"
+          test -d "$HOME/.cache/solana/v1.43/platform-tools/rust"
+          test -d "$HOME/.cache/solana/v1.43/platform-tools/llvm"
       - name: Install Anchor (AVM 1.0.2)
         # Anchor.toml pins toolchain.anchor_version = "1.0.2"; avm must match
         # or `anchor build` switches and re-downloads the matching version.
