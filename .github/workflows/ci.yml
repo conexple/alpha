@@ -6,9 +6,28 @@ on:
   pull_request:
     branches: [main]
 
+# Public-repo abuse hardening:
+#   - cancel-in-progress: a troll spamming commits to a PR / branch cancels
+#     older runs, so only one CI run per ref consumes concurrency at a time.
+#   - timeout-minutes on every job: kills runaway jobs (infinite loops,
+#     crypto-mining payloads in malicious fork PRs) instead of letting them
+#     hog a runner for 6 hours.
+# Reminder: trigger is `pull_request` (NOT `pull_request_target`), so fork
+# PRs run in the fork's sandbox with read-only GITHUB_TOKEN and zero access
+# to repo secrets. Do not change to `pull_request_target` without an
+# explicit threat model.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Default to read-only token; jobs that need writes opt in explicitly.
+permissions:
+  contents: read
+
 jobs:
   lint-and-typecheck:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -29,6 +48,7 @@ jobs:
 
   anchor-build:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - name: Cache Cargo
