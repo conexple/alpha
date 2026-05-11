@@ -55,9 +55,16 @@ import { connection } from "../chain/connection";
 import { loadOracleKeypair } from "../chain/oracle";
 import { buildAddEarningsIx, submitAddEarnings } from "../chain/payout";
 import { traceUpline } from "../chain/upline";
+import { verifyHmac } from "../lib/hmac";
 
 export const settlementRoute = new Hono<{ Bindings: Env }>();
 
+// SECURITY NOTE — V1 demo
+// /settle/run is invoked by both the daily cron AND the operator dashboard
+// "Trigger cycle now" button. Adding HMAC auth would break the button so
+// judges can't see it work. V2 should require the same x-conexple-internal
+// HMAC header that /settle/record now uses, served from a separate
+// admin-authority worker (not exposed to the public web).
 settlementRoute.post("/run", async (c) => {
   const result = await runScheduledSettlement(c.env, Date.now());
   return c.json(result);
@@ -91,10 +98,23 @@ interface RecordPayload {
   recipients: Array<{ wallet: string; level: number; amount: number }>;
 }
 
+// /settle/record is called only by scripts/settle-onchain.ts after the
+// fallback local-IP signing path. Requires the same HMAC as /webhook/purchase
+// to prevent forged settlement audit rows being injected by any internet
+// caller. (Pre-submission security audit caught this — see SECURITY.md.)
 settlementRoute.post("/record", async (c) => {
+  const headerSig = c.req.header("x-conexple-internal");
+  const raw = await c.req.text();
+  if (
+    !headerSig ||
+    !c.env.PURCHASE_WEBHOOK_HMAC ||
+    !(await verifyHmac(c.env.PURCHASE_WEBHOOK_HMAC, raw, headerSig))
+  ) {
+    return c.json({ error: "unauthorized" }, 401);
+  }
   let body: RecordPayload;
   try {
-    body = await c.req.json<RecordPayload>();
+    body = raw ? (JSON.parse(raw) as RecordPayload) : ({} as RecordPayload);
   } catch {
     return c.json({ error: "invalid json" }, 400);
   }

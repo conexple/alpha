@@ -1,8 +1,7 @@
 # Pitch video script — ≤ 3 minutes
 
 > Audience: Colosseum judges (investors evaluating for the
-> accelerator). They are NOT primarily technical reviewers — see
-> `instruction/work/colosseum-intel.md §Judging weight`.
+> accelerator). They are NOT primarily technical reviewers.
 >
 > Goal of THIS video: convince them this team will build a real
 > startup, not ship a hackathon and disappear. Tech goes in the

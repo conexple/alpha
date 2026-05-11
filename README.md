@@ -92,8 +92,8 @@ pnpm --filter web dev          # http://localhost:3000
 pnpm --filter operator dev     # http://localhost:8787 (wrangler dev)
 ```
 
-For full handoff (videos, deck, Cloudflare deploy, Colosseum submission),
-see [`submission/HANDOFF.md`](./submission/HANDOFF.md).
+For architecture deep-dive see [`docs/architecture.md`](./docs/architecture.md);
+for protocol mechanics see [`docs/mechanics.md`](./docs/mechanics.md).
 
 ## Repo layout
 
@@ -112,10 +112,10 @@ packages/sdk/                shared TypeScript types + PDA helpers
 
 scripts/                     deploy-devnet · init-network · mint-demo-usdc · seed-demo · e2e-smoke
 tests/                       Anchor end-to-end happy-path test
-submission/                  pitch script · tech demo script · deck outline · HANDOFF
+submission/                  pitch script · tech demo script · deck outline · receipts
 ```
 
-Detailed reading order: `instruction/work/plan.md` → `submission/HANDOFF.md`.
+Detailed reading order: [`docs/architecture.md`](./docs/architecture.md) → [`docs/mechanics.md`](./docs/mechanics.md) → [`docs/payout.md`](./docs/payout.md).
 
 ## Contributing
 

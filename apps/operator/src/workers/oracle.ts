@@ -1,50 +1,39 @@
-// Oracle worker — exposes /oracle/* endpoints for internal callers.
+// Oracle worker — these endpoints were originally planned for internal callers
+// to delegate signing of arbitrary base64-encoded transactions to the operator's
+// oracle keypair. In V1 they ended up unused: the scheduler signs inline via
+// loadOracleKeypair() in the same Worker process, and no external script calls
+// the HTTP version.
 //
-// V1 scope:
-//   POST /oracle/sign         — sign a base64-encoded transaction with the
-//                               operator oracle keypair, return the signed
-//                               base64 transaction (caller submits)
-//   POST /oracle/sign-submit  — sign + submit + return signature
+// The exposed endpoints were a serious risk: any internet caller could submit
+// a Conexple-program instruction (record_purchase / add_earnings / place_member)
+// and have it signed + broadcast by our oracle on devnet, forging the on-chain
+// audit trail. Pre-submission security audit found this.
 //
-// Both endpoints require an `x-conexple-internal` header that matches a
-// shared secret derived from the operator HMAC. (V1 simplification — no
-// separate signer auth.)
+// Resolution: both endpoints return 410 Gone. Internal callers continue to use
+// loadOracleKeypair() directly. Re-enable with proper HMAC auth in V2 if a
+// genuine remote-signer use-case emerges.
 
 import { Hono } from "hono";
-import { Transaction, sendAndConfirmTransaction } from "@solana/web3.js";
 import type { Env } from "../env";
-import { connection } from "../chain/connection";
-import { loadOracleKeypair } from "../chain/oracle";
 
 export const oracleRoute = new Hono<{ Bindings: Env }>();
 
-oracleRoute.post("/sign", async (c) => {
-  const body = await c.req.json<{ tx: string }>();
-  const tx = Transaction.from(Buffer.from(body.tx, "base64"));
-  const oracle = loadOracleKeypair(c.env);
-  tx.partialSign(oracle);
-  return c.json({
-    signed: tx.serialize({ requireAllSignatures: false }).toString("base64"),
-    signer: oracle.publicKey.toBase58(),
-  });
-});
+oracleRoute.post("/sign", (c) =>
+  c.json(
+    {
+      error: "endpoint disabled",
+      note: "Oracle signing happens in-process. There is no external sign API in V1.",
+    },
+    410,
+  ),
+);
 
-oracleRoute.post("/sign-submit", async (c) => {
-  const body = await c.req.json<{ tx: string; commitment?: "processed" | "confirmed" | "finalized" }>();
-  const tx = Transaction.from(Buffer.from(body.tx, "base64"));
-  const oracle = loadOracleKeypair(c.env);
-  const conn = connection(c.env);
-  const sig = await sendAndConfirmTransaction(conn, tx, [oracle], {
-    commitment: body.commitment ?? "confirmed",
-  });
-
-  // Audit log
-  const id = crypto.randomUUID();
-  await c.env.DB.prepare(
-    "INSERT INTO oracle_audit (id, signed_at, caller, ix_kind, signature) VALUES (?, ?, ?, ?, ?)",
-  )
-    .bind(id, Math.floor(Date.now() / 1000), "oracle/sign-submit", "any", sig)
-    .run();
-
-  return c.json({ signature: sig });
-});
+oracleRoute.post("/sign-submit", (c) =>
+  c.json(
+    {
+      error: "endpoint disabled",
+      note: "Oracle sign+submit happens in-process. There is no external API in V1.",
+    },
+    410,
+  ),
+);

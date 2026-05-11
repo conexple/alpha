@@ -36,6 +36,7 @@ import {
 } from "@solana/web3.js";
 import * as fs from "node:fs";
 import * as path from "node:path";
+import * as crypto from "node:crypto";
 
 const RPC = process.env.SOLANA_RPC_URL ?? "https://api.devnet.solana.com";
 const NETWORK_ID = BigInt(process.env.NETWORK_ID ?? "1");
@@ -266,14 +267,27 @@ async function main() {
       console.log(`   Solscan: https://solscan.io/tx/${sig}?cluster=devnet`);
 
       // 3. Tell the worker to record the result.
+      // /settle/record requires HMAC auth (V1 audit hardening) — sign body
+      // with PURCHASE_WEBHOOK_HMAC, send hex digest in x-conexple-internal.
+      const recordBody = JSON.stringify({
+        purchase_id: purchaseId,
+        signature: sig,
+        recipients: result.recipients,
+      });
+      const HMAC = process.env.PURCHASE_WEBHOOK_HMAC ?? "";
+      if (!HMAC) {
+        console.warn("   ⚠️  PURCHASE_WEBHOOK_HMAC not set — /settle/record will 401");
+      }
+      const recordSig = HMAC
+        ? crypto.createHmac("sha256", HMAC).update(recordBody).digest("hex")
+        : "";
       const recordRes = await fetch(`${OPERATOR_URL}/settle/record`, {
         method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          purchase_id: purchaseId,
-          signature: sig,
-          recipients: result.recipients,
-        }),
+        headers: {
+          "content-type": "application/json",
+          "x-conexple-internal": recordSig,
+        },
+        body: recordBody,
       });
       if (!recordRes.ok) {
         console.warn(

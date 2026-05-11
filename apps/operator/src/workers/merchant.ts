@@ -150,6 +150,12 @@ merchantRoute.get("/list", async (c) => {
   }
 });
 
+// SECURITY NOTE — V1 demo
+// /void + /force-expire are wired to operator dashboard buttons so judges can
+// see them work without setting up auth. Production builds should require the
+// same x-conexple-internal HMAC header that /settle/record uses, or move
+// these into an admin-authority worker not exposed to the public web.
+// Pre-submission audit recorded this in SECURITY.md.
 merchantRoute.post("/void", async (c) => {
   const body = await c.req.json<{ merchant_id: string; purchase_id: string }>();
   if (!body.merchant_id || !body.purchase_id) {

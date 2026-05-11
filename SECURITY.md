@@ -49,8 +49,33 @@ not realistic. We aim for:
 - Phantom wallet refusing to connect on a non-https URL
 - Demo seed wallets being publicly known (they are deterministic by design)
 
+## Pre-submission audit (2026-05-11)
+
+A whole-app security pass was run before submission. Findings + fixes:
+
+- **Fixed:** `/oracle/sign` and `/oracle/sign-submit` were exposed to the
+  public internet with no auth — anyone could request the operator's
+  oracle key sign an arbitrary instruction. These endpoints had no
+  internal callers (in-process `loadOracleKeypair` is used instead), so
+  both now return HTTP 410 Gone. See `apps/operator/src/workers/oracle.ts`.
+- **Fixed:** `/settle/record` accepted unauthenticated POSTs, allowing
+  injection of forged settlement audit rows. Now requires HMAC of body
+  in `x-conexple-internal` header (same `PURCHASE_WEBHOOK_HMAC` secret
+  as `/webhook/purchase`). `scripts/settle-onchain.ts` updated to send
+  the header.
+- **Known V1 trade-off:** `/settle/run`, `/merchant/void`,
+  `/merchant/force-expire` remain unauthenticated so the operator
+  dashboard buttons work for hackathon judges. V2 should gate these
+  with the same HMAC scheme or move them behind an admin-authority
+  worker not exposed to the public web. Code comments in
+  `scheduler.ts` + `merchant.ts` flag this.
+- **Verified:** No private keys, API keys, or seed phrases ever
+  committed; HMAC verification is constant-time; all D1 queries are
+  parameterized; frontend bundle contains no backend secrets.
+
 ## What is explicitly not promised
 
-- Audit. There is none.
+- Audit. There is none — the pre-submission pass above was internal
+  hygiene, not an external security audit.
 - Production support. There isn't any.
 - A bug bounty. We do not offer one for the hackathon prototype.
