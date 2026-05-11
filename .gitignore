@@ -129,3 +129,4 @@ instruction/
 .claude/
 .agents/
 CLAUDE.md
+skills-lock.json
