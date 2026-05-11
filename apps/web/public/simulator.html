@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -629,7 +629,7 @@
         <header>
             <a href="/" class="nav-back">Back to Conexple</a>
             <h1>Individual Journey Simulator</h1>
-            <p class="subtitle">ศึกษาเส้นทางการเติบโตของแต่ละสมาชิกอย่างละเอียด — เดือนต่อเดือน · 24-month forward projection across 6 personas.</p>
+            <p class="subtitle">Per-persona growth path · 24-month forward projection across 6 personas.</p>
         </header>
 
         <!-- CHARACTER SELECTION -->
@@ -641,15 +641,15 @@
             <div class="timeline-section">
                 <div class="timeline-controls">
                     <div class="timeline-buttons">
-                        <button id="prevBtn">◀ ก่อนหน้า</button>
-                        <button id="playBtn">▶ เล่น</button>
-                        <button id="nextBtn">ถัดไป ▶</button>
+                        <button id="prevBtn">◀ Previous</button>
+                        <button id="playBtn">▶ Play</button>
+                        <button id="nextBtn">Next ▶</button>
                     </div>
                     <div class="speed-control">
-                        <span style="color: #94a3b8;">ความเร็ว:</span>
-                        <button class="speed-btn" data-speed="2000">ช้า (2s)</button>
-                        <button class="speed-btn active" data-speed="1000">ปกติ (1s)</button>
-                        <button class="speed-btn" data-speed="500">เร็ว (0.5s)</button>
+                        <span style="color: #94a3b8;">Speed:</span>
+                        <button class="speed-btn" data-speed="2000">Slow (2s)</button>
+                        <button class="speed-btn active" data-speed="1000">Normal (1s)</button>
+                        <button class="speed-btn" data-speed="500">Fast (0.5s)</button>
                     </div>
                 </div>
                 <div class="timeline-bar" id="timelineBar"></div>
@@ -658,7 +658,7 @@
             <!-- WELCOME / LOADING STATE -->
             <div id="welcomeState" class="welcome-message">
                 <div class="welcome-message-emoji">👋</div>
-                <p>เลือกสมาชิกแล้วเลือกเดือนเพื่อดูเส้นทางการเติบโต</p>
+                <p>Pick a persona and a month to see the growth path</p>
             </div>
 
             <!-- MAIN CONTENT GRID (hidden until month selected) -->
@@ -668,24 +668,24 @@
                 <div class="main-content">
                     <!-- LEFT: NETWORK TREE -->
                     <div class="panel">
-                        <div class="panel-title">👥 Network — เดือนนี้</div>
+                        <div class="panel-title">👥 Network — this month</div>
                         <div class="network-tree" id="networkTree"></div>
                     </div>
 
                     <!-- CENTER: EARNINGS & EVENTS -->
                     <div class="panel">
-                        <div class="panel-title">💰 รายได้และเหตุการณ์</div>
+                        <div class="panel-title">💰 Earnings & events</div>
 
                         <div class="earnings-details">
                             <div style="font-weight: bold; color: #F59E0B; font-size: 1.3em; margin-bottom: 15px;">
-                                รายได้เดือนนี้: <span id="monthEarnings">฿0</span>
+                                This month: <span id="monthEarnings">$0</span>
                             </div>
                             <div id="earningsByLevel"></div>
                         </div>
 
                         <hr style="border: 1px solid #52525B; margin: 20px 0;">
 
-                        <div class="panel-title" style="margin-top: 20px;">📰 เหตุการณ์เดือนนี้</div>
+                        <div class="panel-title" style="margin-top: 20px;">📰 Events this month</div>
                         <div class="events-list" id="eventsList"></div>
                     </div>
 
@@ -694,18 +694,18 @@
                         <div class="panel-title">📊 Dashboard</div>
 
                         <div class="dashboard-item">
-                            <span class="dashboard-label">💰 รายได้เดือนนี้</span>
-                            <span class="dashboard-value" id="dashMonthEarning">฿0</span>
+                            <span class="dashboard-label">💰 This month</span>
+                            <span class="dashboard-value" id="dashMonthEarning">$0</span>
                         </div>
 
                         <div class="dashboard-item">
-                            <span class="dashboard-label">📈 รายได้สะสม</span>
-                            <span class="dashboard-value" id="dashTotalEarning">฿0</span>
+                            <span class="dashboard-label">📈 Cumulative earnings</span>
+                            <span class="dashboard-value" id="dashTotalEarning">$0</span>
                         </div>
 
                         <div class="dashboard-item">
-                            <span class="dashboard-label">💳 ใช้จ่ายสะสม</span>
-                            <span class="dashboard-value" id="dashTotalSpend">฿0</span>
+                            <span class="dashboard-label">💳 Cumulative spend</span>
+                            <span class="dashboard-value" id="dashTotalSpend">$0</span>
                         </div>
 
                         <div class="dashboard-item">
@@ -714,7 +714,7 @@
                         </div>
 
                         <div class="dashboard-item">
-                            <span class="dashboard-label">🎯 เพดาน 100x</span>
+                            <span class="dashboard-label">🎯 Cap 100x</span>
                             <div style="width: 100%; margin-left: 10px;">
                                 <div class="progress-bar">
                                     <div class="progress-fill" id="capProgress" style="width: 0%">0%</div>
@@ -734,7 +734,7 @@
                         </div>
 
                         <div class="dashboard-item">
-                            <span class="dashboard-label">⏰ ถึงเพดาน</span>
+                            <span class="dashboard-label">⏰ Months to cap</span>
                             <span class="dashboard-value" id="dashCapMonth">—</span>
                         </div>
                     </div>
@@ -754,13 +754,13 @@
 
                 <!-- COMPARISON TABLE -->
                 <div class="comparison-section">
-                    <div class="comparison-title">📊 เทียบ: ใช้จ่ายเท่ากันทั้ง 24 เดือน</div>
+                    <div class="comparison-title">📊 Compare: same total spend over 24 months</div>
                     <table>
                         <thead>
                             <tr>
                                 <th>Platform</th>
-                                <th>ใช้จ่ายทั้งหมด</th>
-                                <th>ได้กลับ</th>
+                                <th>Total spend</th>
+                                <th>Earned back</th>
                                 <th>ROI</th>
                             </tr>
                         </thead>
@@ -777,50 +777,50 @@
         const personas = {
             A: {
                 emoji: '💼',
-                name: 'มนุษย์เงินเดือน',
+                name: 'Salaried Employee',
                 monthlySpend: 5000,
                 margin: 0.12,
                 width: 3,
                 recruits: 0,
-                description: '5,000/เดือน, ไม่ชวนใคร'
+                description: '5,000/mo, no invites'
             },
             B: {
                 emoji: '🛍️',
-                name: 'แม่บ้านนักช็อป',
+                name: 'Shopaholic Homemaker',
                 monthlySpend: 15000,
                 margin: 0.15,
                 width: 6,
                 recruits: 3,
-                description: '15,000/เดือน, ชวน 3 คน'
+                description: '15,000/mo, 3 invites'
             },
             C: {
                 emoji: '💻',
-                name: 'เจ้าของ SaaS',
+                name: 'SaaS Owner',
                 monthlySpend: 50000,
                 margin: 0.25,
                 width: 10,
                 recruits: 0,
-                description: '50,000/เดือน, ไม่ชวน'
+                description: '50,000/mo, no invites'
             },
             D: {
                 emoji: '🍀',
-                name: 'คนโชคดี',
+                name: 'Lucky One',
                 monthlySpend: 3000,
                 margin: 0.15,
                 width: 2,
                 recruits: 0,
                 bigSpender: true,
-                description: '3,000/เดือน, มี Big Spender ชั้น 2'
+                description: '3,000/mo, has L2 Big Spender'
             },
             E: {
                 emoji: '😔',
-                name: 'คนโชคร้าย',
+                name: 'Unlucky One',
                 monthlySpend: 5000,
                 margin: 0.10,
                 width: 3,
                 recruits: 0,
                 unlucky: true,
-                description: '5,000/เดือน, downline ส่วนใหญ่ inactive'
+                description: '5,000/mo, most downline inactive'
             },
             F: {
                 emoji: '⭐',
@@ -829,7 +829,7 @@
                 margin: 0.18,
                 width: 20,
                 recruits: 20,
-                description: '8,000/เดือน, ชวน 20 คน'
+                description: '8,000/mo, 20 invites'
             }
         };
 
@@ -962,35 +962,35 @@
                 // New members
                 const newMembers = downline.filter(m => m.joinedMonth === month);
                 if (newMembers.length > 0) {
-                    events.push(`🆕 สมาชิกใหม่ ${newMembers.length} คน เข้ามา (ใช้จ่าย ฿${newMembers.map(m => m.monthlySpend).reduce((a, b) => a + b, 0).toLocaleString()})`);
+                    events.push(`🆕 ${newMembers.length} new members joined (spend $${newMembers.map(m => m.monthlySpend).reduce((a, b) => a + b, 0).toLocaleString()})`);
                 }
 
                 // Width expansion
                 if (month > 1 && downline.length > (this.persona.recruits || 5)) {
-                    events.push(`🔥 Width Expansion! ระบบสุ่ม ${Math.floor(downline.length / 2)} คนมาต่อใต้คุณ`);
+                    events.push(`🔥 Width Expansion! System random-places ${Math.floor(downline.length / 2)} people beneath you`);
                 }
 
                 // Inactive members
                 const newInactive = downline.filter(m => m.inactiveMonths === 2 && m.joinedMonth < month);
                 if (newInactive.length > 0) {
-                    events.push(`💤 สมาชิก ${newInactive.length} คน หยุด active`);
+                    events.push(`💤 ${newInactive.length} members went inactive`);
                 }
 
                 // Big spenders
                 const bigSpenders = downline.filter(m => m.monthlySpend > 50000 && m.status === 'active');
                 if (bigSpenders.length > 0) {
-                    events.push(`💎 Big Spender! ${bigSpenders.length} คนใช้จ่าย > ฿50,000/เดือน`);
+                    events.push(`💎 Big Spender! ${bigSpenders.length} people spending > $50,000/mo`);
                 }
 
                 // Cap reached
                 if (monthlyCapReached && !this.capReachedAnnounced) {
-                    events.push(`🎯 ถึงเพดาน 100x! คุณได้รับ ฿${cumulativeEarning.toLocaleString()} จาก ฿${Math.ceil(cumulativeEarning / 100).toLocaleString()}`);
+                    events.push(`🎯 Hit cap 100x! You earned $${cumulativeEarning.toLocaleString()} of $${Math.ceil(cumulativeEarning / 100).toLocaleString()}`);
                     this.capReachedAnnounced = true;
                 }
 
                 // Default event if empty
                 if (events.length === 0) {
-                    events.push(`📈 ธุรกิจปกติดำเนิน — ${downline.filter(m => m.status === 'active').length} คนกำลัง active`);
+                    events.push(`📈 Business as usual — ${downline.filter(m => m.status === 'active').length} still active`);
                 }
 
                 return events;
@@ -1022,8 +1022,8 @@
                     card.innerHTML = `
                         <div class="character-emoji">${p.emoji}</div>
                         <div class="character-name">${p.name}</div>
-                        <div class="character-spend">฿${p.monthlySpend.toLocaleString()}/เดือน</div>
-                        <div class="character-status">ชวน ${p.recruits} คน, width ${p.width}</div>
+                        <div class="character-spend">$${p.monthlySpend.toLocaleString()}/mo</div>
+                        <div class="character-status">invites ${p.recruits}, width ${p.width}</div>
                         <div class="character-desc">${p.description}</div>
                     `;
                     card.addEventListener('click', () => this.selectPersona(key, card));
@@ -1085,13 +1085,13 @@
                 document.getElementById('contentArea').style.display = 'block';
 
                 // Month header
-                document.getElementById('monthHeader').textContent = `เดือนที่ ${this.selectedMonth} (${personas[this.selectedPersona].emoji} ${personas[this.selectedPersona].name})`;
+                document.getElementById('monthHeader').textContent = `Month ${this.selectedMonth} (${personas[this.selectedPersona].emoji} ${personas[this.selectedPersona].name})`;
 
                 // Network tree
                 this.renderNetworkTree(monthData);
 
                 // Earnings
-                document.getElementById('monthEarnings').textContent = `฿${monthData.totalEarning.toLocaleString()}`;
+                document.getElementById('monthEarnings').textContent = `$${monthData.totalEarning.toLocaleString()}`;
                 this.renderEarningsByLevel(monthData);
 
                 // Events
@@ -1115,8 +1115,8 @@
                 const root = document.createElement('div');
                 root.className = 'tree-node active';
                 root.innerHTML = `
-                    <div class="tree-node-name">คุณ</div>
-                    <div class="tree-node-spend">฿${this.simulation.persona.monthlySpend.toLocaleString()}</div>
+                    <div class="tree-node-name">You</div>
+                    <div class="tree-node-spend">$${this.simulation.persona.monthlySpend.toLocaleString()}</div>
                 `;
                 container.appendChild(root);
 
@@ -1130,7 +1130,7 @@
 
                     const levelDiv = document.createElement('div');
                     levelDiv.className = 'tree-level';
-                    levelDiv.innerHTML = `<strong>ชั้นที่ ${level}</strong>`;
+                    levelDiv.innerHTML = `<strong>Level ${level}</strong>`;
 
                     byLevel[level].forEach(member => {
                         const node = document.createElement('div');
@@ -1149,7 +1149,7 @@
                         const roi = (member.monthlySpend * this.simulation.persona.margin / 5).toFixed(0);
                         node.innerHTML = `
                             <div class="tree-node-name">${member.id}</div>
-                            <div class="tree-node-spend">฿${member.monthlySpend.toLocaleString()}</div>
+                            <div class="tree-node-spend">$${member.monthlySpend.toLocaleString()}</div>
                             <div style="font-size: 0.8em; opacity: 0.8;">${member.status === 'active' ? '✓ Active' : '✗ Inactive'}</div>
                         `;
                         levelDiv.appendChild(node);
@@ -1168,8 +1168,8 @@
                     const div = document.createElement('div');
                     div.className = 'earnings-level';
                     div.innerHTML = `
-                        <span class="earnings-level-label">ชั้นที่ ${level}</span>
-                        <span class="earnings-amount">฿${amount.toLocaleString()}</span>
+                        <span class="earnings-level-label">Level ${level}</span>
+                        <span class="earnings-amount">$${amount.toLocaleString()}</span>
                     `;
                     container.appendChild(div);
                 }
@@ -1184,8 +1184,8 @@
                     const poolDiv = document.createElement('div');
                     poolDiv.className = 'earnings-level';
                     poolDiv.innerHTML = `
-                        <span class="earnings-level-label">💎 เข้า Pool (ชั้นว่าง)</span>
-                        <span class="earnings-amount" style="color: #f59e0b;">฿${poolAmount.toLocaleString()}</span>
+                        <span class="earnings-level-label">💎 To Pool (empty slots)</span>
+                        <span class="earnings-amount" style="color: #f59e0b;">$${poolAmount.toLocaleString()}</span>
                     `;
                     container.appendChild(poolDiv);
                 }
@@ -1213,9 +1213,9 @@
                 const roi = monthData.cumulativeSpend > 0 ? (monthData.cumulativeEarning / monthData.cumulativeSpend).toFixed(2) : 0;
                 const capPercent = Math.min(100, (monthData.cumulativeEarning / (monthData.cumulativeSpend * 100)) * 100);
 
-                document.getElementById('dashMonthEarning').textContent = `฿${monthData.totalEarning.toLocaleString()}`;
-                document.getElementById('dashTotalEarning').textContent = `฿${monthData.cumulativeEarning.toLocaleString()}`;
-                document.getElementById('dashTotalSpend').textContent = `฿${monthData.cumulativeSpend.toLocaleString()}`;
+                document.getElementById('dashMonthEarning').textContent = `$${monthData.totalEarning.toLocaleString()}`;
+                document.getElementById('dashTotalEarning').textContent = `$${monthData.cumulativeEarning.toLocaleString()}`;
+                document.getElementById('dashTotalSpend').textContent = `$${monthData.cumulativeSpend.toLocaleString()}`;
                 document.getElementById('dashROI').textContent = `${roi}x`;
                 document.getElementById('dashActiveCount').textContent = monthData.activeCount;
                 document.getElementById('dashInactiveCount').textContent = monthData.inactiveCount;
@@ -1224,10 +1224,10 @@
                 capProgress.style.width = capPercent + '%';
                 capProgress.textContent = capPercent.toFixed(0) + '%';
 
-                document.getElementById('capText').textContent = `฿${monthData.cumulativeEarning.toLocaleString()} / ฿${(monthData.cumulativeSpend * 100).toLocaleString()}`;
+                document.getElementById('capText').textContent = `$${monthData.cumulativeEarning.toLocaleString()} / $${(monthData.cumulativeSpend * 100).toLocaleString()}`;
 
                 if (this.simulation.monthlyCapReached && this.selectedMonth >= this.simulation.monthlyCapReached) {
-                    document.getElementById('dashCapMonth').textContent = `เดือน ${this.simulation.monthlyCapReached}`;
+                    document.getElementById('dashCapMonth').textContent = `Month ${this.simulation.monthlyCapReached}`;
                     document.getElementById('dashCapMonth').parentElement.style.color = '#10B981';
                 } else {
                     document.getElementById('dashCapMonth').textContent = '—';
@@ -1239,7 +1239,7 @@
                 const ctx1 = document.getElementById('earningsChart').getContext('2d');
                 const ctx2 = document.getElementById('networkChart').getContext('2d');
 
-                const labels = this.simulation.months.map(m => `เดือน ${m.month}`);
+                const labels = this.simulation.months.map(m => `M${m.month}`);
                 const monthlyData = this.simulation.months.map(m => m.totalEarning);
                 const cumulativeData = this.simulation.months.map(m => m.cumulativeEarning);
                 const activeData = this.simulation.months.map(m => m.activeCount);
@@ -1332,26 +1332,26 @@
                 tbody.innerHTML = `
                     <tr>
                         <td><strong>Conexple</strong></td>
-                        <td class="highlight-conexple">฿${totalSpend.toLocaleString()}</td>
-                        <td class="highlight-conexple">฿${conexpleEarning.toLocaleString()}</td>
+                        <td class="highlight-conexple">$${totalSpend.toLocaleString()}</td>
+                        <td class="highlight-conexple">$${conexpleEarning.toLocaleString()}</td>
                         <td class="highlight-conexple">${conexpleROI}%</td>
                     </tr>
                     <tr>
                         <td>Shopback (2%)</td>
-                        <td>฿${totalSpend.toLocaleString()}</td>
-                        <td>฿${shopbackEarning.toLocaleString()}</td>
+                        <td>$${totalSpend.toLocaleString()}</td>
+                        <td>$${shopbackEarning.toLocaleString()}</td>
                         <td>2.00%</td>
                     </tr>
                     <tr>
                         <td>The 1 Card (0.4%)</td>
-                        <td>฿${totalSpend.toLocaleString()}</td>
-                        <td>฿${theOneCardEarning.toLocaleString()}</td>
+                        <td>$${totalSpend.toLocaleString()}</td>
+                        <td>$${theOneCardEarning.toLocaleString()}</td>
                         <td>0.40%</td>
                     </tr>
                     <tr>
-                        <td>ฝากธนาคาร (0.5%/ปี)</td>
-                        <td>฿${totalSpend.toLocaleString()}</td>
-                        <td>฿${bankEarning.toLocaleString()}</td>
+                        <td>Bank deposit (0.5%/yr)</td>
+                        <td>$${totalSpend.toLocaleString()}</td>
+                        <td>$${bankEarning.toLocaleString()}</td>
                         <td>0.50%</td>
                     </tr>
                 `;
@@ -1377,9 +1377,9 @@
                     if (this.autoplayInterval) {
                         clearInterval(this.autoplayInterval);
                         this.autoplayInterval = null;
-                        playBtn.textContent = '▶ เล่น';
+                        playBtn.textContent = '▶ Play';
                     } else {
-                        playBtn.textContent = '⏸ หยุด';
+                        playBtn.textContent = '⏸ Pause';
                         let month = this.selectedMonth || 1;
                         this.autoplayInterval = setInterval(() => {
                             if (month <= 24) {
@@ -1388,7 +1388,7 @@
                             } else {
                                 clearInterval(this.autoplayInterval);
                                 this.autoplayInterval = null;
-                                playBtn.textContent = '▶ เล่น';
+                                playBtn.textContent = '▶ Play';
                             }
                         }, this.playbackSpeed);
                     }
