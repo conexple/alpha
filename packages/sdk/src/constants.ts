@@ -4,7 +4,7 @@ export const LEVEL_COUNT = 5;
 export const SPLIT_PARTS = 7;
 export const MAX_MARGIN_BPS = 5_000; // 50% cap
 
-// Default V1 parameters from CLAUDE.md §5
+// Default V1 parameters (see docs/mechanics.md)
 export const DEFAULT_MULTIPLIER = 10;
 export const DEFAULT_POOL_SPLIT_BPS = 9_000; // 90% social / 10% operator
 export const DEFAULT_INFINITY_MIN_SPEND_MULTIPLE = 10;

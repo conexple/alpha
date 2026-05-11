@@ -7,8 +7,9 @@ Reading order:
 3. **[payout.md](./payout.md)** — settlement timing, hold mechanism, dispute handling
 4. **[operator-guide.md](./operator-guide.md)** — running your own Conexple network *(stub)*
 
-Internal-only references (not published with the public repo):
+## Submission artifacts
 
-- `../instruction/work/plan.md` — the build plan that produced this snapshot
-- `../instruction/work/colosseum-intel.md` — hackathon-specific positioning notes
-- `../submission/HANDOFF.md` — what was built, what the human still must do
+- `../submission/pitch-script.md` — pitch video script
+- `../submission/tech-demo-script.md` — technical demo video script
+- `../submission/pitch-deck.pdf` — rendered investor deck
+- `../submission/*-receipt.json` — Solscan-verifiable proof of on-chain activity

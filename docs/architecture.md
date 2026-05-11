@@ -1,8 +1,8 @@
 # Architecture
 
-> Cleaned-up English version of the architecture spec. Authoritative
-> spec lives in `../instruction/work/plan.md` and the prep folder's
-> `docs/05-architecture.md`.
+> System map for the Conexple V1 hackathon prototype. For mechanics
+> (commission split, expiry, network shape) see `mechanics.md`; for
+> settlement timing + hold semantics see `payout.md`.
 
 ## On-chain / off-chain split
 

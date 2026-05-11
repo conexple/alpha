@@ -13,8 +13,7 @@
 //
 // Re-runnable: overwrites og.svg and og.png in place.
 //
-// Note on Position size: docs/instruction/work/continue.md says "174 bytes"
-// but the on-chain accounts are actually 190 bytes (matches
+// Note on Position size: on-chain accounts are 190 bytes (matches
 // programs/conexple-network/src/state.rs and apps/web/src/lib/program-clients.ts:
 //   8 disc + 1 bump + 8 + 32 + (1+32) + 1 + 1 + 8 + 8 + 8 + 1 + 8 + (1+8) + 64
 //   = 190).
