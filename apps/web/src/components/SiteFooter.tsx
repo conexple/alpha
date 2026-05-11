@@ -4,9 +4,9 @@ export function SiteFooter() {
       <div className="container-page py-12">
         <div className="grid grid-cols-2 gap-10 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
-            <div className="flex items-baseline gap-1.5">
-              <span className="font-display text-xl text-ink">conexple</span>
-              <span className="h-1.5 w-1.5 rounded-full bg-cnx-amber" />
+            <div className="flex items-baseline gap-2">
+              <span className="font-display text-xl font-semibold text-ink">conexple</span>
+              <span className="h-1.5 w-1.5 rounded-full bg-cnx-purple" />
             </div>
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-graphite">
               Open consumer affiliate protocol on Solana. Built by Sornkan in

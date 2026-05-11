@@ -21,11 +21,11 @@ export function TopNav() {
   return (
     <header className="sticky top-0 z-30 border-b border-edge bg-cream/85 backdrop-blur-md">
       <div className="container-page flex items-center justify-between py-4">
-        <Link href="/" className="group flex items-baseline gap-1.5">
-          <span className="font-display text-2xl font-medium tracking-tightest text-ink">
+        <Link href="/" className="group flex items-baseline gap-2">
+          <span className="font-display text-xl font-semibold tracking-tightest text-ink">
             conexple
           </span>
-          <span className="h-1.5 w-1.5 rounded-full bg-cnx-amber transition-transform group-hover:scale-150" />
+          <span className="h-1.5 w-1.5 rounded-full bg-cnx-purple transition-transform group-hover:scale-150" />
           <span className="hidden font-mono text-[10px] uppercase tracking-[0.2em] text-stone sm:inline">
             v0.1 alpha
           </span>

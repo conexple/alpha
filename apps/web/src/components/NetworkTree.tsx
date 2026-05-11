@@ -44,27 +44,14 @@ export function NetworkTree({ positions, highlightWallet }: Props) {
   const viewW = Math.max(width, maxX - minX);
 
   return (
-    <div className="overflow-x-auto rounded-2xl border border-edge bg-paper p-6 shadow-soft">
+    <div className="overflow-x-auto rounded-xl border border-edge bg-cream p-6">
       <svg
         viewBox={`${minX} 0 ${viewW} ${height + 80}`}
         className="block w-full max-w-none"
         style={{ minWidth: viewW * 0.6, height: Math.max(420, height + 80) }}
       >
-        <defs>
-          <linearGradient id="active-grad" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stopColor="#FBF7F1" />
-            <stop offset="1" stopColor="#F4EFE6" />
-          </linearGradient>
-          <filter id="soft-shadow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="3" />
-            <feOffset dy="2" />
-            <feComponentTransfer><feFuncA type="linear" slope="0.18" /></feComponentTransfer>
-            <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
-          </filter>
-        </defs>
-
         {/* edges */}
-        <g stroke="#C7BFAF" strokeWidth="1" fill="none">
+        <g stroke="#E4E4E7" strokeWidth="1" fill="none">
           {edges.map((e, i) => (
             <path
               key={i}
@@ -78,13 +65,13 @@ export function NetworkTree({ positions, highlightWallet }: Props) {
           {nodes.map((n) => {
             const isHover = hover === n.pubkey.toBase58();
             const isHL = highlightWallet === n.wallet.toBase58();
-            const fill = n.depth === 0 ? "#0E1116" : isHL ? "#9945FF" : "url(#active-grad)";
+            const fill = n.depth === 0 ? "#09090B" : isHL ? "#9945FF" : "#FFFFFF";
             const ring =
-              n.status === "expired" ? "#D9534A" :
-              n.depth === 0 ? "#0E1116" :
+              n.status === "expired" ? "#EF4444" :
+              n.depth === 0 ? "#09090B" :
               isHL ? "#9945FF" :
-              "#0E1116";
-            const txt = n.depth === 0 || isHL ? "#FBF7F1" : "#0E1116";
+              "#09090B";
+            const txt = n.depth === 0 || isHL ? "#FFFFFF" : "#09090B";
             return (
               <g
                 key={n.pubkey.toBase58()}
@@ -95,27 +82,28 @@ export function NetworkTree({ positions, highlightWallet }: Props) {
                 onClick={() => window.open(solscanAccount(n.wallet), "_blank")}
               >
                 <circle
-                  r={NODE_R}
+                  r={isHover ? NODE_R + 2 : NODE_R}
                   fill={fill}
                   stroke={ring}
-                  strokeWidth={isHL || isHover ? 2 : 1}
-                  filter={isHover ? "url(#soft-shadow)" : undefined}
+                  strokeWidth={isHL || isHover ? 2 : 1.5}
+                  style={{ transition: "r 0.15s ease, stroke-width 0.15s ease" }}
                 />
                 <text
                   textAnchor="middle"
                   y="2"
                   fill={txt}
-                  fontFamily="Fraunces, Georgia, serif"
-                  fontSize="14"
-                  fontWeight="500"
+                  fontFamily="Geist, Inter, system-ui, sans-serif"
+                  fontSize="13"
+                  fontWeight="600"
+                  letterSpacing="-0.02em"
                 >
                   L{n.depth}
                 </text>
                 <text
                   textAnchor="middle"
                   y={NODE_R + 16}
-                  fill="#3B3A36"
-                  fontFamily="JetBrains Mono, monospace"
+                  fill="#52525B"
+                  fontFamily="Geist Mono, JetBrains Mono, monospace"
                   fontSize="10"
                 >
                   {shortenPub(n.wallet)}
@@ -124,10 +112,10 @@ export function NetworkTree({ positions, highlightWallet }: Props) {
                   <text
                     textAnchor="middle"
                     y={NODE_R + 30}
-                    fill="#5C6B3A"
-                    fontFamily="JetBrains Mono, monospace"
+                    fill="#10B981"
+                    fontFamily="Geist Mono, JetBrains Mono, monospace"
                     fontSize="9"
-                    fontWeight="500"
+                    fontWeight="600"
                   >
                     +{Number(n.cumulativeEarned)} earned
                   </text>
@@ -138,11 +126,11 @@ export function NetworkTree({ positions, highlightWallet }: Props) {
         </g>
       </svg>
 
-      <div className="mt-4 flex flex-wrap gap-4 text-xs text-stone">
-        <Legend color="#0E1116" label="Root" />
-        <Legend color="#FBF7F1" border="#0E1116" label="Active" />
+      <div className="mt-5 flex flex-wrap gap-4 text-xs text-stone">
+        <Legend color="#09090B" label="Root" />
+        <Legend color="#FFFFFF" border="#09090B" label="Active" />
         <Legend color="#9945FF" label="Selected" />
-        <Legend color="#FBF7F1" border="#D9534A" label="Expired" />
+        <Legend color="#FFFFFF" border="#EF4444" label="Expired" />
         <span className="ml-auto font-mono text-stone">
           click a node → open on Solscan
         </span>
