@@ -40,8 +40,14 @@ VO:
 > "Landing page lays out the pitch in thirty seconds. The diagram
 > on the right shows the seven-way split.
 >
-> The simulator at `/simulator` — pulled directly from our pre-build
-> prototype — lets any judge play with the math. No wallet required."
+> Scroll down — 'One protocol, many operators' is our main message.
+> Conexple is a protocol, not a single platform. We're the first
+> operator on chain; the architecture supports anyone forking the
+> operator code and running their own network on the same Solana
+> programs. Apache 2.0, no gatekeeping.
+>
+> The simulator at `/simulator` lets any judge play with the math.
+> No wallet required."
 
 **Hover the simulator briefly to show interaction.**
 
