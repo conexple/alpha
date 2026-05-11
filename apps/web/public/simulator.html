@@ -7,7 +7,7 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500&family=JetBrains+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
     <style>
         * {
@@ -17,8 +17,8 @@
         }
 
         body {
-            background: #FBF7F1;
-            color: #3B3A36;
+            background: #FFFFFF;
+            color: #52525B;
             font-family: 'Geist', 'IBM Plex Sans Thai', system-ui, -apple-system, sans-serif;
             font-feature-settings: "ss01", "cv11";
             line-height: 1.6;
@@ -34,12 +34,12 @@
 
         header {
             margin-bottom: 32px;
-            border-bottom: 1px solid #E5DDCD;
+            border-bottom: 1px solid #E4E4E7;
             padding-bottom: 24px;
         }
 
         h1, h2, h3, .panel-title, .chart-title, .comparison-title, .character-name {
-            font-family: 'Fraunces', 'IBM Plex Sans Thai', Georgia, serif;
+            font-family: 'Geist', 'IBM Plex Sans Thai', Georgia, serif;
             font-optical-sizing: auto;
             letter-spacing: -0.02em;
             font-weight: 500;
@@ -48,13 +48,13 @@
         h1 {
             font-size: 2.75em;
             margin-bottom: 8px;
-            color: #0E1116;
+            color: #09090B;
             letter-spacing: -0.04em;
             font-weight: 400;
         }
 
         .subtitle {
-            color: #8B847B;
+            color: #A1A1AA;
             font-size: 1.05em;
             font-family: 'Geist', 'IBM Plex Sans Thai', sans-serif;
         }
@@ -67,12 +67,12 @@
             font-size: 0.78em;
             text-transform: uppercase;
             letter-spacing: 0.18em;
-            color: #8B847B;
+            color: #A1A1AA;
             text-decoration: none;
             margin-bottom: 16px;
             transition: color 0.15s ease;
         }
-        .nav-back:hover { color: #0E1116; }
+        .nav-back:hover { color: #09090B; }
         .nav-back::before { content: "←"; font-size: 1.2em; }
 
         /* CHARACTER SELECTION */
@@ -84,8 +84,8 @@
         }
 
         .character-card {
-            background: #F4EFE6;
-            border: 2px solid #E5DDCD;
+            background: #FAFAFA;
+            border: 2px solid #E4E4E7;
             border-radius: 12px;
             padding: 20px;
             cursor: pointer;
@@ -95,13 +95,13 @@
 
         .character-card:hover {
             transform: translateY(-5px);
-            border-color: #0E1116;
+            border-color: #09090B;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .character-card.active {
-            border-color: #0E1116;
-            background: #F4EFE6;
+            border-color: #09090B;
+            background: #FAFAFA;
             box-shadow: 0 0 30px rgba(14, 17, 22, 0.18);
         }
 
@@ -113,35 +113,35 @@
         .character-name {
             font-size: 1.3em;
             font-weight: bold;
-            color: #0E1116;
+            color: #09090B;
             margin-bottom: 8px;
         }
 
         .character-spend {
-            color: #5C6B3A;
+            color: #10B981;
             font-weight: bold;
             margin-bottom: 8px;
         }
 
         .character-status {
             font-size: 0.95em;
-            color: #8B847B;
+            color: #A1A1AA;
             margin-bottom: 8px;
         }
 
         .character-desc {
             font-size: 0.9em;
-            color: #8B847B;
+            color: #A1A1AA;
             font-style: italic;
         }
 
         /* TIMELINE NAVIGATION */
         .timeline-section {
-            background: #F4EFE6;
+            background: #FAFAFA;
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 30px;
-            border: 1px solid #E5DDCD;
+            border: 1px solid #E4E4E7;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
@@ -160,9 +160,9 @@
         }
 
         button {
-            background: #0E1116;
+            background: #09090B;
             border: none;
-            color: #FBF7F1;
+            color: #FFFFFF;
             padding: 10px 22px;
             border-radius: 999px;
             cursor: pointer;
@@ -174,7 +174,7 @@
         }
 
         button:hover {
-            background: #3B3A36;
+            background: #52525B;
             transform: translateY(-1px);
         }
 
@@ -186,17 +186,17 @@
             display: flex;
             gap: 8px;
             align-items: center;
-            color: #3B3A36;
+            color: #52525B;
         }
 
         .speed-btn {
             padding: 8px 12px;
             font-size: 0.9em;
-            background: #F4EFE6;
+            background: #FAFAFA;
         }
 
         .speed-btn.active {
-            background: #5C6B3A;
+            background: #10B981;
         }
 
         .timeline-bar {
@@ -204,9 +204,9 @@
             gap: 4px;
             overflow-x: auto;
             padding: 10px 0;
-            border-top: 2px solid #E5DDCD;
-            border-bottom: 2px solid #E5DDCD;
-            background: #F4EFE6;
+            border-top: 2px solid #E4E4E7;
+            border-bottom: 2px solid #E4E4E7;
+            background: #FAFAFA;
         }
 
         .timeline-month {
@@ -215,21 +215,21 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #F4EFE6;
+            background: #FAFAFA;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.3s ease;
             font-weight: bold;
             font-size: 0.9em;
-            color: #8B847B;
+            color: #A1A1AA;
         }
 
         .timeline-month:hover {
-            background: #E5DDCD;
+            background: #E4E4E7;
         }
 
         .timeline-month.active {
-            background: #0E1116;
+            background: #09090B;
             color: white;
             transform: scale(1.15);
             box-shadow: 0 0 15px rgba(14, 17, 22, 0.22);
@@ -249,8 +249,8 @@
         }
 
         .panel {
-            background: #F4EFE6;
-            border: 1px solid #E5DDCD;
+            background: #FAFAFA;
+            border: 1px solid #E4E4E7;
             border-radius: 12px;
             padding: 20px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -258,7 +258,7 @@
 
         .panel-title {
             font-size: 1.3em;
-            color: #0E1116;
+            color: #09090B;
             margin-bottom: 15px;
             font-weight: bold;
         }
@@ -292,20 +292,20 @@
 
         .tree-node.active {
             background: #EAEEDB;
-            border: 2px solid #5C6B3A;
-            color: #5C6B3A;
+            border: 2px solid #10B981;
+            color: #10B981;
         }
 
         .tree-node.inactive {
-            background: #F4EFE6;
-            border: 2px solid #E5DDCD;
-            color: #8B847B;
+            background: #FAFAFA;
+            border: 2px solid #E4E4E7;
+            color: #A1A1AA;
             opacity: 0.7;
         }
 
         .tree-node.high-spender {
             background: #F5E6BF;
-            border: 3px solid #E8B14E;
+            border: 3px solid #F59E0B;
             color: #4A2A09;
             font-weight: bold;
         }
@@ -327,7 +327,7 @@
 
         .tree-node.near-cap {
             background: #F8E0DD;
-            border: 3px solid #D9534A;
+            border: 3px solid #EF4444;
             color: #7A2A24;
             font-weight: bold;
         }
@@ -345,7 +345,7 @@
         .tree-level {
             margin-left: 30px;
             margin-top: 10px;
-            border-left: 2px dashed #0E1116;
+            border-left: 2px dashed #09090B;
             padding-left: 15px;
         }
 
@@ -358,18 +358,18 @@
             display: flex;
             justify-content: space-between;
             padding: 10px;
-            background: #FBF7F1;
+            background: #FFFFFF;
             margin: 5px 0;
             border-radius: 6px;
-            border-left: 4px solid #0E1116;
+            border-left: 4px solid #09090B;
         }
 
         .earnings-level-label {
-            color: #3B3A36;
+            color: #52525B;
         }
 
         .earnings-amount {
-            color: #5C6B3A;
+            color: #10B981;
             font-weight: bold;
         }
 
@@ -379,11 +379,11 @@
         }
 
         .event {
-            background: #FBF7F1;
+            background: #FFFFFF;
             padding: 12px;
             margin: 8px 0;
             border-radius: 6px;
-            border-left: 4px solid #0E1116;
+            border-left: 4px solid #09090B;
             animation: slideIn 0.3s ease;
         }
 
@@ -392,7 +392,7 @@
         }
 
         .event-text {
-            color: #3B3A36;
+            color: #52525B;
             font-size: 0.95em;
         }
 
@@ -401,44 +401,44 @@
         }
 
         .dashboard-item {
-            background: #FBF7F1;
+            background: #FFFFFF;
             padding: 15px;
             margin: 10px 0;
             border-radius: 6px;
-            border-left: 4px solid #0E1116;
+            border-left: 4px solid #09090B;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .dashboard-label {
-            color: #3B3A36;
+            color: #52525B;
             font-size: 0.95em;
         }
 
         .dashboard-value {
-            color: #5C6B3A;
+            color: #10B981;
             font-weight: bold;
             font-size: 1.1em;
         }
 
         .dashboard-value.danger {
-            color: #D9534A;
+            color: #EF4444;
         }
 
         .progress-bar {
             width: 100%;
             height: 12px;
-            background: #E5DDCD;
+            background: #E4E4E7;
             border-radius: 6px;
             overflow: hidden;
             margin: 8px 0;
-            border: 1px solid #E5DDCD;
+            border: 1px solid #E4E4E7;
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #0E1116, #9945FF);
+            background: linear-gradient(90deg, #09090B, #9945FF);
             transition: width 0.5s ease;
             display: flex;
             align-items: center;
@@ -458,8 +458,8 @@
         }
 
         .chart-container {
-            background: #F4EFE6;
-            border: 1px solid #E5DDCD;
+            background: #FAFAFA;
+            border: 1px solid #E4E4E7;
             border-radius: 12px;
             padding: 20px;
             position: relative;
@@ -469,7 +469,7 @@
 
         .chart-title {
             font-size: 1.2em;
-            color: #0E1116;
+            color: #09090B;
             margin-bottom: 15px;
             font-weight: bold;
         }
@@ -480,8 +480,8 @@
 
         /* COMPARISON TABLE */
         .comparison-section {
-            background: #F4EFE6;
-            border: 1px solid #E5DDCD;
+            background: #FAFAFA;
+            border: 1px solid #E4E4E7;
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 30px;
@@ -490,7 +490,7 @@
 
         .comparison-title {
             font-size: 1.3em;
-            color: #0E1116;
+            color: #09090B;
             margin-bottom: 15px;
             font-weight: bold;
         }
@@ -503,25 +503,25 @@
         th, td {
             padding: 12px;
             text-align: left;
-            border-bottom: 1px solid #E5DDCD;
+            border-bottom: 1px solid #E4E4E7;
         }
 
         th {
-            background: #F4EFE6;
-            color: #0E1116;
+            background: #FAFAFA;
+            color: #09090B;
             font-weight: bold;
         }
 
         tr:hover {
-            background: #FBF7F1;
+            background: #FFFFFF;
         }
 
         td {
-            color: #3B3A36;
+            color: #52525B;
         }
 
         .highlight-conexple {
-            color: #5C6B3A;
+            color: #10B981;
             font-weight: bold;
         }
 
@@ -562,26 +562,26 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: #FBF7F1;
+            background: #FFFFFF;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #0E1116;
+            background: #09090B;
             border-radius: 4px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #3B3A36;
+            background: #52525B;
         }
 
         /* NO CHARACTER SELECTED */
         .welcome-message {
-            background: #F4EFE6;
-            border: 2px dashed #0E1116;
+            background: #FAFAFA;
+            border: 2px dashed #09090B;
             border-radius: 12px;
             padding: 40px;
             text-align: center;
-            color: #8B847B;
+            color: #A1A1AA;
             font-size: 1.2em;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
@@ -605,12 +605,12 @@
         .loading {
             text-align: center;
             padding: 20px;
-            color: #3B3A36;
+            color: #52525B;
         }
 
         .spinner {
-            border: 3px solid #E5DDCD;
-            border-top: 3px solid #0E1116;
+            border: 3px solid #E4E4E7;
+            border-top: 3px solid #09090B;
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -677,13 +677,13 @@
                         <div class="panel-title">💰 รายได้และเหตุการณ์</div>
 
                         <div class="earnings-details">
-                            <div style="font-weight: bold; color: #E8B14E; font-size: 1.3em; margin-bottom: 15px;">
+                            <div style="font-weight: bold; color: #F59E0B; font-size: 1.3em; margin-bottom: 15px;">
                                 รายได้เดือนนี้: <span id="monthEarnings">฿0</span>
                             </div>
                             <div id="earningsByLevel"></div>
                         </div>
 
-                        <hr style="border: 1px solid #3B3A36; margin: 20px 0;">
+                        <hr style="border: 1px solid #52525B; margin: 20px 0;">
 
                         <div class="panel-title" style="margin-top: 20px;">📰 เหตุการณ์เดือนนี้</div>
                         <div class="events-list" id="eventsList"></div>
@@ -1228,7 +1228,7 @@
 
                 if (this.simulation.monthlyCapReached && this.selectedMonth >= this.simulation.monthlyCapReached) {
                     document.getElementById('dashCapMonth').textContent = `เดือน ${this.simulation.monthlyCapReached}`;
-                    document.getElementById('dashCapMonth').parentElement.style.color = '#5C6B3A';
+                    document.getElementById('dashCapMonth').parentElement.style.color = '#10B981';
                 } else {
                     document.getElementById('dashCapMonth').textContent = '—';
                     document.getElementById('dashCapMonth').parentElement.style.color = '';
@@ -1256,7 +1256,7 @@
                             {
                                 label: 'Monthly Earnings',
                                 data: monthlyData,
-                                borderColor: '#0E1116',
+                                borderColor: '#09090B',
                                 backgroundColor: 'rgba(14, 17, 22, 0.10)',
                                 tension: 0.4,
                                 fill: true
@@ -1264,7 +1264,7 @@
                             {
                                 label: 'Cumulative Earnings',
                                 data: cumulativeData,
-                                borderColor: '#5C6B3A',
+                                borderColor: '#10B981',
                                 backgroundColor: 'rgba(92, 107, 58, 0.14)',
                                 tension: 0.4,
                                 fill: true,
@@ -1276,11 +1276,11 @@
                         responsive: true,
                         maintainAspectRatio: false,
                         plugins: {
-                            legend: { labels: { color: '#8B847B' } }
+                            legend: { labels: { color: '#A1A1AA' } }
                         },
                         scales: {
-                            y: { ticks: { color: '#8B847B' }, grid: { color: '#E5DDCD' } },
-                            x: { ticks: { color: '#8B847B' }, grid: { color: '#E5DDCD' } }
+                            y: { ticks: { color: '#A1A1AA' }, grid: { color: '#E4E4E7' } },
+                            x: { ticks: { color: '#A1A1AA' }, grid: { color: '#E4E4E7' } }
                         }
                     }
                 });
@@ -1293,12 +1293,12 @@
                             {
                                 label: 'Active Members',
                                 data: activeData,
-                                backgroundColor: '#5C6B3A'
+                                backgroundColor: '#10B981'
                             },
                             {
                                 label: 'Inactive Members',
                                 data: inactiveData,
-                                backgroundColor: '#E5DDCD'
+                                backgroundColor: '#E4E4E7'
                             }
                         ]
                     },
@@ -1306,11 +1306,11 @@
                         responsive: true,
                         maintainAspectRatio: false,
                         scales: {
-                            x: { stacked: true, ticks: { color: '#8B847B' }, grid: { color: '#E5DDCD' } },
-                            y: { stacked: true, ticks: { color: '#8B847B' }, grid: { color: '#E5DDCD' } }
+                            x: { stacked: true, ticks: { color: '#A1A1AA' }, grid: { color: '#E4E4E7' } },
+                            y: { stacked: true, ticks: { color: '#A1A1AA' }, grid: { color: '#E4E4E7' } }
                         },
                         plugins: {
-                            legend: { labels: { color: '#8B847B' } }
+                            legend: { labels: { color: '#A1A1AA' } }
                         }
                     }
                 });
