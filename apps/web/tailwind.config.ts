@@ -6,43 +6,35 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        // Distinctive serif display for headlines — character + gravitas
-        display: ['"Fraunces"', '"Instrument Serif"', "Georgia", "serif"],
-        // Clean modern sans for body
-        sans: ['"Geist"', '"DM Sans"', "system-ui", "sans-serif"],
-        // Chain data, addresses, tx hashes
-        mono: ['"JetBrains Mono"', '"IBM Plex Mono"', "ui-monospace", "monospace"],
-        // Thai (matches Sornkan's warmth)
+        // Tech-minimal: Geist everywhere (Vercel / Linear vibe)
+        display: ['"Geist"', '"Inter"', "system-ui", "sans-serif"],
+        sans: ['"Geist"', '"Inter"', "system-ui", "sans-serif"],
+        mono: ['"Geist Mono"', '"JetBrains Mono"', "ui-monospace", "monospace"],
         thai: ['"IBM Plex Sans Thai"', '"Noto Sans Thai"', "system-ui", "sans-serif"],
       },
       colors: {
-        // Conexple palette — warm cream like aged paper +
-        // Solana accents as "earned" highlights
-        cream: "#FBF7F1",      // primary background
-        paper: "#F4EFE6",       // card surface
-        ink: "#0E1116",         // primary text
-        graphite: "#3B3A36",    // secondary text
-        stone: "#8B847B",       // muted
+        // Tech-minimal palette — neutrals + single Solana purple accent
+        cream: "#FFFFFF",      // pure white background (legacy name kept)
+        paper: "#FAFAFA",      // subtle off-white surface (zinc-50)
+        ink: "#09090B",        // near-black text (zinc-950)
+        graphite: "#52525B",   // secondary text (zinc-600)
+        stone: "#A1A1AA",      // muted text (zinc-400)
+        edge: "#E4E4E7",       // borders (zinc-200)
         cnx: {
-          purple: "#9945FF",    // Solana primary
-          teal: "#14F195",      // Solana secondary
-          amber: "#E8B14E",     // accent — harvest/reward
-          rose: "#D9534A",      // alerts
-          olive: "#5C6B3A",     // success / active node
+          purple: "#9945FF",   // Solana primary — single accent
+          teal: "#10B981",     // success / active (emerald-500)
+          amber: "#F59E0B",    // attention (amber-500)
+          rose: "#EF4444",     // alerts (red-500)
+          olive: "#10B981",    // alias — used to denote "live"
         },
-        // Border tones
-        edge: "#E5DDCD",
-        ring: "#0E1116",
+        ring: "#09090B",
       },
       letterSpacing: {
         tightest: "-0.04em",
       },
       boxShadow: {
-        soft: "0 1px 2px rgba(14,17,22,0.04), 0 8px 24px -12px rgba(14,17,22,0.12)",
-        card: "0 1px 0 #E5DDCD, 0 12px 32px -16px rgba(14,17,22,0.18)",
-      },
-      backgroundImage: {
-        grain: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.06 0 0 0 0 0.07 0 0 0 0 0.08 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+        soft: "0 0 0 1px rgba(9,9,11,0.04), 0 1px 2px rgba(9,9,11,0.04)",
+        card: "0 0 0 1px #E4E4E7",
       },
       animation: {
         "fade-in": "fadeIn 0.5s ease-out forwards",

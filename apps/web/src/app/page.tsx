@@ -232,44 +232,13 @@ function EcosystemSection() {
         be the next.
       </p>
 
-      {/* Hero visual — the diagram */}
-      <div className="mt-8 overflow-hidden rounded-2xl border border-edge bg-paper p-4 sm:p-8">
+      <div className="mt-8 rounded-3xl border border-edge bg-paper p-5 sm:p-10">
         <EcosystemDiagram />
       </div>
 
-      {/* Drill-down cards */}
-      <div className="mt-8 grid gap-4 lg:grid-cols-3">
-        <OperatorCard
-          name="Conexple Thailand"
-          status="live"
-          description="The first operator. Our Cloudflare Worker handles webhook ingest, cycle settle, and oracle signing."
-          merchants={[
-            "Demo Merchant 01",
-            "Demo Merchant 02",
-            "Demo Merchant 03",
-            "Merchant 04 (BYOK)",
-          ]}
-          meta="network_id=1 · sornwin.workers.dev"
-        />
-        <OperatorCard
-          name="Lazada-style Operator"
-          status="example"
-          description="How a SE Asian e-commerce platform could plug in — running its own operator on the same protocol."
-          merchants={["Lazada Stores", "Lazada Mall", "Lazada Wholesale"]}
-          meta="hypothetical · not on chain"
-        />
-        <OperatorCard
-          name="Your Operator?"
-          status="open"
-          description="Fork operator code under Apache 2.0. Deploy to your own Cloudflare. Bootstrap your network."
-          merchants={[]}
-          meta="github.com/conexple/alpha"
-        />
-      </div>
-
       <p className="mt-8 max-w-3xl text-sm leading-relaxed text-graphite">
-        This is what "open protocol" means in practice. We ship a reference
-        operator — you don't have to use it. The Solana programs are the only
+        This is what &quot;open protocol&quot; means in practice. We ship a reference
+        operator — you don&apos;t have to use it. The Solana programs are the only
         load-bearing part; everything else is replaceable. No API keys, no
         royalties, no gatekeeping. Apache 2.0.
       </p>
@@ -279,189 +248,138 @@ function EcosystemSection() {
 
 function EcosystemDiagram() {
   return (
-    <svg
-      viewBox="0 0 720 480"
-      className="block h-auto w-full"
-      role="img"
-      aria-label="Conexple ecosystem: protocol layer feeds three operators (Conexple Thailand live, Lazada-style example, your operator open). Each operator has its own merchants. A consumer wallet can connect to any operator network."
-    >
-      <defs>
-        <marker id="arrowOlive" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-          <path d="M0,0 L10,5 L0,10 Z" fill="#5B6E48" />
-        </marker>
-        <marker id="arrowAmber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto">
-          <path d="M0,0 L10,5 L0,10 Z" fill="#C8A765" />
-        </marker>
-      </defs>
+    <div className="space-y-6">
+      <TierRow label="Protocol">
+        <div className="rounded-2xl bg-ink p-6 text-cream sm:p-7">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-cream/55">
+                Immutable on Solana
+              </div>
+              <h3 className="mt-2 font-display text-2xl leading-tight text-cream sm:text-[28px]">
+                Conexple Protocol
+              </h3>
+              <p className="mt-1.5 text-sm text-cream/75">
+                4 Anchor programs · deployed once · shared by every operator
+              </p>
+            </div>
+            <ul className="grid grid-cols-2 gap-1.5 sm:flex sm:flex-col lg:grid lg:grid-cols-2">
+              {["protocol", "network", "escrow", "oracle"].map((p) => (
+                <li
+                  key={p}
+                  className="rounded-md bg-cream/12 px-2.5 py-1 font-mono text-[11px] text-cream/95"
+                >
+                  conexple_{p}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </TierRow>
 
-      {/* Tier labels (left side) */}
-      <text x="14" y="50" fontFamily="'JetBrains Mono', monospace" fontSize="9" fill="#6F6B5E" letterSpacing="2">
-        PROTOCOL
-      </text>
-      <text x="14" y="232" fontFamily="'JetBrains Mono', monospace" fontSize="9" fill="#6F6B5E" letterSpacing="2">
-        OPERATORS
-      </text>
-      <text x="14" y="412" fontFamily="'JetBrains Mono', monospace" fontSize="9" fill="#6F6B5E" letterSpacing="2">
-        CONSUMERS
-      </text>
+      <Connector label="CPI · any operator can call" />
 
-      {/* === Tier 1: Protocol (immutable, shared) === */}
-      <rect x="160" y="20" width="400" height="84" rx="12" fill="#5B6E48" />
-      <text x="360" y="48" textAnchor="middle" fill="white" fontFamily="'Crimson Pro', Georgia, serif" fontSize="18" fontWeight="700">
-        Conexple Protocol
-      </text>
-      <text x="360" y="68" textAnchor="middle" fill="rgba(255,255,255,0.78)" fontFamily="'JetBrains Mono', monospace" fontSize="10" letterSpacing="1">
-        4 ANCHOR PROGRAMS · IMMUTABLE ON SOLANA
-      </text>
-      {/* program chips */}
-      <g fontFamily="'JetBrains Mono', monospace" fontSize="9" fill="rgba(255,255,255,0.92)">
-        <rect x="180" y="80" width="76" height="18" rx="4" fill="rgba(255,255,255,0.14)" />
-        <text x="218" y="92" textAnchor="middle">protocol</text>
-        <rect x="262" y="80" width="76" height="18" rx="4" fill="rgba(255,255,255,0.14)" />
-        <text x="300" y="92" textAnchor="middle">network</text>
-        <rect x="344" y="80" width="76" height="18" rx="4" fill="rgba(255,255,255,0.14)" />
-        <text x="382" y="92" textAnchor="middle">escrow</text>
-        <rect x="426" y="80" width="76" height="18" rx="4" fill="rgba(255,255,255,0.14)" />
-        <text x="464" y="92" textAnchor="middle">oracle</text>
-      </g>
+      <TierRow label="Operators">
+        <div className="grid gap-3 md:grid-cols-3">
+          <OperatorBox
+            name="Conexple Thailand"
+            status="live"
+            hint="first operator · reference implementation"
+            merchants={[
+              "Demo Merchant 01",
+              "Demo Merchant 02",
+              "Demo Merchant 03",
+              "Merchant 04 (BYOK)",
+            ]}
+            highlightLast
+            meta="network_id=1"
+          />
+          <OperatorBox
+            name="E-commerce Operator"
+            status="example"
+            hint="how a partner platform could plug in"
+            merchants={["Online Marketplace", "Retail Stores", "Wholesale Channel"]}
+            meta="illustrative · not on chain"
+          />
+          <OperatorBox
+            name="Your Operator?"
+            status="open"
+            hint="fork the code · deploy your network"
+            merchants={[]}
+            meta="github.com/conexple/alpha"
+          />
+        </div>
+      </TierRow>
 
-      {/* === CPI lines (protocol → operators) === */}
-      <line x1="220" y1="104" x2="160" y2="170" stroke="#5B6E48" strokeWidth="1.5" strokeDasharray="4 3" markerEnd="url(#arrowOlive)" />
-      <line x1="360" y1="104" x2="360" y2="170" stroke="#5B6E48" strokeWidth="1.5" markerEnd="url(#arrowOlive)" />
-      <line x1="500" y1="104" x2="560" y2="170" stroke="#5B6E48" strokeWidth="1.5" strokeDasharray="4 3" markerEnd="url(#arrowOlive)" />
+      <Connector label="any wallet · any operator" />
 
-      <text x="190" y="142" fontFamily="'JetBrains Mono', monospace" fontSize="9" fill="#5B6E48" textAnchor="end">CPI</text>
-      <text x="370" y="142" fontFamily="'JetBrains Mono', monospace" fontSize="9" fill="#5B6E48">CPI</text>
-      <text x="530" y="142" fontFamily="'JetBrains Mono', monospace" fontSize="9" fill="#5B6E48">CPI</text>
+      <TierRow label="Consumer">
+        <div className="rounded-2xl border-2 border-cnx-amber bg-cnx-amber/10 p-6 text-center">
+          <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-cnx-amber">
+            One key · many networks
+          </div>
+          <h4 className="mt-2 font-display text-xl text-ink sm:text-2xl">
+            A Consumer Wallet
+          </h4>
+          <p className="mx-auto mt-1.5 max-w-md text-sm leading-relaxed text-graphite">
+            The same Phantom wallet holds a Position in any operator&apos;s network.
+            Commissions stay within each network&apos;s scope.
+          </p>
+        </div>
+      </TierRow>
+    </div>
+  );
+}
 
-      {/* === Tier 2: Operator 1 — Conexple Thailand (LIVE) === */}
-      <rect x="40" y="170" width="240" height="160" rx="10" fill="#FFFFFF" stroke="#5B6E48" strokeWidth="2" />
-      <rect x="48" y="178" width="76" height="18" rx="9" fill="#5B6E48" />
-      <text x="86" y="190" textAnchor="middle" fill="white" fontFamily="'JetBrains Mono', monospace" fontSize="9" letterSpacing="1" fontWeight="700">
-        LIVE
-      </text>
-      <text x="160" y="210" textAnchor="middle" fill="#1A1A1A" fontFamily="'Crimson Pro', Georgia, serif" fontSize="16" fontWeight="700">
-        Conexple Thailand
-      </text>
-      <text x="160" y="226" textAnchor="middle" fill="#5C5C5C" fontFamily="'IBM Plex Sans Thai', sans-serif" fontSize="10">
-        first operator · our reference impl
-      </text>
-      {/* merchant chips */}
-      <g fontFamily="'JetBrains Mono', monospace" fontSize="9" fill="#38362E">
-        <rect x="55" y="240" width="100" height="22" rx="4" fill="#F4EFE6" />
-        <text x="105" y="255" textAnchor="middle">Demo Merchant 01</text>
-        <rect x="165" y="240" width="100" height="22" rx="4" fill="#F4EFE6" />
-        <text x="215" y="255" textAnchor="middle">Demo Merchant 02</text>
-        <rect x="55" y="268" width="100" height="22" rx="4" fill="#F4EFE6" />
-        <text x="105" y="283" textAnchor="middle">Demo Merchant 03</text>
-        <rect x="165" y="268" width="100" height="22" rx="4" fill="#FBF0D6" stroke="#C8A765" />
-        <text x="215" y="283" textAnchor="middle" fontWeight="700">Merchant 04 BYOK</text>
-      </g>
-      <text x="160" y="316" textAnchor="middle" fill="#6F6B5E" fontFamily="'JetBrains Mono', monospace" fontSize="9">
-        network_id=1
-      </text>
+function TierRow({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="grid gap-3 sm:grid-cols-[76px_1fr] sm:items-start sm:gap-5">
+      <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-stone sm:pt-5 sm:text-right">
+        {label}
+      </div>
+      <div>{children}</div>
+    </div>
+  );
+}
 
-      {/* === Tier 2: Operator 2 — Lazada-style (EXAMPLE) === */}
-      <rect x="292" y="170" width="200" height="160" rx="10" fill="#FFFFFF" stroke="#C8A765" strokeWidth="2" />
-      <rect x="300" y="178" width="100" height="18" rx="9" fill="#C8A765" />
-      <text x="350" y="190" textAnchor="middle" fill="#1A1A1A" fontFamily="'JetBrains Mono', monospace" fontSize="9" letterSpacing="1" fontWeight="700">
-        ILLUSTRATIVE
-      </text>
-      <text x="392" y="210" textAnchor="middle" fill="#1A1A1A" fontFamily="'Crimson Pro', Georgia, serif" fontSize="16" fontWeight="700">
-        Lazada-style Op
-      </text>
-      <text x="392" y="226" textAnchor="middle" fill="#5C5C5C" fontFamily="'IBM Plex Sans Thai', sans-serif" fontSize="10">
-        a partner could plug in here
-      </text>
-      <g fontFamily="'JetBrains Mono', monospace" fontSize="9" fill="#38362E">
-        <rect x="304" y="240" width="86" height="22" rx="4" fill="#F4EFE6" />
-        <text x="347" y="255" textAnchor="middle">Lazada Mall</text>
-        <rect x="394" y="240" width="86" height="22" rx="4" fill="#F4EFE6" />
-        <text x="437" y="255" textAnchor="middle">Lazada Stores</text>
-        <rect x="304" y="268" width="86" height="22" rx="4" fill="#F4EFE6" />
-        <text x="347" y="283" textAnchor="middle">Wholesale</text>
-      </g>
-      <text x="392" y="316" textAnchor="middle" fill="#6F6B5E" fontFamily="'JetBrains Mono', monospace" fontSize="9">
-        hypothetical · not on chain
-      </text>
-
-      {/* === Tier 2: Operator 3 — Your Operator (OPEN) === */}
-      <rect x="504" y="170" width="176" height="160" rx="10" fill="#FAF7F2" stroke="#6F6B5E" strokeWidth="2" strokeDasharray="5 3" />
-      <rect x="512" y="178" width="86" height="18" rx="9" fill="#E8E1D2" />
-      <text x="555" y="190" textAnchor="middle" fill="#38362E" fontFamily="'JetBrains Mono', monospace" fontSize="9" letterSpacing="1" fontWeight="700">
-        OPEN · FORK IT
-      </text>
-      <text x="592" y="210" textAnchor="middle" fill="#1A1A1A" fontFamily="'Crimson Pro', Georgia, serif" fontSize="16" fontWeight="700">
-        Your Operator?
-      </text>
-      <text x="592" y="226" textAnchor="middle" fill="#5C5C5C" fontFamily="'IBM Plex Sans Thai', sans-serif" fontSize="10">
-        deploy under Apache 2.0
-      </text>
-      <rect x="516" y="240" width="152" height="50" rx="4" fill="transparent" stroke="#6F6B5E" strokeWidth="1" strokeDasharray="3 3" />
-      <text x="592" y="262" textAnchor="middle" fill="#6F6B5E" fontFamily="'IBM Plex Sans Thai', sans-serif" fontSize="11" fontStyle="italic">
-        your merchants
-      </text>
-      <text x="592" y="278" textAnchor="middle" fill="#6F6B5E" fontFamily="'IBM Plex Sans Thai', sans-serif" fontSize="11" fontStyle="italic">
-        here
-      </text>
-      <text x="592" y="316" textAnchor="middle" fill="#6F6B5E" fontFamily="'JetBrains Mono', monospace" fontSize="9">
-        github.com/conexple/alpha
-      </text>
-
-      {/* === Consumer wallet (bottom) + curved connection lines === */}
-      <path d="M 260 360 Q 200 348, 160 332" fill="none" stroke="#C8A765" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.75" markerEnd="url(#arrowAmber)" />
-      <path d="M 360 360 L 360 332" stroke="#C8A765" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.75" markerEnd="url(#arrowAmber)" />
-      <path d="M 460 360 Q 520 348, 568 332" fill="none" stroke="#C8A765" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.75" markerEnd="url(#arrowAmber)" />
-
-      {/* Consumer wallet pill */}
-      <rect x="240" y="368" width="240" height="64" rx="32" fill="#C8A765" />
-      <text x="360" y="394" textAnchor="middle" fill="white" fontFamily="'Crimson Pro', Georgia, serif" fontSize="15" fontWeight="700">
-        A Consumer Wallet
-      </text>
-      <text x="360" y="412" textAnchor="middle" fill="rgba(255,255,255,0.88)" fontFamily="'IBM Plex Sans Thai', sans-serif" fontSize="11">
-        same Phantom key · multiple networks
-      </text>
-
-      {/* Footnote helper */}
-      <text x="160" y="354" textAnchor="middle" fill="#C8A765" fontFamily="'JetBrains Mono', monospace" fontSize="8" letterSpacing="1">
-        registers in
-      </text>
-      <text x="360" y="354" textAnchor="middle" fill="#C8A765" fontFamily="'JetBrains Mono', monospace" fontSize="8" letterSpacing="1">
-        registers in
-      </text>
-      <text x="568" y="354" textAnchor="middle" fill="#C8A765" fontFamily="'JetBrains Mono', monospace" fontSize="8" letterSpacing="1">
-        registers in
-      </text>
-
-      {/* Tier separators (subtle horizontal lines on left for context) */}
-      <line x1="100" y1="62" x2="120" y2="62" stroke="#E8E1D2" strokeWidth="1" />
-      <line x1="100" y1="246" x2="120" y2="246" stroke="#E8E1D2" strokeWidth="1" />
-      <line x1="100" y1="406" x2="120" y2="406" stroke="#E8E1D2" strokeWidth="1" />
-    </svg>
+function Connector({ label }: { label: string }) {
+  return (
+    <div className="grid gap-3 sm:grid-cols-[76px_1fr] sm:items-center sm:gap-5">
+      <div className="hidden sm:block" />
+      <div className="flex items-center gap-3 text-stone">
+        <span className="h-px flex-1 bg-edge" />
+        <span className="whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.2em]">
+          ↓ {label}
+        </span>
+        <span className="h-px flex-1 bg-edge" />
+      </div>
+    </div>
   );
 }
 
 type OperatorStatus = "live" | "example" | "open";
 
-function OperatorCard({
+function OperatorBox({
   name,
   status,
-  description,
+  hint,
   merchants,
+  highlightLast,
   meta,
 }: {
   name: string;
   status: OperatorStatus;
-  description: string;
+  hint: string;
   merchants: string[];
+  highlightLast?: boolean;
   meta: string;
 }) {
   const cardClass =
     status === "live"
       ? "border-cnx-olive bg-paper"
       : status === "example"
-      ? "border-cnx-amber/40 bg-paper"
-      : "border-dashed border-edge bg-cream/40";
+      ? "border-cnx-amber/55 bg-paper"
+      : "border-edge bg-cream/40 border-dashed";
 
   const pillClass =
     status === "live"
@@ -471,43 +389,46 @@ function OperatorCard({
       : "bg-edge text-graphite";
 
   const pillLabel =
-    status === "live"
-      ? "Live · on chain"
-      : status === "example"
-      ? "Illustrative example"
-      : "Open · fork it";
+    status === "live" ? "Live" : status === "example" ? "Illustrative" : "Open · fork it";
 
   return (
-    <article className={`flex flex-col gap-4 rounded-2xl border p-5 ${cardClass}`}>
-      <header>
+    <article className={`flex flex-col gap-4 rounded-2xl border-2 p-5 ${cardClass}`}>
+      <div>
         <span
-          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] uppercase tracking-[0.12em] font-medium ${pillClass}`}
+          className={`inline-flex items-center rounded-full px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.2em] font-medium ${pillClass}`}
         >
           {pillLabel}
         </span>
-        <h3 className="mt-3 font-display text-lg text-ink">{name}</h3>
-        <p className="mt-1 text-sm leading-relaxed text-graphite">{description}</p>
-      </header>
+        <h4 className="mt-3 font-display text-lg leading-tight text-ink">{name}</h4>
+        <p className="mt-1 text-xs text-graphite">{hint}</p>
+      </div>
 
       <div>
-        <div className="mb-2 text-[10px] uppercase tracking-[0.14em] text-stone">
+        <div className="mb-2 font-mono text-[9px] uppercase tracking-[0.22em] text-stone">
           Merchants
         </div>
         {merchants.length > 0 ? (
           <ul className="flex flex-wrap gap-1.5">
-            {merchants.map((m) => (
-              <li
-                key={m}
-                className="rounded-md bg-cream px-2 py-1 font-mono text-[11px] text-graphite"
-              >
-                {m}
-              </li>
-            ))}
+            {merchants.map((m, i) => {
+              const isHighlight = highlightLast && i === merchants.length - 1;
+              return (
+                <li
+                  key={m}
+                  className={
+                    isHighlight
+                      ? "rounded-md border border-cnx-amber bg-cnx-amber/15 px-2 py-1 font-mono text-[11px] font-medium text-ink"
+                      : "rounded-md bg-cream px-2 py-1 font-mono text-[11px] text-graphite"
+                  }
+                >
+                  {m}
+                </li>
+              );
+            })}
           </ul>
         ) : (
-          <p className="rounded-md border border-dashed border-edge bg-paper/60 px-3 py-2 text-[11px] italic text-stone">
-            Your merchants here
-          </p>
+          <div className="rounded-md border border-dashed border-edge px-3 py-3 text-center font-mono text-[11px] italic text-stone">
+            your merchants here
+          </div>
         )}
       </div>
 
