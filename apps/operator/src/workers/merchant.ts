@@ -45,6 +45,8 @@ const DISPLAY_META: Record<string, { name: string; margin_bps: number }> = {
   "2": { name: "Demo Merchant 02", margin_bps: 4500 },
   "3": { name: "Demo Merchant 03", margin_bps: 3000 },
   "4": { name: "Demo Merchant 04 (BYOK)", margin_bps: 2500 },
+  "5": { name: "Demo Merchant 05 (BYOK)", margin_bps: 4000 },
+  "6": { name: "Demo Merchant 06 (BYOK)", margin_bps: 3500 },
 };
 
 function readU64Le(buf: Buffer, offset: number): bigint {
