@@ -56,9 +56,9 @@ VO:
 > Anchor accounts via a Cloudflare Worker RPC cache.
 >
 > Click 'Connect → see your position'. If the connected wallet is
-> one of the demo wallets — A through Z — it sees its position,
-> depth, status, and cap progress. Otherwise it gets a friendly
-> 'no position yet' panel with a referral CTA."
+> one of the 21 demo wallets (A through R, plus W, Y, Z), it sees
+> its position, depth, status, and cap progress. Otherwise it gets a
+> friendly 'no position yet' panel with a referral CTA."
 
 ### 1:30–2:00 — Trigger a purchase (terminal)
 

@@ -7,7 +7,7 @@
 Deployed to **Solana devnet only.** Smart contracts are unaudited.
 Do not use with real funds.
 
-- **Live demo:** [conexple-worker-web.sornwin.workers.dev](https://conexple-worker-web.sornwin.workers.dev) (Cloudflare Pages)
+- **Live demo:** [conexple-worker-web.sornwin.workers.dev](https://conexple-worker-web.sornwin.workers.dev) (Cloudflare Workers — static assets)
 - **Operator backend:** [conexple-worker-operator.sornwin.workers.dev](https://conexple-worker-operator.sornwin.workers.dev) (Cloudflare Workers — `/health`, `/settle/run`, `/webhook/purchase`, etc.)
 - **Solscan-verifiable example tx:** [3voysBj...A5Q6t](https://solscan.io/tx/3voysBjypcH3qNCusJ1g66BywVMSmojNQbWuqkpDcTtbXunGWbD3euQezntd5KY2A1N4VHku2omPyM2vjgMA5Q6t?cluster=devnet) (record_purchase by wallet E, amount=1000)
 - **Program IDs (Solana devnet):**
@@ -59,7 +59,7 @@ Every rule and every payout is on-chain and publicly verifiable.
         │
    ┌────┴───────────────┐
    │ Next.js on         │  Consumer + operator + merchant + public
-   │ Cloudflare Pages   │  explorer views.
+   │ Cloudflare Worker  │  explorer views (static export).
    └────────────────────┘
 ```
 
@@ -105,7 +105,7 @@ programs/                    Anchor programs (the open protocol)
   conexple-oracle/           registered backend signers + audit log
 
 apps/
-  web/                       Next.js 15 frontend (Cloudflare Pages)
+  web/                       Next.js 15 frontend (Cloudflare Workers — static assets)
   operator/                  Cloudflare Workers backend (Hono + D1 + KV + Queue)
 
 packages/sdk/                shared TypeScript types + PDA helpers

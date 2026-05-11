@@ -12,7 +12,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 
 const OPERATOR_URL =
-  process.env.OPERATOR_URL ?? "https://conexple-worker-operator.workers.dev";
+  process.env.OPERATOR_URL ?? "https://conexple-worker-operator.sornwin.workers.dev";
 const HMAC = process.env.PURCHASE_WEBHOOK_HMAC ?? "";
 const NETWORK_ID = process.env.NETWORK_ID ?? "1";
 // Backdate block_time by N days so settle_at (block_time + 30d) lands in the

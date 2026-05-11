@@ -1,5 +1,15 @@
 # Handoff — what's built, what's left for the human
 
+> **HISTORICAL CONTEXT:** This doc was written 2026-05-09 (pre-deploy
+> state). As of 2026-05-11, the 4 Anchor programs, both Cloudflare
+> Workers (operator + web static-assets), and Cloudflare resources
+> (D1, KV, Queue, secrets) ARE all deployed and verified end-to-end.
+> The frontend was migrated from Cloudflare Worker (static assets) to a static-assets
+> Cloudflare Worker (old Pages project deleted). For current state,
+> read `instruction/work/todos.md` § "Resumption session" + RESUME
+> CONTEXT. Sections A–E below describe runbooks that have already
+> executed — kept for reference / re-deploy.
+>
 > Author: agent build, 2026-05-09
 > Reader: Bosso (founder, sole human in the loop)
 > Purpose: tell you exactly what state the repo is in, what runs, what
@@ -39,7 +49,7 @@ b3a6fbe feat(web,operator,docs): full app surface + submission package
 
 | Surface | URL | Status |
 |---|---|---|
-| Frontend (Cloudflare Pages) | https://conexple-worker-web.sornwin.workers.dev | ✅ live, 8/8 static pages, Phantom adapter |
+| Frontend (Cloudflare Worker (static assets)) | https://conexple-worker-web.sornwin.workers.dev | ✅ live, 8/8 static pages, Phantom adapter |
 | Operator API (Cloudflare Workers) | https://conexple-worker-operator.sornwin.workers.dev | ✅ live, cron registered, Queue bound, all endpoints respond |
 | `/health` | https://conexple-worker-operator.sornwin.workers.dev/health | ✅ 200 OK |
 | `/settle/status` | https://conexple-worker-operator.sornwin.workers.dev/settle/status | ✅ returns recent settlement runs |
@@ -118,7 +128,7 @@ Sign in with the email you registered for the hackathon
 - Description: lift from `README.md` "What is Conexple" section
 - GitHub URL: `https://github.com/conexple/alpha` (publish first —
   see step 3)
-- Demo URL: the Cloudflare Pages URL captured by the deploy script
+- Demo URL: the Cloudflare Worker (static assets) URL captured by the deploy script
 - Pitch video URL: Loom or YouTube unlisted from step 1
 - Technical demo video URL: same, from step 1
 - **Tick the Public Goods award checkbox** if it exists in the form
@@ -280,14 +290,14 @@ pnpm deploy
 cd apps/web
 # Set env vars (next build picks up .env.production)
 cat > .env.production <<EOF
-NEXT_PUBLIC_RPC_URL=https://conexple-worker-operator.workers.dev/rpc
+NEXT_PUBLIC_RPC_URL=https://conexple-worker-operator.sornwin.workers.dev/rpc
 NEXT_PUBLIC_NETWORK_ID=1
 NEXT_PUBLIC_PROGRAM_PROTOCOL=<from anchor keys list>
 NEXT_PUBLIC_PROGRAM_NETWORK=<from anchor keys list>
 NEXT_PUBLIC_PROGRAM_ESCROW=<from anchor keys list>
 NEXT_PUBLIC_PROGRAM_NETWORK=<from anchor keys list>
 NEXT_PUBLIC_DEMO_USDC_MINT=<from mint-demo-usdc.ts output>
-NEXT_PUBLIC_OPERATOR_URL=https://conexple-worker-operator.workers.dev
+NEXT_PUBLIC_OPERATOR_URL=https://conexple-worker-operator.sornwin.workers.dev
 EOF
 pnpm build
 pnpm wrangler pages deploy .next  # or use git integration
@@ -308,7 +318,7 @@ video.
 ### E. Pitch deck
 
 Outline only — see `submission/pitch-deck-outline.md`. Build the
-deck in Keynote / Google Slides / Pitch.com. 12 slides max.
+deck in Keynote / Google Slides / Pitch.com. 14 slides max.
 
 ## Where things live
 
