@@ -25,8 +25,8 @@ style: |
 
 - Open consumer affiliate protocol on Solana
 - Pay loyal customers — not influencers
-- Bosso · Sornkan Co. · Bangkok, Thailand
-- suanwin.paows@gmail.com
+- Same merchant budget, redirected on chain
+- Built from Bangkok · Apache 2.0
 
 ---
 
@@ -58,13 +58,13 @@ style: |
 
 ---
 
-# Why this is not MLM
+# Direct Sale, on chain
 
-- 50% margin cap — enforced on-chain
-- No recruitment requirement — earnings depend on purchases
-- No auto-assign — placements only come from a referral
-- 5-level depth cap — no infinite pyramid
-- Apache 2.0 — forkable if the operator misbehaves
+- Direct sale is a legitimate, regulated commerce category — buyers refer buyers, get rewarded
+- The problem has always been trust: no one verifies the margins, placements, or rules
+- Conexple puts every guarantee on Solana — enforced in code, not paper
+- **50% margin cap · earnings tied to purchases · placements only from referral**
+- **5 levels deep, bounded · Apache 2.0, fork it anytime**
 
 ---
 
@@ -90,9 +90,10 @@ style: |
 # Live demo — devnet, today
 
 - Web: conexple-worker-web.sornwin.workers.dev
-- 4 Anchor programs deployed, 21 positions across 3 trees, 4 merchants
-- Total on-chain earnings distributed: 2,638 base units across 6 wallets
-- BYOK proof: a third-party merchant plugged in end-to-end on chain
+- 4 Anchor programs deployed, 21 positions across 3 trees, 6 merchants
+- 3 deployer-signed + 3 BYOK (third-parties signed by their own keypairs)
+- Total on-chain earnings: 6,417 base units distributed across the network
+- Every accrual verifiable on Solscan in real time
 
 ---
 
@@ -110,7 +111,7 @@ style: |
 - SEA influencer-driven e-commerce: **up to $46B annually**, **$21B directly trackable affiliate** (Cube × impact.com SEA Influencer Marketing Report, 2025)
 - Thailand: **16% of SEA e-commerce**, **83% buy on creator recommendation** (Priceza · Thailand E-Commerce Trends 2025)
 - ASEAN arc: Thailand → Vietnam → Indonesia → Philippines
-- First operator: Conexple Thailand (Sornkan Co.); 5 merchants Q3, 50 by year-end
+- First operator: Conexple Thailand; 5 merchants Q3, 50 by year-end
 
 ---
 
@@ -133,19 +134,19 @@ style: |
 
 ---
 
-# Team
+# Team & operating plan
 
-- Bosso — founder, designer + dev
-- Sornkan Co. operates Thai consumer brands today
-- We will operate Conexple Thailand as the first network
-- The protocol stays open for any operator
+- Conexple Thailand will run as the first operator network
+- Operating team is based in Bangkok, with consumer commerce experience
+- The protocol stays open — Apache 2.0, no token, forkable
+- Anyone can run their own Conexple network on the same Solana programs
 
 ---
 
-# Ask + close
+# Try Conexple — live on devnet
 
+- **conexple-worker-web.sornwin.workers.dev** — connect a wallet, see splits in real time
 - Repo: github.com/conexple/alpha (Apache 2.0)
-- Demo: conexple-worker-web.sornwin.workers.dev
-- Pitch video: see submission
-- Ask: a Frontier slot, then accelerator conversation
-- Open protocol. Thai-rooted. ASEAN-bound.
+- Opting into Public Goods award · Thai-rooted, ASEAN-bound
+- Mainnet next; Conexple Thailand as first operator network
+- Protocol stays open — fork it, run your own
