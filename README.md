@@ -146,4 +146,4 @@ independent review is welcomed.
 - Inspired by GDI Infinity Override; redesigned for an affiliate-only
   (no recruitment) model
 
-— บริษัท สอนกาน จำกัด (Sornkan Co., Ltd.), Thailand 🇹🇭
+— Conexple contributors · Built in Bangkok, Thailand 🇹🇭

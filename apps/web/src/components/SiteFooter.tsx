@@ -9,8 +9,8 @@ export function SiteFooter() {
               <span className="h-1.5 w-1.5 rounded-full bg-cnx-purple" />
             </div>
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-graphite">
-              Open consumer affiliate protocol on Solana. Built by Sornkan in
-              Bangkok 🇹🇭 for the Colosseum Frontier 2026 hackathon.
+              Open consumer affiliate protocol on Solana. Built in Bangkok 🇹🇭
+              for the Colosseum Frontier 2026 hackathon.
             </p>
           </div>
           <FooterCol
@@ -43,7 +43,7 @@ export function SiteFooter() {
 
         <div className="mt-10 flex flex-col items-start justify-between gap-4 border-t border-edge pt-6 text-xs text-stone sm:flex-row sm:items-center">
           <span>
-            © 2026 Sornkan Co., Ltd. — released under{" "}
+            © 2026 Conexple contributors — released under{" "}
             <a className="underline-offset-4 hover:underline" href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank" rel="noreferrer">
               Apache 2.0
             </a>
