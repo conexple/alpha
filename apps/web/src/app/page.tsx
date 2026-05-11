@@ -54,6 +54,32 @@ export default function Home() {
             </a>
           </div>
 
+          <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-stone">
+            <a
+              href="https://youtu.be/S8hmH2V1rzc"
+              target="_blank"
+              rel="noreferrer"
+              className="group inline-flex items-center gap-2 transition-colors hover:text-ink"
+            >
+              <span className="grid h-6 w-6 place-items-center rounded-full bg-cnx-purple text-[10px] text-cream transition-transform group-hover:scale-110">
+                ▶
+              </span>
+              Watch the 3-min pitch
+              <span className="text-stone/60">↗</span>
+            </a>
+            <span className="hidden text-stone/40 sm:inline">·</span>
+            <a
+              href="https://youtu.be/uSIWEeu0qcU"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 transition-colors hover:text-ink"
+            >
+              <span className="font-mono text-[10px] text-cnx-purple">▶</span>
+              Technical demo · 2 min
+              <span className="text-stone/60">↗</span>
+            </a>
+          </div>
+
           <dl className="mt-12 grid grid-cols-2 gap-8 border-t border-edge pt-8 sm:grid-cols-4">
             <Stat n="÷7" l="commission slots" />
             <Stat n="50%" l="margin cap on-chain" />
@@ -157,9 +183,29 @@ export default function Home() {
             <p className="mt-3 text-graphite">
               This deployment is on Solana devnet. The network is pre-seeded —
               connect a Phantom wallet pointed at devnet to see your position.
-              Pitch + technical demo videos linked from the README.
+              Two short videos walk through the pitch and the technical demo:
             </p>
             <div className="mt-6 flex flex-wrap gap-3 text-sm">
+              <a
+                href="https://youtu.be/S8hmH2V1rzc"
+                target="_blank"
+                rel="noreferrer"
+                className="group inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 font-medium text-cream transition-transform hover:-translate-y-0.5"
+              >
+                <span className="grid h-4 w-4 place-items-center rounded-full bg-cnx-purple text-[9px] transition-transform group-hover:scale-110">
+                  ▶
+                </span>
+                Watch pitch · 3 min
+              </a>
+              <a
+                href="https://youtu.be/uSIWEeu0qcU"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-full border border-edge bg-cream px-5 py-2.5 font-medium text-graphite hover:border-ink hover:text-ink"
+              >
+                <span className="font-mono text-[10px] text-cnx-purple">▶</span>
+                Technical demo · 2 min
+              </a>
               <a
                 href="https://github.com/conexple/alpha"
                 target="_blank"

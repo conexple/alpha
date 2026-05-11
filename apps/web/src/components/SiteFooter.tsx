@@ -2,7 +2,7 @@ export function SiteFooter() {
   return (
     <footer className="mt-24 border-t border-edge">
       <div className="container-page py-12">
-        <div className="grid grid-cols-2 gap-10 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-10 md:grid-cols-5">
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-baseline gap-2">
               <span className="font-display text-xl font-semibold text-ink">conexple</span>
@@ -30,6 +30,13 @@ export function SiteFooter() {
               { href: "https://github.com/conexple/alpha/blob/main/docs/mechanics.md", label: "Mechanics spec", ext: true },
               { href: "https://github.com/conexple/alpha/blob/main/docs/payout.md", label: "Payout timing", ext: true },
               { href: "https://github.com/conexple/alpha/blob/main/docs/architecture.md", label: "Architecture", ext: true },
+            ]}
+          />
+          <FooterCol
+            title="Watch"
+            links={[
+              { href: "https://youtu.be/S8hmH2V1rzc", label: "Pitch · 3 min", ext: true },
+              { href: "https://youtu.be/uSIWEeu0qcU", label: "Technical demo · 2 min", ext: true },
             ]}
           />
           <FooterCol
