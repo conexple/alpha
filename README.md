@@ -10,12 +10,13 @@ Do not use with real funds.
 - **Live demo:** [conexple-worker-web.sornwin.workers.dev](https://conexple-worker-web.sornwin.workers.dev) (Cloudflare Workers — static assets)
 - **Operator backend:** [conexple-worker-operator.sornwin.workers.dev](https://conexple-worker-operator.sornwin.workers.dev) (Cloudflare Workers — `/health`, `/settle/run`, `/webhook/purchase`, etc.)
 - **Solscan-verifiable example tx:** [3voysBj...A5Q6t](https://solscan.io/tx/3voysBjypcH3qNCusJ1g66BywVMSmojNQbWuqkpDcTtbXunGWbD3euQezntd5KY2A1N4VHku2omPyM2vjgMA5Q6t?cluster=devnet) (record_purchase by wallet E, amount=1000)
-- **6 merchants on chain** — 4 deployer-signed (id 1–3 + the original BYOK merchant 4) plus 2 more BYOK merchants (id 5, 6) initialized by independent keypairs. See `submission/byok-merchant-04-receipt.json` + `submission/settle-receipt.json` for traceable proof.
+- **6 merchants on chain** — 3 deployer-signed (id 1–3) plus 3 BYOK merchants (id 4, 5, 6) initialized by independent keypairs that signed their own `initialize_merchant` instruction. See `submission/byok-merchant-04-receipt.json` + `submission/settle-receipt.json` for traceable proof.
 - **Multi-cycle settlement proof** — recent on-chain `add_earnings` transactions distributing commission across upline:
   - [`aMnXq4v4…n2S`](https://solscan.io/tx/aMnXq4v4YJsvUXYYq4S1jbrXs3MStjVcRq7ZYej77XWQdY9LDUSDa8W5S4V3m6rkbWUyj7DNoyh5AdgQrWR1n2S?cluster=devnet) — customer K → 4 upline × 571 base units (merchant 04 BYOK proof)
   - [`3cVWq6SA…aZZf`](https://solscan.io/tx/3cVWq6SANKw44Qbcpc9TXb5f5pvudiCKoJsPZ1HnFw3XAmp5G6JtLgZvMG73t6NcGKR1KSFoH3ztmNNNoEzbaZZf?cluster=devnet) — customer of merchant 05 → 5 upline × 285 base units
   - [`PfPdB7mn…vJ3`](https://solscan.io/tx/PfPdB7mnDo4cQeS1oi7JTivKYmmfFAb41sgq8VPTdXmc77ocgKkfMEduH8XF4hCHzNWXAmQHR2oYYVcrwmXGvJ3?cluster=devnet) — customer of merchant 06 → 3 upline × 428 base units
   - [`2c1ND1Bx…DS56`](https://solscan.io/tx/2c1ND1BxxJ9seiePE1V7waLwnJkLc1NW33UNVNRixxja3rCpmywEDr7Yu6RWj3voGBzEPRcZDsdy8Yd3aL3cDS56?cluster=devnet) — second customer of merchant 05 → 5 upline × 214 base units
+- **On-chain escrow security upgrade (2026-05-11)** — closed 4 Anchor authorization gaps in `conexple_escrow` (recipient-token binding, network-oracle auth, cross-merchant pending binding). Upgrade tx: [`3m6H4ryM…XcUd`](https://solscan.io/tx/3m6H4ryM9onKGyAivoRxQytfkucguDPx3vjUKowzs9uSgFeMUbtKS2fggWVUzgyxSQ1nmQbqRiqnxudSJC3UXcUd?cluster=devnet). See [SECURITY.md](./SECURITY.md) §"Pre-submission audit".
 - **Program IDs (Solana devnet):**
   - `conexple_protocol` — [`D1HVppRLhT6wmUxmaM4QABytmcBDEmKuuuMoa7HkKSbn`](https://solscan.io/account/D1HVppRLhT6wmUxmaM4QABytmcBDEmKuuuMoa7HkKSbn?cluster=devnet)
   - `conexple_network` — [`9nrHZqJcT3zLcK6eTu7ZLBBAU3Rr2eecnFYF413YePt9`](https://solscan.io/account/9nrHZqJcT3zLcK6eTu7ZLBBAU3Rr2eecnFYF413YePt9?cluster=devnet)
