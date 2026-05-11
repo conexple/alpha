@@ -20,4 +20,8 @@ pub enum ConexpleEscrowError {
     UnauthorizedVoid,
     #[msg("pool_split_bps must be between 0 and 10000 inclusive")]
     PoolSplitOutOfRange,
+    #[msg("recipient_token.owner must equal pending.recipient")]
+    WrongRecipient,
+    #[msg("pending.merchant_id must equal merchant_escrow.merchant_id")]
+    MerchantMismatch,
 }

@@ -18,6 +18,7 @@
 
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Token, TokenAccount, Transfer};
+use conexple_network::state::NetworkState;
 
 declare_id!("9eTvjKrfbYy6JhFMJnuFo5ATCN6uS115J196bvPbmMXU");
 
@@ -102,9 +103,13 @@ pub mod conexple_escrow {
         ctx: Context<CreatePending>,
         params: CreatePendingParams,
     ) -> Result<()> {
+        // C-2 fix: oracle authority is the network's registered oracle, not
+        // the merchant. The `network` account is seed-checked in the context
+        // to ensure the pubkey we compare against actually belongs to the
+        // merchant_escrow's network.
         require_keys_eq!(
             ctx.accounts.oracle_authority.key(),
-            ctx.accounts.merchant_escrow.merchant, // V1: merchant's own auth = oracle relay
+            ctx.accounts.network.oracle,
             ConexpleEscrowError::UnauthorizedOracle
         );
         require!(params.amount > 0, ConexpleEscrowError::InvalidAmount);
@@ -139,9 +144,12 @@ pub mod conexple_escrow {
             Clock::get()?.unix_timestamp < p.settle_at,
             ConexpleEscrowError::PastSettle
         );
-        require!(
-            ctx.accounts.merchant.key() == ctx.accounts.merchant_escrow.merchant
-                || ctx.accounts.merchant.key() == ctx.accounts.merchant_escrow.merchant /* admin */,
+        // C-4 fix: previous check OR'd two identical clauses (the admin
+        // branch was never wired). Single canonical check against the
+        // merchant. Admin escape hatch deferred to V2.
+        require_keys_eq!(
+            ctx.accounts.merchant.key(),
+            ctx.accounts.merchant_escrow.merchant,
             ConexpleEscrowError::UnauthorizedVoid
         );
 
@@ -168,9 +176,10 @@ pub mod conexple_escrow {
     pub fn settle_pending<'info>(
         ctx: Context<'_, '_, 'info, 'info, SettlePending<'info>>,
     ) -> Result<()> {
+        // C-2 fix: oracle authority must be the network's registered oracle.
         require_keys_eq!(
             ctx.accounts.oracle_authority.key(),
-            ctx.accounts.merchant_escrow.merchant, // V1: merchant relays via its own auth
+            ctx.accounts.network.oracle,
             ConexpleEscrowError::UnauthorizedOracle
         );
 
@@ -324,6 +333,15 @@ pub struct CreatePending<'info> {
     )]
     pub merchant_escrow: Account<'info, MerchantEscrow>,
 
+    /// CHECK-VIA-SEEDS: network state PDA seeded by merchant_escrow.network_id.
+    /// Used to source the authoritative oracle pubkey (C-2 fix).
+    #[account(
+        seeds = [b"network", merchant_escrow.network_id.to_le_bytes().as_ref()],
+        bump = network.bump,
+        seeds::program = conexple_network::ID,
+    )]
+    pub network: Account<'info, NetworkState>,
+
     #[account(
         init,
         payer = oracle_authority,
@@ -358,6 +376,9 @@ pub struct VoidPurchase<'info> {
     )]
     pub merchant_escrow: Account<'info, MerchantEscrow>,
 
+    // C-3 fix: bind pending to the same merchant as merchant_escrow. Without
+    // this, merchant A could pass their merchant_escrow with merchant B's
+    // pending and void B's purchase while incrementing A's voided_total.
     #[account(
         mut,
         seeds = [
@@ -368,6 +389,8 @@ pub struct VoidPurchase<'info> {
             &[pending.slot],
         ],
         bump = pending.bump,
+        constraint = pending.merchant_id == merchant_escrow.merchant_id
+            @ ConexpleEscrowError::MerchantMismatch,
     )]
     pub pending: Account<'info, PendingCommission>,
 
@@ -394,12 +417,31 @@ pub struct SettlePending<'info> {
     )]
     pub merchant_escrow: Account<'info, MerchantEscrow>,
 
+    /// CHECK-VIA-SEEDS: network state PDA — used to assert that the
+    /// oracle_authority signer matches the network's registered oracle.
+    /// (C-2 fix.)
+    #[account(
+        seeds = [b"network", merchant_escrow.network_id.to_le_bytes().as_ref()],
+        bump = network.bump,
+        seeds::program = conexple_network::ID,
+    )]
+    pub network: Account<'info, NetworkState>,
+
     #[account(mut, address = merchant_escrow.vault)]
     pub vault: Account<'info, TokenAccount>,
 
-    #[account(mut)]
+    // C-1 fix: enforce that the destination token account is actually owned
+    // by the recipient encoded in `pending`. Without this, a malicious
+    // signer could redirect the vault's tokens to any account they choose.
+    #[account(
+        mut,
+        token::mint = vault.mint,
+        constraint = recipient_token.owner == pending.recipient
+            @ ConexpleEscrowError::WrongRecipient,
+    )]
     pub recipient_token: Account<'info, TokenAccount>,
 
+    // C-3 fix (also applied here): bind pending to the same merchant.
     #[account(
         mut,
         seeds = [
@@ -410,6 +452,8 @@ pub struct SettlePending<'info> {
             &[pending.slot],
         ],
         bump = pending.bump,
+        constraint = pending.merchant_id == merchant_escrow.merchant_id
+            @ ConexpleEscrowError::MerchantMismatch,
     )]
     pub pending: Account<'info, PendingCommission>,
 

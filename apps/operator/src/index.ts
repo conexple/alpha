@@ -14,7 +14,24 @@ import { handlePurchaseQueue } from "./workers/purchase";
 
 const app = new Hono<{ Bindings: Env }>();
 
-app.use("/*", cors({ origin: "*" }));
+// CORS allowlist — explicit origins only. Mutating endpoints additionally
+// enforce HMAC via requireAdminAuth (see workers/scheduler.ts +
+// workers/merchant.ts). Wildcards are intentionally excluded — any new
+// frontend must be added here.
+const ALLOWED_ORIGINS = [
+  "https://conexple-worker-web.sornwin.workers.dev",
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+];
+app.use(
+  "/*",
+  cors({
+    origin: (origin) => (ALLOWED_ORIGINS.includes(origin) ? origin : ""),
+    allowHeaders: ["content-type", "x-conexple-internal", "x-conexple-sig"],
+    allowMethods: ["GET", "POST", "OPTIONS"],
+    credentials: false,
+  }),
+);
 
 app.get("/health", (c) =>
   c.json({

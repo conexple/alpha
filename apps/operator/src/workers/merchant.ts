@@ -19,6 +19,7 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import type { Env } from "../env";
 import { connection } from "../chain/connection";
 import { escrowProgramId, networkId } from "../chain/pdas";
+import { requireAdminAuth } from "../lib/hmac";
 
 export const merchantRoute = new Hono<{ Bindings: Env }>();
 
@@ -147,19 +148,24 @@ merchantRoute.get("/list", async (c) => {
       network_id: c.env.NETWORK_ID,
       merchants: fallback,
       degraded: true,
-      degraded_reason: String(err).slice(0, 200),
+      degraded_reason: "rpc-unavailable",
     });
   }
 });
 
-// SECURITY NOTE — V1 demo
-// /void + /force-expire are wired to operator dashboard buttons so judges can
-// see them work without setting up auth. Production builds should require the
-// same x-conexple-internal HMAC header that /settle/record uses, or move
-// these into an admin-authority worker not exposed to the public web.
-// Pre-submission audit recorded this in SECURITY.md.
+// /void + /force-expire are admin-gated: require HMAC of body in
+// x-conexple-internal header. In demo mode (OPERATOR_DEMO_MODE=true) the
+// check is skipped so hackathon judges can press dashboard buttons.
+// V2 production removes the env var to enforce auth.
 merchantRoute.post("/void", async (c) => {
-  const body = await c.req.json<{ merchant_id: string; purchase_id: string }>();
+  const auth = await requireAdminAuth(c);
+  if (!auth.ok) return c.json({ error: "unauthorized" }, 401);
+  let body: { merchant_id: string; purchase_id: string };
+  try {
+    body = auth.raw ? JSON.parse(auth.raw) : ({} as never);
+  } catch {
+    return c.json({ error: "invalid json" }, 400);
+  }
   if (!body.merchant_id || !body.purchase_id) {
     return c.json({ error: "merchant_id + purchase_id required" }, 400);
   }
@@ -182,7 +188,14 @@ merchantRoute.post("/void", async (c) => {
 });
 
 merchantRoute.post("/force-expire", async (c) => {
-  const body = await c.req.json<{ merchant_id: string; wallet: string }>();
+  const auth = await requireAdminAuth(c);
+  if (!auth.ok) return c.json({ error: "unauthorized" }, 401);
+  let body: { merchant_id: string; wallet: string };
+  try {
+    body = auth.raw ? JSON.parse(auth.raw) : ({} as never);
+  } catch {
+    return c.json({ error: "invalid json" }, 400);
+  }
   if (!body.merchant_id || !body.wallet) {
     return c.json({ error: "merchant_id + wallet required" }, 400);
   }

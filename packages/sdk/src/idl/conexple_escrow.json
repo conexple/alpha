@@ -56,6 +56,71 @@
           }
         },
         {
+          "name": "network",
+          "docs": [
+            "CHECK-VIA-SEEDS: network state PDA seeded by merchant_escrow.network_id.",
+            "Used to source the authoritative oracle pubkey (C-2 fix)."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  110,
+                  101,
+                  116,
+                  119,
+                  111,
+                  114,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "merchant_escrow.network_id",
+                "account": "MerchantEscrow"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                130,
+                156,
+                91,
+                247,
+                203,
+                92,
+                106,
+                104,
+                76,
+                138,
+                164,
+                27,
+                237,
+                126,
+                22,
+                173,
+                222,
+                141,
+                23,
+                71,
+                19,
+                150,
+                44,
+                146,
+                21,
+                82,
+                28,
+                210,
+                254,
+                31,
+                88,
+                38
+              ]
+            }
+          }
+        },
+        {
           "name": "pending",
           "writable": true
         },
@@ -357,6 +422,72 @@
           }
         },
         {
+          "name": "network",
+          "docs": [
+            "CHECK-VIA-SEEDS: network state PDA — used to assert that the",
+            "oracle_authority signer matches the network's registered oracle.",
+            "(C-2 fix.)"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  110,
+                  101,
+                  116,
+                  119,
+                  111,
+                  114,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "merchant_escrow.network_id",
+                "account": "MerchantEscrow"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                130,
+                156,
+                91,
+                247,
+                203,
+                92,
+                106,
+                104,
+                76,
+                138,
+                164,
+                27,
+                237,
+                126,
+                22,
+                173,
+                222,
+                141,
+                23,
+                71,
+                19,
+                150,
+                44,
+                146,
+                21,
+                82,
+                28,
+                210,
+                254,
+                31,
+                88,
+                38
+              ]
+            }
+          }
+        },
+        {
           "name": "vault",
           "writable": true
         },
@@ -450,6 +581,19 @@
         147,
         221,
         227
+      ]
+    },
+    {
+      "name": "NetworkState",
+      "discriminator": [
+        212,
+        237,
+        148,
+        56,
+        97,
+        245,
+        51,
+        169
       ]
     },
     {
@@ -565,6 +709,16 @@
       "code": 6008,
       "name": "PoolSplitOutOfRange",
       "msg": "pool_split_bps must be between 0 and 10000 inclusive"
+    },
+    {
+      "code": 6009,
+      "name": "WrongRecipient",
+      "msg": "recipient_token.owner must equal pending.recipient"
+    },
+    {
+      "code": 6010,
+      "name": "MerchantMismatch",
+      "msg": "pending.merchant_id must equal merchant_escrow.merchant_id"
     }
   ],
   "types": [
@@ -667,6 +821,46 @@
           },
           {
             "name": "voided_total",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "NetworkState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "network_id",
+            "type": "u64"
+          },
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "oracle",
+            "type": "pubkey"
+          },
+          {
+            "name": "cycle_seconds",
+            "type": "i64"
+          },
+          {
+            "name": "cycle_index",
+            "type": "u64"
+          },
+          {
+            "name": "cycle_started_at",
+            "type": "i64"
+          },
+          {
+            "name": "member_count",
             "type": "u64"
           }
         ]

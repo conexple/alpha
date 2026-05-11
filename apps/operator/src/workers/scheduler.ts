@@ -55,17 +55,17 @@ import { connection } from "../chain/connection";
 import { loadOracleKeypair } from "../chain/oracle";
 import { buildAddEarningsIx, submitAddEarnings } from "../chain/payout";
 import { traceUpline } from "../chain/upline";
-import { verifyHmac } from "../lib/hmac";
+import { verifyHmac, requireAdminAuth } from "../lib/hmac";
 
 export const settlementRoute = new Hono<{ Bindings: Env }>();
 
-// SECURITY NOTE — V1 demo
-// /settle/run is invoked by both the daily cron AND the operator dashboard
-// "Trigger cycle now" button. Adding HMAC auth would break the button so
-// judges can't see it work. V2 should require the same x-conexple-internal
-// HMAC header that /settle/record now uses, served from a separate
-// admin-authority worker (not exposed to the public web).
+// /settle/run is admin-gated: requires HMAC of body in x-conexple-internal
+// header. In demo mode (OPERATOR_DEMO_MODE=true) the check is skipped so
+// hackathon judges can press the "Trigger cycle now" button. V2 production
+// removes the env var to enforce auth.
 settlementRoute.post("/run", async (c) => {
+  const auth = await requireAdminAuth(c);
+  if (!auth.ok) return c.json({ error: "unauthorized" }, 401);
   const result = await runScheduledSettlement(c.env, Date.now());
   return c.json(result);
 });

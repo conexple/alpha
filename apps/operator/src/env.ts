@@ -9,6 +9,7 @@ export interface Env {
   PROGRAM_ID_ESCROW: string;
   PROGRAM_ID_ORACLE: string;
   NETWORK_ID: string;              // numeric id as string
+  OPERATOR_DEMO_MODE?: string;     // "true" => admin endpoints skip auth (V1 demo)
 
   // ── Secrets (set via `wrangler secret put`) ──────────────────────────────
   ORACLE_SECRET: string;           // base58 secret key bytes

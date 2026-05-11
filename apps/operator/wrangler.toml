@@ -22,6 +22,12 @@ PROGRAM_ID_ORACLE = "9CQFV9oPYKWE4Yg4w8mwJxsdibPeZJrKoTqcp2iTi1qz"
 
 NETWORK_ID = "1"
 
+# Demo-mode bypass for admin endpoints (/settle/run, /merchant/void,
+# /merchant/force-expire). Lets hackathon judges press dashboard buttons
+# without an HMAC. Production deploys MUST remove this line or set it to
+# anything other than "true" to enforce auth.
+OPERATOR_DEMO_MODE = "true"
+
 # ── Bindings ───────────────────────────────────────────────────────────────
 
 [[d1_databases]]
