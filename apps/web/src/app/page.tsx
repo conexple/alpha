@@ -54,32 +54,6 @@ export default function Home() {
             </a>
           </div>
 
-          <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-stone">
-            <a
-              href="https://youtu.be/S8hmH2V1rzc"
-              target="_blank"
-              rel="noreferrer"
-              className="group inline-flex items-center gap-2 transition-colors hover:text-ink"
-            >
-              <span className="grid h-6 w-6 place-items-center rounded-full bg-cnx-purple text-[10px] text-cream transition-transform group-hover:scale-110">
-                ▶
-              </span>
-              Watch the 3-min pitch
-              <span className="text-stone/60">↗</span>
-            </a>
-            <span className="hidden text-stone/40 sm:inline">·</span>
-            <a
-              href="https://youtu.be/uSIWEeu0qcU"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 transition-colors hover:text-ink"
-            >
-              <span className="font-mono text-[10px] text-cnx-purple">▶</span>
-              Technical demo · 2 min
-              <span className="text-stone/60">↗</span>
-            </a>
-          </div>
-
           <dl className="mt-12 grid grid-cols-2 gap-8 border-t border-edge pt-8 sm:grid-cols-4">
             <Stat n="÷7" l="commission slots" />
             <Stat n="50%" l="margin cap on-chain" />
@@ -89,6 +63,126 @@ export default function Home() {
         </div>
 
         <div className="lg:col-span-5">
+          <div className="space-y-4 lg:pt-4">
+            <div className="flex items-baseline justify-between">
+              <span className="pill">
+                <span className="grid h-4 w-4 place-items-center rounded-full bg-cnx-purple text-[9px] text-cream">
+                  ▶
+                </span>
+                Pitch · 3 min
+              </span>
+              <a
+                href="https://youtu.be/S8hmH2V1rzc"
+                target="_blank"
+                rel="noreferrer"
+                className="font-mono text-[10px] uppercase tracking-[0.18em] text-stone transition-colors hover:text-ink"
+              >
+                Open on YouTube ↗
+              </a>
+            </div>
+            <div className="relative aspect-video overflow-hidden rounded-2xl border border-edge bg-ink shadow-sm">
+              <iframe
+                src="https://www.youtube-nocookie.com/embed/S8hmH2V1rzc?rel=0&modestbranding=1"
+                title="Conexple pitch — 3 minutes"
+                loading="lazy"
+                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                referrerPolicy="strict-origin-when-cross-origin"
+                className="absolute inset-0 h-full w-full"
+              />
+            </div>
+            <p className="text-xs leading-relaxed text-stone">
+              What Conexple is, why we built it, and why it&apos;s structurally
+              not MLM — under three minutes.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── TECHNICAL DEEP-DIVE ─────────────────────────────────────────── */}
+      <section className="grid gap-10 lg:grid-cols-12 lg:items-center">
+        <div className="lg:col-span-5">
+          <span className="pill">
+            <span className="h-1.5 w-1.5 rounded-full bg-cnx-olive" />
+            For developers + technical judges
+          </span>
+          <h2 className="mt-4 font-display text-3xl text-ink">
+            Want the technical
+            <br />
+            deep-dive?
+          </h2>
+          <p className="mt-3 max-w-md text-graphite">
+            Two minutes through 4 Anchor programs, 21 positions across 3 trees,
+            6 merchants (3 deployer-signed + 3 BYOK), and 6,417 base units in
+            on-chain commissions — every claim with a Solscan link.
+          </p>
+          <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+            <a
+              href="https://youtu.be/uSIWEeu0qcU"
+              target="_blank"
+              rel="noreferrer"
+              className="font-mono text-[10px] uppercase tracking-[0.18em] text-stone transition-colors hover:text-ink"
+            >
+              Open on YouTube ↗
+            </a>
+            <span className="text-stone/40">·</span>
+            <a
+              href="https://github.com/conexple/alpha"
+              target="_blank"
+              rel="noreferrer"
+              className="font-mono text-[10px] uppercase tracking-[0.18em] text-stone transition-colors hover:text-ink"
+            >
+              Source on GitHub ↗
+            </a>
+          </div>
+        </div>
+        <div className="lg:col-span-7">
+          <div className="space-y-4">
+            <div className="flex items-baseline justify-between">
+              <span className="pill">
+                <span className="grid h-4 w-4 place-items-center rounded-full bg-cnx-olive text-[9px] text-cream">
+                  ▶
+                </span>
+                Technical demo · 2 min
+              </span>
+              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-stone">
+                live devnet · unedited
+              </span>
+            </div>
+            <div className="relative aspect-video overflow-hidden rounded-2xl border border-edge bg-ink shadow-sm">
+              <iframe
+                src="https://www.youtube-nocookie.com/embed/uSIWEeu0qcU?rel=0&modestbranding=1"
+                title="Conexple technical demo — 2 minutes"
+                loading="lazy"
+                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                referrerPolicy="strict-origin-when-cross-origin"
+                className="absolute inset-0 h-full w-full"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── HOW A PURCHASE DIVIDES ─────────────────────────────────────── */}
+      <section className="grid gap-10 lg:grid-cols-12 lg:items-center">
+        <div className="lg:col-span-5">
+          <h2 className="font-display text-3xl text-ink">
+            A purchase,
+            <br />
+            divided ÷7.
+          </h2>
+          <p className="mt-3 max-w-md text-graphite">
+            The merchant&apos;s commission budget splits into 7 slots: 5 upline
+            consumer levels, a social pool, and an infinity-override. Every
+            slot is enforced on chain.
+          </p>
+          <p className="mt-3 max-w-md text-sm text-stone">
+            Inactive levels fall through to the social pool — never wasted.
+            Each commission anchors a 30-day refund window before settling.
+          </p>
+        </div>
+        <div className="lg:col-span-7">
           <SplitDiagram />
         </div>
       </section>
