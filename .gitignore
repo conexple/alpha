@@ -121,6 +121,11 @@ tmp/
 agent-temp/
 .agent-temp/
 
-# Active workflow state stays local during the session; archive is committed.
-# Uncomment when publishing the public snapshot:
-# instruction/work/
+# =============================================================================
+# Internal / agent-only — kept local, not part of the public submission
+# =============================================================================
+# Planning, brainstorms, agent-workflow state — never useful to judges.
+instruction/
+.claude/
+.agents/
+CLAUDE.md
