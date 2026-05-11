@@ -125,7 +125,7 @@ style: |
 
 # Compliance — Thai direct-selling law
 
-- Designed against พ.ร.บ. ขายตรงฯ 2545
+- Designed against Thailand's Direct Selling Act (B.E. 2545 / 2002)
 - No auto-assign of placements (legal red line)
 - No recruitment-required qualification
 - Margin cap and pool-distribution rules on-chain
