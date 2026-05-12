@@ -13,6 +13,26 @@ interface Node extends PositionView {
 interface Props {
   positions: PositionView[];
   highlightWallet?: string;
+  /**
+   * Current cycle index (Network.cycleIndex) — needed to derive the "grace"
+   * state. If null/undefined, falls back to active/expired only (a position
+   * that's just-on-the-edge of expiry will still render as active).
+   */
+  currentRound?: bigint | null;
+}
+
+type NodeState = "active" | "grace" | "expired";
+
+function deriveNodeState(p: PositionView, currentRound: bigint | null | undefined): NodeState {
+  if (p.status === "expired" || p.expiredAt !== null) return "expired";
+  // Without a known round, we can't distinguish grace from active. Default
+  // active so we don't paint healthy nodes as "grace" by mistake.
+  if (currentRound === null || currentRound === undefined) return "active";
+  const behind = currentRound - p.lastPurchaseRound;
+  // Rotation rule (docs/02 §11): 1 cycle grace, expire after 2 missed.
+  // behind === 1 → skipped exactly one cycle, 1 more before expiry.
+  if (behind === 1n) return "grace";
+  return "active";
 }
 
 const NODE_R = 22;
@@ -25,7 +45,7 @@ const SIBLING_W = 110;
  * Layout: Reingold-Tilford-ish — assign x by post-order leaf accumulation,
  * y by depth. Pure JS, no d3 dependency.
  */
-export function NetworkTree({ positions, highlightWallet }: Props) {
+export function NetworkTree({ positions, highlightWallet, currentRound }: Props) {
   const [hover, setHover] = useState<string | null>(null);
 
   const tree = useMemo(() => buildTree(positions), [positions]);
@@ -65,27 +85,47 @@ export function NetworkTree({ positions, highlightWallet }: Props) {
           {nodes.map((n) => {
             const isHover = hover === n.pubkey.toBase58();
             const isHL = highlightWallet === n.wallet.toBase58();
-            const fill = n.depth === 0 ? "#09090B" : isHL ? "#9945FF" : "#FFFFFF";
+            const state = deriveNodeState(n, currentRound);
+            const fill =
+              state === "expired" ? "#E4E4E7" :
+              n.depth === 0 ? "#09090B" :
+              isHL ? "#9945FF" :
+              "#FFFFFF";
             const ring =
-              n.status === "expired" ? "#EF4444" :
+              state === "expired" ? "#71717A" :
+              state === "grace" ? "#F59E0B" :
               n.depth === 0 ? "#09090B" :
               isHL ? "#9945FF" :
               "#09090B";
-            const txt = n.depth === 0 || isHL ? "#FFFFFF" : "#09090B";
+            const txt =
+              state === "expired" ? "#52525B" :
+              n.depth === 0 || isHL ? "#FFFFFF" :
+              "#09090B";
+            const dash =
+              state === "expired" ? "4 3" :
+              state === "grace" ? "3 2" :
+              undefined;
+            const groupOpacity = state === "expired" ? 0.65 : 1;
+            const tooltip =
+              state === "expired" ? "Expired (rotation)" :
+              state === "grace" ? "Grace (1/2)" :
+              undefined;
             return (
               <g
                 key={n.pubkey.toBase58()}
                 transform={`translate(${n.x}, ${n.y})`}
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer", opacity: groupOpacity }}
                 onMouseEnter={() => setHover(n.pubkey.toBase58())}
                 onMouseLeave={() => setHover(null)}
                 onClick={() => window.open(solscanAccount(n.wallet), "_blank")}
               >
+                {tooltip && <title>{tooltip}</title>}
                 <circle
                   r={isHover ? NODE_R + 2 : NODE_R}
                   fill={fill}
                   stroke={ring}
                   strokeWidth={isHL || isHover ? 2 : 1.5}
+                  strokeDasharray={dash}
                   style={{ transition: "r 0.15s ease, stroke-width 0.15s ease" }}
                 />
                 <text
@@ -99,6 +139,22 @@ export function NetworkTree({ positions, highlightWallet }: Props) {
                 >
                   L{n.depth}
                 </text>
+                {/* "1/2" badge for grace state — sits top-right of the node */}
+                {state === "grace" && (
+                  <g transform={`translate(${NODE_R - 4}, ${-NODE_R + 4})`}>
+                    <circle r="9" fill="#FEF3C7" stroke="#F59E0B" strokeWidth="1" />
+                    <text
+                      textAnchor="middle"
+                      y="3"
+                      fill="#B45309"
+                      fontFamily="Geist Mono, JetBrains Mono, monospace"
+                      fontSize="8"
+                      fontWeight="700"
+                    >
+                      1/2
+                    </text>
+                  </g>
+                )}
                 <text
                   textAnchor="middle"
                   y={NODE_R + 16}
@@ -130,7 +186,8 @@ export function NetworkTree({ positions, highlightWallet }: Props) {
         <Legend color="#09090B" label="Root" />
         <Legend color="#FFFFFF" border="#09090B" label="Active" />
         <Legend color="#9945FF" label="Selected" />
-        <Legend color="#FFFFFF" border="#EF4444" label="Expired" />
+        <Legend color="#FFFFFF" border="#F59E0B" dashed label="Grace (1/2)" />
+        <Legend color="#E4E4E7" border="#71717A" dashed label="Expired" />
         <span className="ml-auto font-mono text-stone">
           click a node → open on Solscan
         </span>
@@ -139,12 +196,17 @@ export function NetworkTree({ positions, highlightWallet }: Props) {
   );
 }
 
-function Legend({ color, border, label }: { color: string; border?: string; label: string }) {
+function Legend({
+  color, border, label, dashed,
+}: { color: string; border?: string; label: string; dashed?: boolean }) {
   return (
     <span className="flex items-center gap-1.5">
       <span
         className="h-3 w-3 rounded-full"
-        style={{ background: color, border: border ? `1px solid ${border}` : "1px solid transparent" }}
+        style={{
+          background: color,
+          border: border ? `1px ${dashed ? "dashed" : "solid"} ${border}` : "1px solid transparent",
+        }}
       />
       {label}
     </span>

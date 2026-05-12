@@ -94,7 +94,23 @@ export default function ExplorerPage() {
         {positions === null ? (
           <div className="h-72 animate-pulse rounded-2xl bg-edge/60" />
         ) : (
-          <NetworkTree positions={positions} />
+          <>
+            <NetworkTree positions={positions} currentRound={network?.cycleIndex ?? null} />
+            {/* Compact state legend — duplicates the in-svg legend in plain HTML
+                so it's visible even if the svg is scrolled out of view. */}
+            <div className="mt-6 flex flex-wrap items-center gap-4 text-xs text-stone">
+              <span className="font-mono uppercase tracking-[0.18em]">States:</span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-cnx-olive" /> active
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full border border-dashed border-cnx-amber bg-paper" /> grace
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full border border-dashed border-stone bg-cream opacity-65" /> expired
+              </span>
+            </div>
+          </>
         )}
       </section>
 

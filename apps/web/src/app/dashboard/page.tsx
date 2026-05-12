@@ -133,7 +133,11 @@ export default function DashboardPage() {
               ? "Your position is highlighted. Click any node to open it on Solscan."
               : "Connect a wallet that's a member to see your placement highlighted."}
           </p>
-          <NetworkTree positions={all} highlightWallet={publicKey?.toBase58()} />
+          <NetworkTree
+            positions={all}
+            highlightWallet={publicKey?.toBase58()}
+            currentRound={net?.cycleIndex ?? null}
+          />
         </section>
       )}
     </div>
@@ -145,8 +149,20 @@ function PositionDetails({
 }: { pos: PositionView; net: NetworkView | null; uplines: PositionView[] }) {
   const cap = pos.earningsCap;
   const progress = cap === 0n ? 0 : Math.min(100, Number((pos.cumulativeEarned * 100n) / cap));
+  // Ceiling % used — same logic as `progress` above, surfaced as its own card.
+  const ceilingPct = progress;
+  // Current cycle round, read from the on-chain Network account. Cycle length
+  // is daily per wrangler.toml `0 23 * * *` cron, but we derive it from
+  // network.cycleIndex directly so we don't need to hardcode CYCLE_SECONDS.
   const round = net?.cycleIndex ?? 0n;
   const roundsBehind = Number(round - pos.lastPurchaseRound);
+  // Rotation rule (docs/02 §11): 1 cycle grace, expire after 2 missed. So
+  // cyclesUntilExpire = max(0, 2 - roundsBehind). Bounded at 2 so a freshly-
+  // active position doesn't render "5 cycles left".
+  const cyclesUntilExpire = Math.max(0, 2 - roundsBehind);
+
+  const isExpired = pos.status === "expired" || pos.expiredAt !== null;
+
   return (
     <>
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -159,6 +175,39 @@ function PositionDetails({
           sub={`last purchase round ${pos.lastPurchaseRound.toString()}`}
         />
       </section>
+
+      {/* Rotation state — re-entry card if expired, otherwise 2 status cards */}
+      {isExpired ? (
+        <div className="card border-cnx-amber">
+          <h3 className="font-display text-xl text-ink">Position expired</h3>
+          <p className="mt-2 text-sm text-graphite">
+            Your position has rotated out. Buy from any participating merchant to
+            re-enter at the bottom of the network — and start earning again.
+          </p>
+          <a href="/explorer" className="mt-3 inline-block text-sm font-medium text-cnx-purple hover:underline">
+            Browse the network →
+          </a>
+        </div>
+      ) : (
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div className="card">
+            <h3 className="font-display text-base text-ink">Earning ceiling</h3>
+            <p className="mt-1 font-display text-3xl text-ink">{ceilingPct}%</p>
+            <p className="text-xs text-stone">
+              used · {pos.cumulativeEarned.toLocaleString()} / {cap.toLocaleString()} base units
+            </p>
+          </div>
+          <div className="card">
+            <h3 className="font-display text-base text-ink">Inactivity rotation</h3>
+            <p className="mt-1 font-display text-3xl text-ink">
+              {cyclesUntilExpire === 0
+                ? "Expiring this cycle"
+                : `${cyclesUntilExpire} cycle${cyclesUntilExpire === 1 ? "" : "s"} left`}
+            </p>
+            <p className="text-xs text-stone">grace = 1 cycle; expire after 2 missed</p>
+          </div>
+        </div>
+      )}
 
       <section className="card space-y-4">
         <div className="flex items-baseline justify-between">

@@ -239,7 +239,7 @@ function renderSvg(trees: TreeNode[], programIds: string[]): string {
     `<text x="60" y="148" font-family="Fraunces, Georgia, serif" font-size="62" font-weight="500" fill="${PALETTE.ink}" letter-spacing="-2">Conexple</text>`,
   );
   parts.push(
-    `<text x="60" y="184" font-family="Geist, system-ui, sans-serif" font-size="18" fill="${PALETTE.text}">Open-source consumer affiliate protocol on Solana</text>`,
+    `<text x="60" y="184" font-family="Geist, system-ui, sans-serif" font-size="18" fill="${PALETTE.text}">Towards a basic-income economy — every purchase pays the people who buy.</text>`,
   );
 
   // Middle band: 3 column-strips for 3 trees
@@ -345,7 +345,7 @@ function renderSvg(trees: TreeNode[], programIds: string[]): string {
 
   // Bottom-right: domain
   parts.push(
-    `<text x="${W - 60}" y="620" text-anchor="end" font-family="Consolas, ui-monospace, monospace" font-size="11" fill="${PALETTE.muted}">conexple-worker-web.sornwin.workers.dev</text>`,
+    `<text x="${W - 60}" y="620" text-anchor="end" font-family="Consolas, ui-monospace, monospace" font-size="11" fill="${PALETTE.muted}">alpha.conexple.com</text>`,
   );
 
   parts.push(`</svg>`);

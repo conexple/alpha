@@ -7,7 +7,7 @@
 Deployed to **Solana devnet only.** Smart contracts are unaudited.
 Do not use with real funds.
 
-- **Live demo:** [conexple-worker-web.sornwin.workers.dev](https://conexple-worker-web.sornwin.workers.dev) (Cloudflare Workers — static assets)
+- **Live demo:** [alpha.conexple.com](https://alpha.conexple.com) (Cloudflare Workers — static assets)
 - **Operator backend:** [conexple-worker-operator.sornwin.workers.dev](https://conexple-worker-operator.sornwin.workers.dev) (Cloudflare Workers — `/health`, `/settle/run`, `/webhook/purchase`, etc.)
 - **Solscan-verifiable example tx:** [3voysBj...A5Q6t](https://solscan.io/tx/3voysBjypcH3qNCusJ1g66BywVMSmojNQbWuqkpDcTtbXunGWbD3euQezntd5KY2A1N4VHku2omPyM2vjgMA5Q6t?cluster=devnet) (record_purchase by wallet E, amount=1000)
 - **6 merchants on chain** — 3 deployer-signed (id 1–3) plus 3 BYOK merchants (id 4, 5, 6) initialized by independent keypairs that signed their own `initialize_merchant` instruction. See `submission/byok-merchant-04-receipt.json` + `submission/settle-receipt.json` for traceable proof.
@@ -27,6 +27,23 @@ Do not use with real funds.
 - **Technical demo (2–3 min):** [youtu.be/uSIWEeu0qcU](https://youtu.be/uSIWEeu0qcU)
 - **Pitch deck (PDF):** `submission/pitch-deck.pdf` *(build from `pitch-deck-outline.md`)*
 - **License:** [Apache 2.0](./LICENSE) · permissive, patent grant, fork-friendly
+
+## Why consumers should be paid
+
+Affiliate budgets exist. Today they flow to influencers and broadcasters who
+are paid for *reach*, not for *purchases*. Conexple redistributes that same
+budget to the people who actually buy: 5 levels of upline consumers and a
+public social pool, all enforced on chain.
+
+Long-term, the goal is bigger than affiliate fairness. We're building toward
+a *basic-income economy from consumption* — where the act of buying itself
+produces income for a network of real customers, not a handful of
+permanent influencers.
+
+Positions expire by design — on inactivity or once a wallet has earned
+back its own spend × multiplier. The high-yield seats don't stay with the
+same wallets forever, and re-entry is open to anyone who buys again.
+No permanent residents. The cycle is the economy.
 
 ## What is Conexple
 

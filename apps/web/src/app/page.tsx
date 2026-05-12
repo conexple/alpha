@@ -16,21 +16,31 @@ export default function Home() {
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
       <section className="grid gap-12 lg:grid-cols-12">
         <div className="lg:col-span-7 lg:pt-6">
-          <span className="pill">
-            <span className="h-1.5 w-1.5 rounded-full bg-cnx-olive" />
-            Solana devnet · v0.1 alpha
-          </span>
+          <div className="flex flex-wrap gap-2">
+            <span className="pill">
+              <span className="h-1.5 w-1.5 rounded-full bg-cnx-olive" />
+              Solana devnet · v0.1 alpha
+            </span>
+            <span className="pill">
+              <span className="h-1.5 w-1.5 rounded-full bg-cnx-amber" />
+              Consumer basic income · on chain
+            </span>
+          </div>
           <h1 className="mt-6 font-display text-5xl leading-[1.05] tracking-tightest text-ink sm:text-6xl lg:text-7xl">
-            Pay loyal customers,
+            Income from what
             <br />
-            <em className="not-italic text-cnx-purple">not influencers.</em>
+            <em className="not-italic text-cnx-purple">you buy.</em>
           </h1>
+          <p className="mt-3 max-w-2xl text-base font-medium leading-relaxed text-graphite">
+            Not from who you broadcast — toward a basic-income economy from consumption.
+          </p>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-graphite">
-            Conexple is an open-source consumer affiliate protocol on Solana.
+            Conexple is an open-source consumer-affiliate protocol on Solana.
             Merchants don't pay more — the same affiliate budget redistributes
             across <strong className="text-ink">5 levels of upline consumers</strong>{" "}
-            and a public social pool. Every rule, every payout, every position
-            lives on chain.
+            and a public social pool. Positions <strong className="text-ink">expire by design</strong>
+            on inactivity or earning ceiling, so the network rotates and no wallet
+            captures commission flow forever.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
@@ -184,6 +194,64 @@ export default function Home() {
         </div>
         <div className="lg:col-span-7">
           <SplitDiagram />
+        </div>
+      </section>
+
+      {/* ── ROTATION FLYWHEEL ─────────────────────────────────────────────── */}
+      <section>
+        <span className="pill">
+          <span className="h-1.5 w-1.5 rounded-full bg-cnx-amber" />
+          The rotation engine
+        </span>
+        <h2 className="mt-4 font-display text-3xl text-ink">
+          Why positions expire.
+        </h2>
+        <p className="mt-3 max-w-2xl text-graphite">
+          For a basic-income economy from consumption to work, the high-yield seats
+          cannot belong to the same wallets forever. Every Conexple position
+          expires by design — and re-entry is open to anyone who buys again.
+        </p>
+
+        <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <article className="card flex flex-col gap-3">
+            <h3 className="font-display text-xl text-ink">Inactivity expiry</h3>
+            <p className="text-sm leading-relaxed text-graphite">
+              Skip two settlement cycles in a row without a purchase and the
+              position expires. Grace is one cycle — second skip and you're out.
+            </p>
+            <code className="mt-auto font-mono text-[10px] text-stone">last_purchase_round + grace &lt; current_round</code>
+          </article>
+          <article className="card flex flex-col gap-3">
+            <h3 className="font-display text-xl text-ink">Ceiling expiry</h3>
+            <p className="text-sm leading-relaxed text-graphite">
+              Cumulative earnings can't exceed your own spend × multiplier. Once
+              you've earned that ceiling back from the network, the position expires.
+            </p>
+            <code className="mt-auto font-mono text-[10px] text-stone">cumulative_earned ≥ earnings_cap</code>
+          </article>
+          <article className="card flex flex-col gap-3">
+            <h3 className="font-display text-xl text-ink">Re-entry, always open</h3>
+            <p className="text-sm leading-relaxed text-graphite">
+              When a wallet expires, its children reassign upward and the wallet
+              returns to the bottom of the network. Buy from any participating
+              merchant to claim a new position.
+            </p>
+            <code className="mt-auto font-mono text-[10px] text-stone">conexple_network::force_expire + reassign</code>
+          </article>
+        </div>
+
+        <div className="mt-10 rounded-2xl border border-edge bg-paper p-6 sm:p-8">
+          <div className="grid gap-4 sm:grid-cols-4">
+            <FlyStep n="①" label="Buy" detail="from any merchant on the network" />
+            <FlyStep n="②" label="Earn" detail="commission from your buyers' purchases (5 levels deep)" />
+            <FlyStep n="③" label="Expire" detail="on inactivity or once you hit your earning ceiling" />
+            <FlyStep n="④" label="Re-enter" detail="buy again to rejoin at the bottom — karma loop" />
+          </div>
+          <p className="mt-6 max-w-3xl text-sm leading-relaxed text-stone">
+            The cycle is the economy. No permanent residents, no recruitment
+            treadmill, no influencer at the top who never spends. Commission flows
+            back to people who actually buy — that's basic income from consumption.
+          </p>
         </div>
       </section>
 
@@ -356,6 +424,16 @@ function Bullet({ num, body }: { num: string; body: string }) {
       <span className="font-display text-cnx-amber">{num}</span>
       <span>{body}</span>
     </p>
+  );
+}
+
+function FlyStep({ n, label, detail }: { n: string; label: string; detail: string }) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <span className="font-display text-2xl text-cnx-amber">{n}</span>
+      <span className="font-display text-lg text-ink">{label}</span>
+      <span className="text-xs leading-relaxed text-stone">{detail}</span>
+    </div>
   );
 }
 

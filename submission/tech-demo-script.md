@@ -34,7 +34,7 @@ VO:
 
 ### 0:25–0:55 — The home page + simulator (browser)
 
-**Open `https://conexple-worker-web.sornwin.workers.dev/`.**
+**Open `https://alpha.conexple.com/`.**
 
 VO:
 > "Landing page lays out the pitch in thirty seconds. The diagram

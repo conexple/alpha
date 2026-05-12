@@ -27,65 +27,62 @@ SCENES_DIR = WORK / "scenes"
 OUT = ROOT / "submission" / "videos" / "pitch.mp4"
 
 VOICE = "en-US-AndrewMultilingualNeural"
-RATE = "+8%"  # +8% needed after Scene 14 grew from "Talk soon" -> interview CTA
+RATE = "+8%"
 
-# 8 hand-picked slides. Narration ADDS context — not restates the slide.
-# Target final ~2:50.
+# 8 hand-picked slides. v10 — title head, WHY second, TEAM short, Thank-you close.
+# Slide numbers in post-WHY-insert deck:
+#   1 title · 2 WHY · 3 problem · 4 broken · 5 ÷7 · 6 direct sale ·
+#   7 traced · 8 why solana · 9 vision · 10 architecture · 11 market ·
+#   12 business · 13 compliance · 14 TEAM · 15 thank you.
+# Target ~1:55. Pitch video field cap = 2 min.
 SCENES: list[tuple[int, str]] = [
     (1,
-     "Conexple is an open consumer affiliate protocol on Solana. "
-     "We redirect the merchant's existing affiliate budget — same money, different routing — "
-     "to the people who actually buy. All on chain. Built from Bangkok."),
+     "Conexple — an open consumer affiliate protocol on Solana. "
+     "Built from Bangkok. Apache 2.0."),
     (2,
-     "Here's a routing problem nobody questions. "
-     "Every time you click a discount code from a YouTuber, "
-     "the merchant pays a commission. Real money — eighteen billion dollars globally, each year. "
-     "The creator takes their cut. The platform takes theirs. "
-     "And the buyer — the person who actually made the purchase — gets zero. "
-     "Same product, full price."),
-    (4,
-     "Conexple takes that same merchant budget — not new money — and reroutes it. "
-     "Each purchase splits into seven slots. "
-     "Five go up the buyer's chain, five levels deep. "
-     "One funds a public pool the network governs. "
-     "One reserves for long-term active buyers. "
-     "The merchant pays exactly what they paid before. "
-     "The money just lands somewhere different."),
+     "Conexple started because of one thing we couldn't unsee. "
+     "AI is going to do more and more of what humans do for income. "
+     "The answer can't be waiting for the state. "
+     "But every purchase already pays a commission — "
+     "it just stops at the influencer who pointed, never the buyer. "
+     "What if it kept going? Down to the person who actually bought. "
+     "Basic income, built from commerce itself."),
     (5,
-     "Conexple is direct sale, on chain. "
-     "Buyers refer buyers and get rewarded — that's the original idea. "
-     "The problem has always been trust: no one verifies the margins or the rules. "
-     "We put every rule on Solana, enforced in code: "
-     "fifty percent margin cap, earnings tied to purchases, "
-     "placements only from a referral, five level depth bounded, "
-     "Apache 2.0 fork-able anytime."),
-    (7,
-     "Why Solana specifically. "
-     "We're tracking commissions per purchase across four, five settlements at a time. "
-     "On Ethereum, even L2s, that economic model burns the entire commission to gas. "
-     "On Solana, sub-cent fees make it viable. "
-     "USDC settles instantly. We use Helius — Frontier's official RPC partner — "
-     "so mainnet migration is a config flag flip."),
-    (8,
-     "And here's what's actually live, today, on devnet. "
-     "Four Anchor programs deployed. Twenty one positions across three trees. "
-     "Six merchants on chain — three signed by us, three by independent keypairs — "
-     "proving the protocol is truly open. "
-     "Seven recorded purchases. Six thousand four hundred base units distributed automatically — "
-     "every accrual verifiable on Solscan."),
-    (10,
-     "Now the market. "
-     "We're a Thai team starting in Thailand because we understand the consumer behavior here. "
+     "So how does that work? "
+     "Same merchant, same commission they were already paying. "
+     "But instead of one influencer pocketing it, "
+     "the protocol routes it up the buyer's own referral chain. "
+     "A little to a public pool. A little to long-term active customers. "
+     "The merchant doesn't notice — only the destination changes."),
+    (6,
+     "Buyers referring buyers, getting rewarded — that's not new. "
+     "That's direct sale. "
+     "What's always been broken is trust. Margins drift. Rules get tweaked. "
+     "A customer can't audit the spreadsheet that decides their share. "
+     "Conexple puts every rule in Rust on Solana. "
+     "Not a spreadsheet. A contract."),
+    (9,
+     "A network like this usually gets stuck — "
+     "the first people in stay at the top forever. "
+     "Conexple does the opposite. "
+     "Each position has a ceiling — ten times the entry spend. "
+     "After that, or after inactivity, it expires. "
+     "Newer wallets rise. Income opportunity doesn't pool — it moves."),
+    (11,
+     "Where does this start? "
      "Eighty three percent of Thai shoppers buy on a creator's recommendation. "
-     "Thailand is sixteen percent of Southeast Asia's e-commerce. "
-     "The whole SEA influencer-driven market is up to forty six billion dollars. "
-     "Twenty one billion is directly trackable affiliate — that's our addressable pool. "
-     "Thailand first, then the ASEAN arc."),
+     "Forty six billion dollars in regional flow today — "
+     "all of it routed past the consumers themselves. "
+     "We start in Thailand. The arc moves outward."),
     (14,
-     "Conexple is open protocol — Apache 2.0, opting into the Public Goods award. "
-     "Try the live network on devnet today — connect a wallet, see the splits in real time. "
-     "Mainnet is next. Conexple Thailand will run as the first operator. "
-     "The protocol stays open — fork it, run your own."),
+     "Four of us, same Kasetsart cohort. Five years shipping together. "
+     "Boss runs complex systems lean. "
+     "Kan turns hard ideas into ones anyone can learn — teacher by training. "
+     "Pee sees what small Thai merchants struggle with, daily. "
+     "Ta has the patience only helpdesk teaches. "
+     "Bangkok-based."),
+    (15,
+     "Thank you."),
 ]
 
 

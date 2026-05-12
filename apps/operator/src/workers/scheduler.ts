@@ -12,8 +12,23 @@
 //   * POST /settle/record         — record the result of an oracle-signed
 //                                   on-chain settle that was submitted
 //                                   off-Worker (i.e. by the local script)
-//   * GET  /settle/status         — recent settlement runs, for the
-//                                   dashboard
+//   * POST /settle/record-expired — record the result of an oracle-signed
+//                                   on-chain `expire_position` batch that
+//                                   was submitted off-Worker (i.e. by
+//                                   `scripts/expire-onchain.ts`)
+//   * GET  /settle/status         — recent settlement runs + this-cycle
+//                                   expire count, for the dashboard. Returns
+//                                   a legacy ARRAY by default; pass
+//                                   `?include=expired` for the wrapping
+//                                   object `{ runs, expired_in_cycle }`.
+//                                   The header `x-conexple-expired-in-cycle`
+//                                   carries the count on both shapes.
+//
+// expireSweep(): permissionless `expire_position` cycle sweep — runs at
+// the start of every scheduled settlement (BEFORE the commission settle
+// loop) so any Position that lost activity status this cycle redirects
+// its level commissions to the social pool per docs/02 §11. Same local-IP
+// fallback model as the commission settle path.
 //
 // On-chain mechanics (V1 demo):
 //   1. Find pending_commission rows where settle_at <= now AND status = 'pending'
@@ -55,6 +70,17 @@ import { connection } from "../chain/connection";
 import { loadOracleKeypair } from "../chain/oracle";
 import { buildAddEarningsIx, submitAddEarnings } from "../chain/payout";
 import { traceUpline } from "../chain/upline";
+import {
+  POSITION_ACCOUNT_SIZE,
+  buildExpireIxs,
+  chunkExpireIxs,
+  decodePositionFull,
+  isRpcBlocked,
+  readCurrentCycleIndex,
+  selectExpirable,
+  submitExpireBatch,
+} from "../chain/expire";
+import { networkProgramId } from "../chain/pdas";
 import { verifyHmac, requireAdminAuth } from "../lib/hmac";
 
 export const settlementRoute = new Hono<{ Bindings: Env }>();
@@ -74,7 +100,36 @@ settlementRoute.get("/status", async (c) => {
   const recent = await c.env.DB.prepare(
     "SELECT * FROM settlements ORDER BY submitted_at DESC LIMIT 10",
   ).all();
-  return c.json(recent.results ?? []);
+  // expired_in_cycle: count of `expire_position` oracle signatures emitted
+  // within the most recent 24h cycle window. Sourced from oracle_audit
+  // because the `positions` table schema doesn't carry an expired_at
+  // timestamp; the audit log is the closest cycle-bucket source we have.
+  //
+  // Response-shape compatibility:
+  //   * Default response is the legacy ARRAY of settlement rows (the
+  //     existing dashboard at apps/web/src/app/operator/page.tsx relies on
+  //     `.length`/`.map`).
+  //   * `?include=expired` returns the wrapping object
+  //     `{ runs: [...], expired_in_cycle: number }` so a future dashboard
+  //     revision can surface the sweep result without a follow-up call.
+  //   * The `x-conexple-expired-in-cycle` HTTP header carries the value on
+  //     both shapes — clients that don't want to opt-in to the wrapping
+  //     object can read the header instead.
+  const cycleWindow = 24 * 60 * 60;
+  const expiredCount = await c.env.DB.prepare(
+    `SELECT COUNT(*) AS n FROM oracle_audit
+     WHERE ix_kind LIKE 'expire_position%'
+       AND signed_at >= CAST(strftime('%s', 'now') AS INTEGER) - ?`,
+  )
+    .bind(cycleWindow)
+    .first<{ n: number }>();
+  const expired = expiredCount?.n ?? 0;
+  c.header("x-conexple-expired-in-cycle", String(expired));
+  const runs = recent.results ?? [];
+  if (c.req.query("include") === "expired") {
+    return c.json({ runs, expired_in_cycle: expired });
+  }
+  return c.json(runs);
 });
 
 settlementRoute.get("/pending", async (c) => {
@@ -185,6 +240,68 @@ settlementRoute.post("/record", async (c) => {
   });
 });
 
+// /settle/record-expired — called only by scripts/expire-onchain.ts after
+// the fallback local-IP signing path. Mirrors the security model of
+// /settle/record (HMAC-gated, body is the canonical message). Records the
+// outcome in D1 so the dashboard's `expired_in_cycle` count reflects
+// off-Worker submissions.
+interface RecordExpiredPayload {
+  signature: string;
+  // List of wallets whose Position was just expired on chain via this tx.
+  wallets: string[];
+  // Optional — informational for the audit log; doesn't gate the update.
+  cycles_inactive?: Record<string, number>;
+}
+
+settlementRoute.post("/record-expired", async (c) => {
+  const headerSig = c.req.header("x-conexple-internal");
+  const raw = await c.req.text();
+  if (
+    !headerSig ||
+    !c.env.PURCHASE_WEBHOOK_HMAC ||
+    !(await verifyHmac(c.env.PURCHASE_WEBHOOK_HMAC, raw, headerSig))
+  ) {
+    return c.json({ error: "unauthorized" }, 401);
+  }
+  let body: RecordExpiredPayload;
+  try {
+    body = raw ? (JSON.parse(raw) as RecordExpiredPayload) : ({} as RecordExpiredPayload);
+  } catch {
+    return c.json({ error: "invalid json" }, 400);
+  }
+  if (!body.signature || !Array.isArray(body.wallets) || body.wallets.length === 0) {
+    return c.json({ error: "signature + non-empty wallets[] required" }, 400);
+  }
+  const nowS = Math.floor(Date.now() / 1000);
+  let updated = 0;
+  for (const w of body.wallets) {
+    const r = await c.env.DB.prepare(
+      `UPDATE positions SET status = 'expired'
+       WHERE network_id = ? AND wallet = ?`,
+    )
+      .bind(c.env.NETWORK_ID, w)
+      .run();
+    if (r.meta?.changes) updated += r.meta.changes;
+  }
+  await c.env.DB.prepare(
+    "INSERT INTO oracle_audit (id, signed_at, caller, ix_kind, signature) VALUES (?, ?, ?, ?, ?)",
+  )
+    .bind(
+      crypto.randomUUID(),
+      nowS,
+      "settle/record-expired",
+      `expire_position×${body.wallets.length}`,
+      body.signature,
+    )
+    .run();
+  return c.json({
+    recorded: true,
+    signature: body.signature,
+    wallets: body.wallets.length,
+    rows_updated: updated,
+  });
+});
+
 interface PendingRow {
   id: string;
   purchase_id: string;
@@ -202,8 +319,197 @@ interface PurchaseRow {
   voided: number;
 }
 
+export interface ExpireSweepResult {
+  expired_count: number;
+  tx_signatures: string[];
+  degraded?: boolean;
+  reason?: string;
+  candidates_seen?: number;
+}
+
+/**
+ * Sweep the network for Positions eligible to expire and submit oracle-paid
+ * `expire_position` transactions for each, batched ~8 per tx.
+ *
+ * Returns `{ expired_count, tx_signatures, degraded }`. When the Worker's
+ * IP is blocked by the public Solana RPC (HTTP 403 — the same problem the
+ * commission settle path has), the function returns `{ degraded: true,
+ * expired_count: 0 }` and the local fallback script `scripts/expire-onchain.ts`
+ * picks up the work on the developer's IP.
+ *
+ * Idempotency: candidates with `status='expired'` are filtered before any
+ * tx is built; an already-expired Position will never be re-submitted.
+ */
+export async function expireSweep(env: Env): Promise<ExpireSweepResult> {
+  const conn = connection(env);
+
+  // 1. Fetch all Position accounts via getProgramAccounts. This is the
+  //    operation that 403s on Cloudflare Worker IPs against the public
+  //    devnet RPC.
+  let positions;
+  try {
+    positions = await conn.getProgramAccounts(networkProgramId(env), {
+      commitment: "confirmed",
+      filters: [{ dataSize: POSITION_ACCOUNT_SIZE }],
+    });
+  } catch (err) {
+    if (isRpcBlocked(err)) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`[expireSweep] RPC blocked (${msg.slice(0, 100)}) — degraded`);
+      return {
+        expired_count: 0,
+        tx_signatures: [],
+        degraded: true,
+        reason: "rpc-blocked",
+      };
+    }
+    throw err;
+  }
+
+  if (positions.length === 0) {
+    return { expired_count: 0, tx_signatures: [], candidates_seen: 0 };
+  }
+
+  // 2. Read current cycle from NetworkState.
+  let currentRound: bigint;
+  try {
+    currentRound = await readCurrentCycleIndex(conn, env);
+  } catch (err) {
+    if (isRpcBlocked(err)) {
+      return {
+        expired_count: 0,
+        tx_signatures: [],
+        degraded: true,
+        reason: "rpc-blocked",
+      };
+    }
+    throw err;
+  }
+
+  // 3. Decode + filter.
+  const full = [];
+  for (const { pubkey, account } of positions) {
+    try {
+      full.push(decodePositionFull(pubkey, Buffer.from(account.data)));
+    } catch {
+      // skip undecodable accounts
+    }
+  }
+  const candidates = selectExpirable(full, currentRound, 1);
+  if (candidates.length === 0) {
+    return { expired_count: 0, tx_signatures: [], candidates_seen: 0 };
+  }
+
+  // Only the inactivity candidates are eligible for the permissionless
+  // `expire_position` ix. Cap-only candidates need `force_expire` (admin
+  // signer) which is wired separately in apps/operator/src/workers/merchant.ts
+  // by Agent I — surface them in the count but don't submit here.
+  const inactivityCandidates = candidates.filter((c) => c.reason === "inactivity");
+  if (inactivityCandidates.length === 0) {
+    return {
+      expired_count: 0,
+      tx_signatures: [],
+      candidates_seen: candidates.length,
+    };
+  }
+
+  // 4. Load oracle (fee payer) and build/send batched ixs.
+  let oracle;
+  try {
+    oracle = loadOracleKeypair(env);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    return {
+      expired_count: 0,
+      tx_signatures: [],
+      degraded: true,
+      reason: `oracle-key-unavailable: ${msg.slice(0, 100)}`,
+    };
+  }
+
+  const ixs = buildExpireIxs(inactivityCandidates, env);
+  const batches = chunkExpireIxs(ixs, 8);
+  const sigs: string[] = [];
+  let confirmedCount = 0;
+  const nowS = Math.floor(Date.now() / 1000);
+
+  // Track candidate per ix so we can map confirmed batches → D1 updates.
+  const candidatesByBatch: typeof inactivityCandidates[] = [];
+  for (let i = 0; i < inactivityCandidates.length; i += 8) {
+    candidatesByBatch.push(inactivityCandidates.slice(i, i + 8));
+  }
+
+  for (let bi = 0; bi < batches.length; bi++) {
+    const batch = batches[bi]!;
+    const batchCandidates = candidatesByBatch[bi]!;
+    try {
+      const sig = await submitExpireBatch(conn, oracle, batch, "confirmed");
+      sigs.push(sig);
+      confirmedCount += batchCandidates.length;
+
+      // D1 update — on-chain authoritative, then mirror.
+      for (const c of batchCandidates) {
+        await env.DB.prepare(
+          `UPDATE positions SET status = 'expired'
+           WHERE network_id = ? AND wallet = ?`,
+        )
+          .bind(env.NETWORK_ID, c.position.wallet.toBase58())
+          .run();
+      }
+
+      // Audit log — `expire_position×N` so /settle/status can count.
+      await env.DB.prepare(
+        "INSERT INTO oracle_audit (id, signed_at, caller, ix_kind, signature) VALUES (?, ?, ?, ?, ?)",
+      )
+        .bind(
+          crypto.randomUUID(),
+          nowS,
+          "scheduler/expireSweep",
+          `expire_position×${batch.length}`,
+          sig,
+        )
+        .run();
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      if (isRpcBlocked(err)) {
+        // Whole sweep is degraded — bail and let the local script handle.
+        console.warn(`[expireSweep] batch ${bi} RPC blocked — degraded`);
+        return {
+          expired_count: confirmedCount,
+          tx_signatures: sigs,
+          degraded: true,
+          reason: "rpc-blocked",
+        };
+      }
+      console.error(`[expireSweep] batch ${bi} failed:`, msg);
+      // Continue with subsequent batches — partial sweep is better than none.
+    }
+  }
+
+  return {
+    expired_count: confirmedCount,
+    tx_signatures: sigs,
+    candidates_seen: candidates.length,
+  };
+}
+
 export async function runScheduledSettlement(env: Env, scheduledTime: number) {
   const now = Math.floor(scheduledTime / 1000);
+
+  // 0. Expiry sweep — find & rotate inactive Positions before settling the
+  //    cycle's commissions. Rotation that lands BEFORE settle ensures any
+  //    Position that lost active status this cycle redirects its level
+  //    commissions to the social pool (docs/02 §11), which the settle path
+  //    already honours via `traceUpline`'s status check.
+  let sweep: ExpireSweepResult = { expired_count: 0, tx_signatures: [] };
+  try {
+    sweep = await expireSweep(env);
+    console.log("[runScheduledSettlement] expireSweep:", JSON.stringify(sweep));
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error("[runScheduledSettlement] expireSweep threw:", msg);
+    sweep = { expired_count: 0, tx_signatures: [], degraded: true, reason: msg.slice(0, 200) };
+  }
 
   // 1. Pending rows ready for settlement.
   const pending = await env.DB.prepare(
@@ -222,6 +528,7 @@ export async function runScheduledSettlement(env: Env, scheduledTime: number) {
       skipped: 0,
       signatures: [] as string[],
       message: "no pending rows ready",
+      sweep,
     };
   }
 
@@ -297,6 +604,7 @@ export async function runScheduledSettlement(env: Env, scheduledTime: number) {
     signatures,
     settlement_id: settlementId,
     errors: errors.length ? errors : undefined,
+    sweep,
   };
 }
 

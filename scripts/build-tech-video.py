@@ -31,33 +31,28 @@ PITCH_SLIDES = ROOT / "agent-temp" / "video" / "pitch" / "slides"
 VOICE = "en-US-AriaNeural"
 RATE = "+0%"
 
-SITE = "https://conexple-worker-web.sornwin.workers.dev"
+SITE = "https://alpha.conexple.com"
 BYOK_TX = ("https://solscan.io/tx/aMnXq4v4YJsvUXYYq4S1jbrXs3MStjVcRq7ZYej77XWQdY9LDU"
            "SDa8W5S4V3m6rkbWUyj7DNoyh5AdgQrWR1n2S?cluster=devnet")
 
 # Scenes — each maps to (visual_source, narration). visual_source can be:
 #   ("slide", N)        -> use pitch slide N
 #   ("shot", "key")     -> use captured screenshot named key
+# Frontier demo brief: "Should show the live product, not a slide deck,
+# not a code walkthrough." → opens straight on the live home page; no
+# architecture slide intro.
 SCENES: list[dict] = [
     {
-        "id": "01_arch",
-        "visual": ("slide", 9),
-        "narration":
-            "Conexple has four Anchor programs deployed to Solana devnet. "
-            "Protocol holds the rules. Network manages position state. "
-            "Escrow handles USDC vaults and payouts. "
-            "Oracle is the registered backend signer. "
-            "Off-chain, a Cloudflare Worker runs the operator backend.",
-    },
-    {
-        "id": "02_home",
+        "id": "01_home",
         "visual": ("shot", "home"),
         "narration":
-            "Landing page lays out the pitch in thirty seconds. "
-            "The diagram shows the seven-way commission split. "
-            "Conexple is a protocol, not a single platform. "
-            "The architecture supports anyone forking the operator code "
-            "and running their own network on the same Solana programs.",
+            "This is Conexple — live on Solana devnet. "
+            "Open the home page and the wedge is right there: "
+            "the same merchant commission, redirected from influencers "
+            "to the loyal customers who actually buy. "
+            "The seven-way split visualization shows the protocol flow. "
+            "Conexple is an open protocol, not a single platform — "
+            "anyone forks and runs their own operator.",
     },
     {
         "id": "03_simulator",
@@ -185,7 +180,7 @@ OUTRO_HTML = """
     Open consumer affiliate protocol on Solana — pay loyal customers, not influencers.
   </div>
   <div class="links">
-    <div><b>DEMO</b><code>conexple-worker-web.sornwin.workers.dev</code></div>
+    <div><b>DEMO</b><code>alpha.conexple.com</code></div>
     <div><b>REPO</b><code>github.com/conexple/alpha</code></div>
   </div>
   <div class="badge-row">

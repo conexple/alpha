@@ -30,6 +30,16 @@ style: |
 
 ---
 
+# Why we built this
+
+- **AI and robotics will displace much of what humans do for income**
+- The next economy will need an alternative — basic income that doesn't wait for the state
+- **Consumption** is the one thing humans uniquely do, every day, without thinking
+- Today there is no reward for being a consumer — buyers fund commerce, share none of its returns
+- Conexple turns consumption into **community-funded basic income**
+
+---
+
 # The problem
 
 - Global affiliate marketing: **$17–18B annually**, growing ~14% YoY (Post Affiliate Pro, 2025)
@@ -87,13 +97,13 @@ style: |
 
 ---
 
-# Live demo — devnet, today
+# The longer arc — a consumer-funded basic income
 
-- Web: conexple-worker-web.sornwin.workers.dev
-- 4 Anchor programs deployed, 21 positions across 3 trees, 6 merchants
-- 3 deployer-signed + 3 BYOK (third-parties signed by their own keypairs)
-- Total on-chain earnings: 6,417 base units distributed across the network
-- Every accrual verifiable on Solscan in real time
+- **Not waiting for the state · not a token airdrop**
+- Commerce already pays a commission — Conexple just redirects it to the buyer
+- No selling, no recruiting, no quotas — just buy what you'd buy anyway
+- **Positions expire** after inactivity → opportunity **rotates** through new consumers
+- A flow, not a pyramid — the seats stay open
 
 ---
 
@@ -134,19 +144,21 @@ style: |
 
 ---
 
-# Team & operating plan
+# The team
 
-- Conexple Thailand will run as the first operator network
-- Operating team is based in Bangkok, with consumer commerce experience
-- The protocol stays open — Apache 2.0, no token, forkable
-- Anyone can run their own Conexple network on the same Solana programs
+- **Boss** · Founder & Lead Engineer — 4 Anchor programs in Rust, Cloudflare backend
+- **Kan** · Education & Community — consumer onboarding, in-app guidance
+- **Pee** · Merchant Infrastructure — WordPress + escrow integration for small Thai stores
+- **Ta** · Customer Success & Operations — support docs, FAQ, UI QA
+- Same Kasetsart Faculty of Education cohort · five years shipping together
+- Bangkok-based · Thai-rooted
 
 ---
 
-# Try Conexple — live on devnet
+<!-- _class: lead -->
 
-- **conexple-worker-web.sornwin.workers.dev** — connect a wallet, see splits in real time
-- Repo: github.com/conexple/alpha (Apache 2.0)
-- Opting into Public Goods award · Thai-rooted, ASEAN-bound
-- Mainnet next; Conexple Thailand as first operator network
-- Protocol stays open — fork it, run your own
+# Thank you
+
+- Conexple · Frontier 2026
+- alpha.conexple.com
+- github.com/conexple/alpha · Apache 2.0

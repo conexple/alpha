@@ -21,7 +21,8 @@ export function TopNav() {
   return (
     <header className="sticky top-0 z-30 border-b border-edge bg-cream/85 backdrop-blur-md">
       <div className="container-page flex items-center justify-between py-4">
-        <Link href="/" className="group flex items-baseline gap-2">
+        <Link href="/" className="group flex items-center gap-2">
+          <img src="/conexple-logo.png" alt="Conexple logo" className="h-7 w-7 shrink-0 rounded" />
           <span className="font-display text-xl font-semibold tracking-tightest text-ink">
             conexple
           </span>

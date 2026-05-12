@@ -19,6 +19,7 @@ const app = new Hono<{ Bindings: Env }>();
 // workers/merchant.ts). Wildcards are intentionally excluded — any new
 // frontend must be added here.
 const ALLOWED_ORIGINS = [
+  "https://alpha.conexple.com",
   "https://conexple-worker-web.sornwin.workers.dev",
   "http://localhost:3000",
   "http://127.0.0.1:3000",

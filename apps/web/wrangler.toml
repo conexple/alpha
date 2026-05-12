@@ -1,12 +1,41 @@
 name = "conexple-worker-web"
+main = "src/worker.ts"
 compatibility_date = "2026-04-01"
 account_id = "a24ce30584273b42333051f1cdec48e2"
 
-# Static-assets-only Worker. The Next.js build (`output: 'export'`) emits
-# everything to ./out — Workers serves it via the [assets] binding. No
-# worker script needed because nothing here requires runtime SSR or APIs;
-# all dynamic data is read from the operator (conexple-worker-operator)
-# or directly from devnet RPC by the client.
+# Keep the *.workers.dev URL alive alongside the custom domain. Wrangler 4.x
+# disables it by default when omitted — which would 404 the workers.dev URL
+# the moment custom-domain config lands. We want both live as fallback.
+workers_dev = true
+
+# Route bindings for the Frontier 2026 submission.
+#
+# alpha.conexple.com  → custom_domain (wrangler manages the DNS record, primary)
+# conexple.com/*      → route pattern (binds to the EXISTING proxied DNS record
+#                       at the apex, which user has already set up). Using
+#                       custom_domain=true here previously hit Cloudflare error
+#                       100117 because the zone already had an externally-
+#                       managed DNS record. Route pattern sidesteps that by
+#                       layering onto the existing Proxied A/AAAA/CNAME.
+# www.conexple.com/*  → same pattern reason.
+#
+# zone_name explicit on all entries — wrangler cannot infer it for subdomain
+# or apex route patterns.
+routes = [
+  { pattern = "alpha.conexple.com", custom_domain = true, zone_name = "conexple.com" },
+  { pattern = "conexple.com/*", zone_name = "conexple.com" },
+  { pattern = "www.conexple.com/*", zone_name = "conexple.com" },
+]
+
+# Worker now ships a tiny script (src/worker.ts) that gates by hostname:
+#   - alpha.conexple.com + *.workers.dev → serve the static Next.js export via
+#     the ASSETS binding (Next.js `output: 'export'` emits to ./out).
+#   - conexple.com / www.conexple.com → 301 redirect to alpha.conexple.com,
+#     preserving path + querystring. This keeps the apex from sitting on a
+#     Cloudflare 403 default while we decide what the marketing site looks
+#     like post-hackathon. All dynamic data is still fetched client-side from
+#     the operator (conexple-worker-operator) or directly from devnet RPC.
 [assets]
+binding = "ASSETS"
 directory = "./out"
 not_found_handling = "404-page"

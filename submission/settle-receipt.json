@@ -1,102 +1,62 @@
 {
-  "ranAt": "2026-05-11T08:50:30.199Z",
+  "ranAt": "2026-05-12T03:37:17.814Z",
   "operator": "https://conexple-worker-operator.sornwin.workers.dev",
   "rpc": "https://api.devnet.solana.com",
   "results": [
     {
-      "purchase_id": "c2442e5f-661c-42cf-980d-eabfbfab761e",
-      "buyer": "7YkTy9FTiwHvWcsrNgg41UCvZzZTpnGNbCpMiezQXByv",
-      "amount": 4000,
-      "perSlot": 285,
+      "purchase_id": "a0018f1d-ebc1-4d9c-b455-4b7b1178e266",
+      "buyer": "kaEWeMzH7yK95RTi8w7xd8ZugJa2ngzfo9L81XchYTU",
+      "amount": 1000,
+      "perSlot": 71,
       "recipients": [
-        {
-          "wallet": "FFaGsmUmhnFoG3Syg8DUrL4vJhJKWUDxX4UyDLTr6v82",
-          "level": 1,
-          "amount": 285
-        },
-        {
-          "wallet": "EDFhk5DiXKNpHz4Psob3vCknpEC9EGEq9y9GpnGrz2vS",
-          "level": 2,
-          "amount": 285
-        },
-        {
-          "wallet": "78KJU1kJ73mjf3PA5si6yW6suLBKaxW7sZh4wCeNLu3n",
-          "level": 3,
-          "amount": 285
-        },
-        {
-          "wallet": "4B4VV8MnSMU89StUCC8CFmpL2JDQ6Xe3of7fUavCDMth",
-          "level": 4,
-          "amount": 285
-        },
-        {
-          "wallet": "4yKcv3r8F4GDciZ9VAZxTtSJhvrfhZd94ejLbe7WeaqS",
-          "level": 5,
-          "amount": 285
-        }
-      ],
-      "status": "settled",
-      "signature": "3cVWq6SANKw44Qbcpc9TXb5f5pvudiCKoJsPZ1HnFw3XAmp5G6JtLgZvMG73t6NcGKR1KSFoH3ztmNNNoEzbaZZf"
-    },
-    {
-      "purchase_id": "f4146c2d-c58d-4ac3-8ad8-0550671b2da3",
-      "buyer": "CSgaBonDDFZDYBVwRGdEJt5m2h7dWAJkkYCMBEfdPuoi",
-      "amount": 6000,
-      "perSlot": 428,
-      "recipients": [
-        {
-          "wallet": "kaEWeMzH7yK95RTi8w7xd8ZugJa2ngzfo9L81XchYTU",
-          "level": 1,
-          "amount": 428
-        },
         {
           "wallet": "Hr1CPBo8pzbRE6B5u8iU5HtLcnPCWR8J4H4nEB7S814L",
-          "level": 2,
-          "amount": 428
+          "level": 1,
+          "amount": 71
         },
         {
           "wallet": "4yKcv3r8F4GDciZ9VAZxTtSJhvrfhZd94ejLbe7WeaqS",
-          "level": 3,
-          "amount": 428
+          "level": 2,
+          "amount": 71
         }
       ],
       "status": "settled",
-      "signature": "PfPdB7mnDo4cQeS1oi7JTivKYmmfFAb41sgq8VPTdXmc77ocgKkfMEduH8XF4hCHzNWXAmQHR2oYYVcrwmXGvJ3"
+      "signature": "naaDxVqbsSU8ddMoKp7zFQmfUb3qY4pHMmkisz372ackywisnZgejFU2yJTWeJU3EMmaT5J6KZH3WcHaRXxRA2Q"
     },
     {
-      "purchase_id": "5079cee6-fb4f-4d02-9a0b-8ed79798fdfc",
-      "buyer": "E7a8xx2zg3BfugxH7DQXcwCPCs9LNrvbgzqTtoEAUALG",
-      "amount": 3000,
-      "perSlot": 214,
+      "purchase_id": "5be46a33-0a53-4109-8cc9-21d985c08494",
+      "buyer": "BbDSsoTq1JJmWYUE1QjiG8P1N16wbu2ipxB4Z8Z64tMG",
+      "amount": 500,
+      "perSlot": 35,
       "recipients": [
         {
-          "wallet": "Gzh6ciKmHws5LNugnDCCf8pHLR9wreetrAMcY6DsiiHG",
+          "wallet": "GuuN1ZJsLvh9NUhnUqjFeomEXoaURQSGvAdVefNpaWDu",
           "level": 1,
-          "amount": 214
-        },
-        {
-          "wallet": "CSgaBonDDFZDYBVwRGdEJt5m2h7dWAJkkYCMBEfdPuoi",
-          "level": 2,
-          "amount": 214
-        },
-        {
-          "wallet": "kaEWeMzH7yK95RTi8w7xd8ZugJa2ngzfo9L81XchYTU",
-          "level": 3,
-          "amount": 214
-        },
-        {
-          "wallet": "Hr1CPBo8pzbRE6B5u8iU5HtLcnPCWR8J4H4nEB7S814L",
-          "level": 4,
-          "amount": 214
+          "amount": 35
         },
         {
           "wallet": "4yKcv3r8F4GDciZ9VAZxTtSJhvrfhZd94ejLbe7WeaqS",
-          "level": 5,
-          "amount": 214
+          "level": 2,
+          "amount": 35
         }
       ],
       "status": "settled",
-      "signature": "2c1ND1BxxJ9seiePE1V7waLwnJkLc1NW33UNVNRixxja3rCpmywEDr7Yu6RWj3voGBzEPRcZDsdy8Yd3aL3cDS56"
+      "signature": "2PJs8WWHTcopVRnPySHaTTo4bNr8scQSwPEopzx9N6U9wH6gLzDn4mAKSbbpmC4gMoPFsTCfMcR4f2vqJiit5Srs"
+    },
+    {
+      "purchase_id": "81453e6d-66cb-4f42-aa5e-c3559f0e3646",
+      "buyer": "GuuN1ZJsLvh9NUhnUqjFeomEXoaURQSGvAdVefNpaWDu",
+      "amount": 2000,
+      "perSlot": 142,
+      "recipients": [
+        {
+          "wallet": "4yKcv3r8F4GDciZ9VAZxTtSJhvrfhZd94ejLbe7WeaqS",
+          "level": 1,
+          "amount": 142
+        }
+      ],
+      "status": "settled",
+      "signature": "4whQsEqehgq1XQS19Xu3owo9YrMEFVKZFGNqSixmUSiAbRQwwx2N9NSvDeh5Xbf2p3NEbej8iybfCCQFYBuNHCYi"
     }
   ]
 }

@@ -8,17 +8,20 @@ import { SiteFooter } from "@/components/SiteFooter";
 export const metadata: Metadata = {
   title: "Conexple — Open consumer affiliate protocol on Solana",
   description:
-    "Redirect existing merchant marketing commissions to everyday consumers — 5-level unilevel + Infinity Override on Solana, on-chain rules, anti-MLM by structural design.",
-  metadataBase: new URL("https://conexple-worker-web.sornwin.workers.dev"),
+    "Open consumer-affiliate protocol on Solana. The merchant's commission redirects to loyal customers who actually buy — a step toward basic income from consumption. 50% margin cap, purchase-gated, rotation by expiry, Apache 2.0.",
+  metadataBase: new URL("https://alpha.conexple.com"),
   icons: {
-    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+    icon: [
+      { url: "/favicon.png", type: "image/png", sizes: "256x256" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
   },
   openGraph: {
-    title: "Conexple — Pay loyal customers, not influencers.",
+    title: "Conexple — Income from what you buy.",
     description:
-      "Open-source consumer affiliate protocol on Solana. Every rule, payout, and position lives on chain.",
+      "Open consumer-affiliate protocol on Solana. Every rule, payout, and position lives on chain — and every position rotates.",
     type: "website",
-    url: "https://conexple-worker-web.sornwin.workers.dev",
+    url: "https://alpha.conexple.com",
     siteName: "Conexple",
     images: [
       {
@@ -31,9 +34,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Conexple — Pay loyal customers, not influencers.",
+    title: "Conexple — Income from what you buy.",
     description:
-      "Open-source consumer affiliate protocol on Solana. Every rule, payout, and position on chain.",
+      "Open consumer-affiliate protocol on Solana. Every rule, payout, and position lives on chain — and every position rotates.",
     images: ["/og.png"],
   },
 };
