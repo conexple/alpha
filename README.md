@@ -23,8 +23,8 @@ Do not use with real funds.
   - `conexple_escrow` — [`9eTvjKrfbYy6JhFMJnuFo5ATCN6uS115J196bvPbmMXU`](https://solscan.io/account/9eTvjKrfbYy6JhFMJnuFo5ATCN6uS115J196bvPbmMXU?cluster=devnet)
   - `conexple_oracle` — [`9CQFV9oPYKWE4Yg4w8mwJxsdibPeZJrKoTqcp2iTi1qz`](https://solscan.io/account/9CQFV9oPYKWE4Yg4w8mwJxsdibPeZJrKoTqcp2iTi1qz?cluster=devnet)
 - **Demo USDC mint (devnet, mock):** [`DMVSU4BNqqLSmQeo5wop3SnUsA3xkoEvJAqNHe2e1rNG`](https://solscan.io/account/DMVSU4BNqqLSmQeo5wop3SnUsA3xkoEvJAqNHe2e1rNG?cluster=devnet)
-- **Pitch video (≤ 3 min):** [youtu.be/S8hmH2V1rzc](https://youtu.be/S8hmH2V1rzc)
-- **Technical demo (2–3 min):** [youtu.be/uSIWEeu0qcU](https://youtu.be/uSIWEeu0qcU)
+- **Pitch video (≤ 3 min):** [youtu.be/ToolLDP2AIw](https://youtu.be/ToolLDP2AIw)
+- **Technical demo (2–3 min):** [youtu.be/XSwwHwVHtBw](https://youtu.be/XSwwHwVHtBw)
 - **Pitch deck (PDF):** `submission/pitch-deck.pdf` *(build from `pitch-deck-outline.md`)*
 - **License:** [Apache 2.0](./LICENSE) · permissive, patent grant, fork-friendly
 

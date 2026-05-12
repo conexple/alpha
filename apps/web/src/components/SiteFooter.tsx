@@ -37,8 +37,8 @@ export function SiteFooter() {
           <FooterCol
             title="Watch"
             links={[
-              { href: "https://youtu.be/S8hmH2V1rzc", label: "Pitch · 3 min", ext: true },
-              { href: "https://youtu.be/uSIWEeu0qcU", label: "Technical demo · 2 min", ext: true },
+              { href: "https://youtu.be/ToolLDP2AIw", label: "Pitch · 3 min", ext: true },
+              { href: "https://youtu.be/XSwwHwVHtBw", label: "Technical demo · 2 min", ext: true },
             ]}
           />
           <FooterCol

@@ -82,7 +82,7 @@ export default function Home() {
                 Pitch · 3 min
               </span>
               <a
-                href="https://youtu.be/S8hmH2V1rzc"
+                href="https://youtu.be/ToolLDP2AIw"
                 target="_blank"
                 rel="noreferrer"
                 className="font-mono text-[10px] uppercase tracking-[0.18em] text-stone transition-colors hover:text-ink"
@@ -92,7 +92,7 @@ export default function Home() {
             </div>
             <div className="relative aspect-video overflow-hidden rounded-2xl border border-edge bg-ink shadow-sm">
               <iframe
-                src="https://www.youtube-nocookie.com/embed/S8hmH2V1rzc?rel=0&modestbranding=1"
+                src="https://www.youtube-nocookie.com/embed/ToolLDP2AIw?rel=0&modestbranding=1"
                 title="Conexple pitch — 3 minutes"
                 loading="lazy"
                 allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -128,7 +128,7 @@ export default function Home() {
           </p>
           <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
             <a
-              href="https://youtu.be/uSIWEeu0qcU"
+              href="https://youtu.be/XSwwHwVHtBw"
               target="_blank"
               rel="noreferrer"
               className="font-mono text-[10px] uppercase tracking-[0.18em] text-stone transition-colors hover:text-ink"
@@ -161,7 +161,7 @@ export default function Home() {
             </div>
             <div className="relative aspect-video overflow-hidden rounded-2xl border border-edge bg-ink shadow-sm">
               <iframe
-                src="https://www.youtube-nocookie.com/embed/uSIWEeu0qcU?rel=0&modestbranding=1"
+                src="https://www.youtube-nocookie.com/embed/XSwwHwVHtBw?rel=0&modestbranding=1"
                 title="Conexple technical demo — 2 minutes"
                 loading="lazy"
                 allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -349,7 +349,7 @@ export default function Home() {
             </p>
             <div className="mt-6 flex flex-wrap gap-3 text-sm">
               <a
-                href="https://youtu.be/S8hmH2V1rzc"
+                href="https://youtu.be/ToolLDP2AIw"
                 target="_blank"
                 rel="noreferrer"
                 className="group inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 font-medium text-cream transition-transform hover:-translate-y-0.5"
@@ -360,7 +360,7 @@ export default function Home() {
                 Watch pitch · 3 min
               </a>
               <a
-                href="https://youtu.be/uSIWEeu0qcU"
+                href="https://youtu.be/XSwwHwVHtBw"
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-2 rounded-full border border-edge bg-cream px-5 py-2.5 font-medium text-graphite hover:border-ink hover:text-ink"
