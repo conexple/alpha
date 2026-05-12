@@ -47,14 +47,24 @@ async def smooth_scroll(page: Page, target_y: int, duration_ms: int = 1500) -> N
 
 
 async def scene_home(page: Page) -> None:
-    """Quick intro — home page hero + scroll past the ecosystem diagram."""
+    """Intro — home page hero + brief hover on TopNav menu items so the
+    narration introducing 'four working surfaces' has visual anchoring."""
     await page.goto(f"{SITE}/")
     await page.wait_for_load_state("networkidle")
-    await asyncio.sleep(1.8)
-    await smooth_scroll(page, 600, 1800)
-    await asyncio.sleep(1.5)
-    await smooth_scroll(page, 1400, 1800)
     await asyncio.sleep(2.0)
+    # Hover each TopNav menu item in turn so the structure is visible
+    for label in ("Dashboard", "Network", "Operator", "Merchant"):
+        try:
+            link = page.get_by_role("link", name=label).first
+            await link.hover()
+            await asyncio.sleep(1.2)
+        except Exception:
+            await asyncio.sleep(1.0)
+    # Scroll down briefly so the page is more than just the nav
+    await smooth_scroll(page, 700, 1800)
+    await asyncio.sleep(2.0)
+    await smooth_scroll(page, 1500, 1800)
+    await asyncio.sleep(2.5)
 
 
 async def scene_dashboard(page: Page) -> None:
@@ -88,87 +98,132 @@ async def scene_dashboard(page: Page) -> None:
 
 
 async def scene_operator(page: Page) -> None:
-    """Show the operator dashboard + trigger a settlement cycle."""
+    """Operator dashboard + LIVE settlement: click Trigger Cycle, wait for
+    the Worker (now using Helius RPC) to actually submit add_earnings on
+    chain and return the success toast."""
     await page.goto(f"{SITE}/operator/")
     await page.wait_for_load_state("networkidle")
-    await asyncio.sleep(2.0)
+    await asyncio.sleep(2.5)
     await smooth_scroll(page, 400, 1500)
     await asyncio.sleep(1.5)
-    # Click "Trigger cycle now" if present
     try:
         btn = page.get_by_role("button", name="Trigger cycle now")
         await btn.scroll_into_view_if_needed()
         await asyncio.sleep(0.8)
         await btn.hover()
-        await asyncio.sleep(0.4)
+        await asyncio.sleep(0.5)
         await btn.click()
-        await asyncio.sleep(3.0)
+        # Worker: read pending rows → build add_earnings → sign with oracle →
+        # submit to Helius → wait for confirmation → respond. ~15-30s under
+        # normal conditions. Wait long enough that the success toast renders.
+        await asyncio.sleep(28.0)
     except Exception as e:
         print(f"  (trigger cycle button skipped: {e})")
         await asyncio.sleep(2.5)
-    await smooth_scroll(page, 0, 1500)
-    await asyncio.sleep(1.5)
+    # Linger on the result for a moment before moving on
+    await asyncio.sleep(2.0)
 
 
 async def scene_merchant(page: Page) -> None:
-    """Multi-merchant dropdown + actually void a fake purchase."""
+    """LIVE backend hits: dropdown switch → type wallet → Force expire →
+    response → type correlation_id → Void → response. Two real operator
+    POSTs visible per scene."""
     await page.goto(f"{SITE}/merchant/")
     await page.wait_for_load_state("networkidle")
-    await asyncio.sleep(2.0)
-    # Open dropdown + switch to BYOK third-party
+    await asyncio.sleep(2.5)
+
+    # 1. Dropdown switch (visible)
     try:
         select = page.locator("select").first
         await select.scroll_into_view_if_needed()
-        await asyncio.sleep(0.6)
+        await asyncio.sleep(0.5)
         await select.hover()
-        await asyncio.sleep(0.4)
-        options = await page.locator("select option").all_text_contents()
-        target = next((o for o in options if "BYOK" in o or "04" in o), None)
+        await asyncio.sleep(0.3)
+        opts = await page.locator("select option").all_text_contents()
+        target = next((o for o in opts if "BYOK" in o or "04" in o), None)
         if target:
             await select.select_option(label=target)
-        elif len(options) > 1:
-            await select.select_option(label=options[1])
+        elif len(opts) > 1:
+            await select.select_option(label=opts[1])
         await asyncio.sleep(2.0)
     except Exception as e:
         print(f"  (dropdown skipped: {e})")
-        await asyncio.sleep(1.5)
-    # Scroll to show vault balance + PDA
-    await smooth_scroll(page, 500, 1200)
-    await asyncio.sleep(1.5)
-    # Type a fake purchase id + click Void purchase — real backend hit
+        await asyncio.sleep(1.0)
+
+    # 2. Scroll down to the Manage section
+    await smooth_scroll(page, 700, 1200)
+    await asyncio.sleep(1.2)
+
+    # 3. Force expire — type wallet pubkey + click button
     try:
-        textbox = page.get_by_placeholder(
-            re.compile("purchase|tx", re.IGNORECASE)
+        textbox = page.get_by_label(
+            re.compile("purchase|wallet identifier", re.IGNORECASE)
         ).first
         await textbox.scroll_into_view_if_needed()
         await asyncio.sleep(0.6)
         await textbox.click()
+        await asyncio.sleep(0.3)
+        await textbox.type("8TLJpd7yJZD4ufSbK4YirnMhNdN68mVmfGvnsNztkLz8", delay=40)
+        await asyncio.sleep(0.8)
+        force_btn = page.get_by_role("button", name=re.compile("force expire", re.IGNORECASE)).first
+        await force_btn.hover()
         await asyncio.sleep(0.4)
-        await textbox.type("demo-void-2026-frontier", delay=60)
+        await force_btn.click()
+        # Operator responds with JSON, rendered on page
+        await asyncio.sleep(3.0)
+
+        # 4. Clear + type a correlation id, then Void purchase
+        await textbox.click()
+        await page.keyboard.press("Control+a")
+        await page.keyboard.press("Delete")
+        await asyncio.sleep(0.4)
+        await textbox.type("demo-tx-frontier-2026", delay=40)
         await asyncio.sleep(0.8)
         void_btn = page.get_by_role("button", name=re.compile("void purchase", re.IGNORECASE)).first
         await void_btn.hover()
         await asyncio.sleep(0.4)
         await void_btn.click()
-        # The operator returns {voided_rows: 0, purchase_id: "..."} for a non-existent id
-        await asyncio.sleep(2.5)
+        await asyncio.sleep(3.0)
     except Exception as e:
-        print(f"  (void interaction skipped: {e})")
-        await asyncio.sleep(1.5)
-    await asyncio.sleep(1.0)
+        print(f"  (merchant action interaction skipped: {e})")
+        await asyncio.sleep(2.0)
+    await asyncio.sleep(0.8)
 
 
 async def scene_explorer(page: Page) -> None:
-    """Show the live network tree + position table + tx feed."""
+    """Live state + zoom in on the user wallet row to show earned > 0
+    landed at the wallet the consumer just connected via Phantom."""
     await page.goto(f"{SITE}/explorer/")
     await page.wait_for_load_state("networkidle")
+    await asyncio.sleep(2.5)
+    # Tree visualization
+    await smooth_scroll(page, 800, 2000)
     await asyncio.sleep(2.0)
-    await smooth_scroll(page, 600, 2000)
-    await asyncio.sleep(2.0)
-    await smooth_scroll(page, 1400, 2000)
-    await asyncio.sleep(2.0)
-    await smooth_scroll(page, 2200, 2000)
-    await asyncio.sleep(2.0)
+    # Position table area
+    await smooth_scroll(page, 1800, 2000)
+    await asyncio.sleep(1.5)
+    # Try to find user wallet row (FABRy...an7) and hover
+    try:
+        row = page.get_by_text(re.compile(r"FABR.*an7")).first
+        await row.scroll_into_view_if_needed()
+        await asyncio.sleep(1.2)
+        await row.hover()
+        await asyncio.sleep(3.5)
+    except Exception as e:
+        print(f"  (user wallet row not located: {e})")
+        await asyncio.sleep(2.5)
+    # Then scroll to tx feed + hover a Solscan link
+    await smooth_scroll(page, 2800, 1800)
+    await asyncio.sleep(1.5)
+    try:
+        tx_link = page.locator("a[href*='solscan.io']").first
+        await tx_link.scroll_into_view_if_needed()
+        await asyncio.sleep(0.6)
+        await tx_link.hover()
+        await asyncio.sleep(2.0)
+    except Exception as e:
+        print(f"  (solscan hover skipped: {e})")
+        await asyncio.sleep(1.5)
 
 
 async def scene_close(page: Page) -> None:
@@ -193,69 +248,50 @@ SCENES = [
         "id": "01_intro",
         "fn": scene_home,
         "narration":
-            "Let me show you Conexple in action. "
-            "This is the live network on Solana devnet. "
-            "The home page lays it out — same merchant commission, "
-            "redirected from influencers to loyal customers who actually buy. "
-            "Every interaction you're about to see touches real on-chain state.",
+            "This is Conexple — an open consumer affiliate protocol on Solana, running live on devnet. "
+            "I'll walk you through the end-to-end flow: a merchant accepts a purchase, "
+            "the operator settles the commission cycle on chain, "
+            "and the consumer wallet earns. "
+            "Four working surfaces — dashboard, merchant, operator, explorer. "
+            "Every click hits real backend.",
     },
     {
-        "id": "02_wallet",
-        "fn": scene_dashboard,
-        "narration":
-            "Start with the consumer side. "
-            "Open the dashboard, click Select Wallet — the adapter shows your options. "
-            "Choose Phantom on devnet. The adapter builds a register-Position instruction, "
-            "the wallet signs, your Position lives on chain. "
-            "No password, no signup form, no recruitment quota — just a wallet and a referral.",
-    },
-    {
-        "id": "03_merchant",
+        "id": "02_merchant",
         "fn": scene_merchant,
         "narration":
             "On the merchant side. "
-            "Two integration paths: signed webhook from your checkout, "
-            "or BYOK — deploy your own MerchantEscrow PDA with your own wallet authority. "
-            "Watch — switch between four live merchants. "
-            "Three deployer-signed, one BYOK third-party using its own keypair. "
-            "Below: vault balance, PDA address, real on-chain merchant data. "
-            "Now an admin action — type a purchase identifier, click void purchase. "
-            "The operator queries its D1 store, "
-            "returns the result on chain if matching, or zero rows if not. "
-            "Force-expire is the same shape. "
-            "Every action here is real, against the live operator backend.",
+            "Five live merchants on chain — vault balances pulled straight from the escrow program. "
+            "When a customer buys, the merchant fires a signed webhook to the operator. "
+            "Admin actions are here too: void a pending purchase, or force-expire a position. "
+            "Both POST live against the operator backend.",
     },
     {
-        "id": "04_operator",
+        "id": "03_operator",
         "fn": scene_operator,
         "narration":
-            "The operator runs the cycle. "
-            "A purchase webhook arrives, the Cloudflare Worker queues it, "
-            "holds for the configured period, and at settlement time "
-            "submits oracle-signed add-earnings instructions on chain. "
-            "The settlement history below — those are runs from the last few minutes. "
-            "Fresh commissions just landed.",
+            "The operator dashboard. "
+            "A pending commission row was just queued from the merchant webhook. "
+            "Watch — I click Trigger cycle. "
+            "The Cloudflare Worker reads pending commissions, "
+            "builds oracle-signed add-earnings instructions, "
+            "and submits them straight to Solana devnet via Helius RPC. "
+            "Confirmation comes back live — the cycle just settled on chain.",
     },
     {
-        "id": "05_explorer",
+        "id": "04_explorer",
         "fn": scene_explorer,
         "narration":
-            "And here's where it all shows up — live, right now. "
-            "Twenty-one Position accounts across three trees. "
-            "The earned column updates as commissions land on chain. "
-            "Total earned just stepped up — distributions flowing across uplines in real time. "
-            "Click any transaction in the feed to trace it on Solscan yourself.",
+            "And the result. "
+            "The user wallet that just connected via Phantom is in the position table. "
+            "Earned column reflects commission landed on chain — "
+            "split across the upline by protocol rule. "
+            "Every transaction is Solscan-verifiable; click any to trace.",
     },
     {
-        "id": "06_vision",
+        "id": "05_close",
         "fn": scene_close,
         "narration":
-            "This is the foundation. "
-            "The longer arc: a consumer-funded basic income — "
-            "where simply participating in commerce earns you income. "
-            "Positions expire after inactivity, so opportunity rotates "
-            "through new consumers instead of concentrating. "
-            "Direct sale, on chain. Open protocol. Apache 2.0.",
+            "Open protocol, Apache 2.0. github.com slash conexple slash alpha.",
     },
 ]
 
@@ -312,27 +348,52 @@ def ffprobe_duration(path: Path) -> float:
 
 
 def composite_scenes() -> None:
-    """For each scene: mute browser webm, set duration = narration length
-    (trim/loop), overlay narration audio, produce .mp4 with same fps/codec."""
+    """For each scene:
+      1. Pre-trim the front of the webm to skip Playwright's first-frame white
+         flash. We use `-ss AFTER -i` (accurate output seek with re-encode),
+         then write the trimmed file to disk — that way `-stream_loop` later
+         loops the trimmed version, not the original (so the loop boundary
+         doesn't re-show the white flash).
+      2. Composite trimmed video + narration audio: mute browser audio, loop
+         or trim to narration length, apply soft fade-in/out across cuts.
+    """
     SCENES_DIR.mkdir(parents=True, exist_ok=True)
+    skip_head = 2.5
+    fade_d = 0.5
     for scene in SCENES:
         scene_id = scene["id"]
         webm = RAW / f"{scene_id}.webm"
+        trimmed = RAW / f"{scene_id}_trimmed.mp4"
         mp3 = AUDIO / f"{scene_id}.mp3"
         out = SCENES_DIR / f"{scene_id}.mp4"
 
-        video_dur = ffprobe_duration(webm)
+        raw_video_dur = ffprobe_duration(webm)
+        # Step 1: pre-trim front (accurate seek via -ss AFTER -i, requires re-encode)
+        trim_cmd = [
+            "ffmpeg", "-y", "-loglevel", "error",
+            "-i", str(webm),
+            "-ss", f"{skip_head:.2f}",
+            "-c:v", "libx264", "-pix_fmt", "yuv420p", "-r", "30",
+            "-an",
+            str(trimmed),
+        ]
+        subprocess.run(trim_cmd, check=True)
+        usable_video_dur = ffprobe_duration(trimmed)
         audio_dur = ffprobe_duration(mp3)
-        # Final scene duration = max(audio, video) — but cap at audio+0.5s tail
-        # so we don't drag a silent video tail too long when video is longer.
         target = audio_dur + 0.5
-        # If video is shorter than narration, loop video. Else trim.
+        fade_out_start = max(target - fade_d, 0.0)
+        vf = (
+            f"fade=t=in:st=0:d={fade_d},"
+            f"fade=t=out:st={fade_out_start:.3f}:d={fade_d}"
+        )
+        # Step 2: composite trimmed video (loop if short) + narration audio
         cmd = [
             "ffmpeg", "-y", "-loglevel", "error",
-            "-stream_loop", "-1" if video_dur < target else "0",
-            "-i", str(webm),
+            "-stream_loop", "-1" if usable_video_dur < target else "0",
+            "-i", str(trimmed),
             "-i", str(mp3),
             "-t", f"{target:.3f}",
+            "-vf", vf,
             "-map", "0:v",
             "-map", "1:a",
             "-c:v", "libx264", "-pix_fmt", "yuv420p", "-r", "30",
@@ -340,7 +401,10 @@ def composite_scenes() -> None:
             str(out),
         ]
         subprocess.run(cmd, check=True)
-        print(f"  {scene_id}: video {video_dur:.1f}s, narration {audio_dur:.1f}s -> {target:.1f}s")
+        print(
+            f"  {scene_id}: raw {raw_video_dur:.1f}s → trimmed {usable_video_dur:.1f}s "
+            f"(skip {skip_head}s), narration {audio_dur:.1f}s → {target:.1f}s (fade {fade_d}s)"
+        )
 
 
 def concat_scenes() -> None:
@@ -364,55 +428,48 @@ def concat_scenes() -> None:
 
 
 def pre_flight_live_action() -> dict:
-    """Trigger fresh on-chain settlement BEFORE recording so /explorer shows
-    a brand-new commission flow during the screencast. Returns {tx_sig, ...}
-    or {} if the chain wasn't reachable (recording still proceeds against
-    whatever state is live).
+    """Seed a fresh pending commission row UNDER the user's wallet, but do
+    NOT settle it locally — the in-video click on /operator's 'Trigger cycle
+    now' is what actually submits the on-chain settlement (via Worker +
+    Helius). That way judges watch the settle happen live.
     """
     hmac_file = ROOT / "keys" / "webhook-hmac.txt"
     if not hmac_file.exists():
         print(f"  (no HMAC at {hmac_file}, skipping pre-flight)")
         return {}
-    hmac = hmac_file.read_text().strip()
 
     env = os.environ.copy()
     env["OPERATOR_URL"] = "https://conexple-worker-operator.sornwin.workers.dev"
-    env["PURCHASE_WEBHOOK_HMAC"] = hmac
-    env["BACKDATE_DAYS"] = "60"
     env["NETWORK_ID"] = "1"
+    # Large amount so the commission split (amount * margin / 7 slots) is
+    # visibly nonzero on /explorer's earned column afterwards.
+    env["SEED_AMOUNT"] = "100000"
 
-    print("  -> demo-purchases.ts (3 fresh webhooks, backdated 60 days)...")
+    print("  -> seed-user-downline.ts (place demo-X under user_wallet + send fresh purchase webhook, 100,000 bp)...")
     r = subprocess.run(
-        ["pnpm", "exec", "tsx", "scripts/demo-purchases.ts"],
+        ["pnpm", "exec", "tsx", "scripts/seed-user-downline.ts"],
         cwd=str(ROOT), env=env,
-        capture_output=True, text=True, timeout=90, shell=True,
+        capture_output=True, text=True, timeout=120, shell=True,
         encoding="utf-8", errors="replace",
     )
     out = (r.stdout or "").strip()
     if r.returncode != 0:
         err = (r.stderr or "").strip()
-        print(f"  WARN demo-purchases exit {r.returncode}: {err[-200:]}")
-    else:
-        print(f"  OK: {out.splitlines()[-4:] if out else '(no output)'}")
-
-    print("  -> settle-onchain.ts (process pending, submit add_earnings on chain)...")
-    r2 = subprocess.run(
-        ["pnpm", "exec", "tsx", "scripts/settle-onchain.ts"],
-        cwd=str(ROOT), env=env,
-        capture_output=True, text=True, timeout=240, shell=True,
-        encoding="utf-8", errors="replace",
-    )
-    out2 = (r2.stdout or "").strip()
-    if r2.returncode != 0:
-        err2 = (r2.stderr or "").strip()
-        print(f"  WARN settle-onchain exit {r2.returncode}: {err2[-300:]}")
+        print(f"  WARN seed-user-downline exit {r.returncode}: {err[-300:]}")
         return {}
+    # Find the correlation_id printed by the script
+    cid_match = re.search(r"correlation:\s+([0-9a-f-]{36})", out)
+    cid = cid_match.group(1) if cid_match else None
+    print(f"  OK. pending purchase queued. correlation_id: {cid}")
 
-    # Extract the latest Solana signature (base58, ~87-88 chars) from output.
-    sigs = re.findall(r"[1-9A-HJ-NP-Za-km-z]{85,90}", out2)
-    tx_sig = sigs[-1] if sigs else None
-    print(f"  fresh on-chain settlement complete. tx: {tx_sig}")
-    return {"tx_sig": tx_sig}
+    # Give Cloudflare Queue + consumer worker a few seconds to insert the
+    # row into pending_commission so the /operator Trigger-Cycle click in
+    # the recording actually has something to settle.
+    print("  -> wait 8s for the operator queue to materialize the pending row...")
+    import time
+    time.sleep(8)
+
+    return {"correlation_id": cid}
 
 
 async def main() -> None:

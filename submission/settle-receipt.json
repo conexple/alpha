@@ -1,62 +1,22 @@
 {
-  "ranAt": "2026-05-12T03:37:17.814Z",
+  "ranAt": "2026-05-12T06:00:41.033Z",
   "operator": "https://conexple-worker-operator.sornwin.workers.dev",
   "rpc": "https://api.devnet.solana.com",
   "results": [
     {
-      "purchase_id": "a0018f1d-ebc1-4d9c-b455-4b7b1178e266",
-      "buyer": "kaEWeMzH7yK95RTi8w7xd8ZugJa2ngzfo9L81XchYTU",
-      "amount": 1000,
-      "perSlot": 71,
+      "purchase_id": "c61ef5d8-12ac-4cf8-ab3e-e443e71cb292",
+      "buyer": "GABhzVxKeTMaKhZbweUY4a7fXTqgyPT6mgyNwmf9L1t1",
+      "amount": 100000,
+      "perSlot": 7142,
       "recipients": [
         {
-          "wallet": "Hr1CPBo8pzbRE6B5u8iU5HtLcnPCWR8J4H4nEB7S814L",
+          "wallet": "FABRyGWFkWLVCPUnTsX21DsU1jDQFuhgpEHHvtCJ7xCM",
           "level": 1,
-          "amount": 71
-        },
-        {
-          "wallet": "4yKcv3r8F4GDciZ9VAZxTtSJhvrfhZd94ejLbe7WeaqS",
-          "level": 2,
-          "amount": 71
+          "amount": 7142
         }
       ],
       "status": "settled",
-      "signature": "naaDxVqbsSU8ddMoKp7zFQmfUb3qY4pHMmkisz372ackywisnZgejFU2yJTWeJU3EMmaT5J6KZH3WcHaRXxRA2Q"
-    },
-    {
-      "purchase_id": "5be46a33-0a53-4109-8cc9-21d985c08494",
-      "buyer": "BbDSsoTq1JJmWYUE1QjiG8P1N16wbu2ipxB4Z8Z64tMG",
-      "amount": 500,
-      "perSlot": 35,
-      "recipients": [
-        {
-          "wallet": "GuuN1ZJsLvh9NUhnUqjFeomEXoaURQSGvAdVefNpaWDu",
-          "level": 1,
-          "amount": 35
-        },
-        {
-          "wallet": "4yKcv3r8F4GDciZ9VAZxTtSJhvrfhZd94ejLbe7WeaqS",
-          "level": 2,
-          "amount": 35
-        }
-      ],
-      "status": "settled",
-      "signature": "2PJs8WWHTcopVRnPySHaTTo4bNr8scQSwPEopzx9N6U9wH6gLzDn4mAKSbbpmC4gMoPFsTCfMcR4f2vqJiit5Srs"
-    },
-    {
-      "purchase_id": "81453e6d-66cb-4f42-aa5e-c3559f0e3646",
-      "buyer": "GuuN1ZJsLvh9NUhnUqjFeomEXoaURQSGvAdVefNpaWDu",
-      "amount": 2000,
-      "perSlot": 142,
-      "recipients": [
-        {
-          "wallet": "4yKcv3r8F4GDciZ9VAZxTtSJhvrfhZd94ejLbe7WeaqS",
-          "level": 1,
-          "amount": 142
-        }
-      ],
-      "status": "settled",
-      "signature": "4whQsEqehgq1XQS19Xu3owo9YrMEFVKZFGNqSixmUSiAbRQwwx2N9NSvDeh5Xbf2p3NEbej8iybfCCQFYBuNHCYi"
+      "signature": "2ExuEPKmAZe2ow877N9bMuY4XWy1N5Q6vBTp6BDpDRZ46J9ZPmfM4uWK2xfLPu13193FmmHhH6zpmy2PUMntsF7F"
     }
   ]
 }

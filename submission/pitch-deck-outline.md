@@ -146,12 +146,12 @@ style: |
 
 # The team
 
-- **Boss** · Founder & Lead Engineer — 4 Anchor programs in Rust, Cloudflare backend
-- **Kan** · Education & Community — consumer onboarding, in-app guidance
-- **Pee** · Merchant Infrastructure — WordPress + escrow integration for small Thai stores
-- **Ta** · Customer Success & Operations — support docs, FAQ, UI QA
+- **Boss** — 10 years full-stack engineering · Rust · Cloudflare ecosystem · AI integrations
+- **Kan** — Computing teacher · Education design · AI Games used by other teachers
+- **Pee** — Web hosting engineer · Daily contact with small Thai e-commerce merchants
+- **Ta** — Enterprise helpdesk · Years of non-technical user support
 - Same Kasetsart Faculty of Education cohort · five years shipping together
-- Bangkok-based · Thai-rooted
+- Bangkok-based
 
 ---
 

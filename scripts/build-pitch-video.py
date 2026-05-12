@@ -55,12 +55,11 @@ SCENES: list[tuple[int, str]] = [
      "A little to a public pool. A little to long-term active customers. "
      "The merchant doesn't notice — only the destination changes."),
     (6,
-     "Buyers referring buyers, getting rewarded — that's not new. "
-     "That's direct sale. "
-     "What's always been broken is trust. Margins drift. Rules get tweaked. "
+     "Buyers referring buyers — that's direct sale. "
+     "What's broken is trust. Margins drift. Rules tweak. "
      "A customer can't audit the spreadsheet that decides their share. "
      "Conexple puts every rule in Rust on Solana. "
-     "Not a spreadsheet. A contract."),
+     "Not a spreadsheet — a contract."),
     (9,
      "A network like this usually gets stuck — "
      "the first people in stay at the top forever. "
@@ -75,11 +74,11 @@ SCENES: list[tuple[int, str]] = [
      "all of it routed past the consumers themselves. "
      "We start in Thailand. The arc moves outward."),
     (14,
-     "Four of us, same Kasetsart cohort. Five years shipping together. "
-     "Boss runs complex systems lean. "
-     "Kan turns hard ideas into ones anyone can learn — teacher by training. "
-     "Pee sees what small Thai merchants struggle with, daily. "
-     "Ta has the patience only helpdesk teaches. "
+     "Four of us, same Kasetsart cohort, five years shipping together. "
+     "Boss — full-stack, Rust, Cloudflare. "
+     "Kan — computing teacher, builds education tools. "
+     "Pee — hosting engineer, daily contact with Thai e-commerce. "
+     "Ta — enterprise helpdesk, non-technical user support. "
      "Bangkok-based."),
     (15,
      "Thank you."),

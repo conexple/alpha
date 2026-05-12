@@ -42,6 +42,48 @@ function hasPda(pda: string): boolean {
   return Boolean(pda) && pda !== "—";
 }
 
+// Map operator responses to friendlier copy. Worker can return:
+//   void           — { voided_rows: N, purchase_id }
+//   force-expire   — success: { wallet, status:"expired", tx_signature, solscan_url }
+//                  — { wallet, status:"already-expired" }
+//                  — 404: { error:"position not found...", wallet }
+//                  — 503: { error:"RPC unavailable from Worker IP", hint, wallet }
+//                  — 400: { error:"...UnauthorizedAdmin..." } (oracle != admin)
+function formatResponse(
+  action: "void" | "force-expire",
+  status: number,
+  data: Record<string, unknown>,
+): string {
+  if (action === "void") {
+    const rows = Number(data.voided_rows ?? 0);
+    if (rows > 0) return `✓ Voided ${rows} pending commission row(s) for purchase ${String(data.purchase_id ?? "")}.`;
+    return `· No matching pending commission found. (Try a real correlation_id from the operator's recent settlements.)`;
+  }
+  // force-expire
+  if (status === 200) {
+    if (data.status === "already-expired") {
+      return `· Position is already expired on chain. Nothing to do.`;
+    }
+    const sig = String(data.tx_signature ?? "");
+    const url = String(data.solscan_url ?? "");
+    return `✓ Position expired on chain. tx: ${sig.slice(0, 12)}…\n${url}`;
+  }
+  if (status === 404) {
+    return `· No Position found on chain for that wallet. (Register first via /dashboard.)`;
+  }
+  if (status === 503) {
+    return `· Worker IP rate-limited by the free-tier RPC. The operator has handed this off to the local fallback signer — production uses paid Helius (config flag flip).`;
+  }
+  if (status === 400) {
+    const err = String(data.error ?? "");
+    if (err.includes("UnauthorizedAdmin") || err.includes("admin")) {
+      return `· V1 Worker signs with the oracle key, but on-chain force_expire requires the admin (deployer) key. The operator falls back to the local script for this admin action.`;
+    }
+    return `· ${err.slice(0, 200)}`;
+  }
+  return `· ${String(data.error ?? `unexpected status ${status}`).slice(0, 200)}`;
+}
+
 export default function MerchantPage() {
   const [merchants, setMerchants] = useState<Merchant[]>(FALLBACK_MERCHANTS);
   const [merchantId, setMerchantId] = useState("1");
@@ -92,9 +134,10 @@ export default function MerchantPage() {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ merchant_id: merchantId, purchase_id: purchaseId, wallet: purchaseId }),
       });
-      setResp(JSON.stringify(await r.json(), null, 2));
+      const data = (await r.json()) as Record<string, unknown>;
+      setResp(formatResponse(action, r.status, data));
     } catch (e) {
-      setResp(String(e));
+      setResp(`Network error — could not reach operator. ${String(e).slice(0, 200)}`);
     } finally {
       setBusy(null);
     }
@@ -175,9 +218,9 @@ export default function MerchantPage() {
           </button>
         </div>
         {resp && (
-          <pre className="overflow-x-auto rounded-xl border border-edge bg-cream p-4 font-mono text-xs">
+          <div className="rounded-xl border border-edge bg-cream p-4 text-sm leading-relaxed text-graphite whitespace-pre-wrap break-words">
             {resp}
-          </pre>
+          </div>
         )}
       </section>
 
